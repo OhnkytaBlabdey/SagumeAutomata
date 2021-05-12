@@ -1,0 +1,29 @@
+{
+  "name": "sagume_automata",
+  "version": "under development",
+  "description": "A QQ bot project",
+  "main": "index.js",
+  "scripts": {
+    "tsc": "tsc --watch --allowJs --removeComments",
+    "start": "nodemon -e ts --exec ts-node src/main.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/OhnkytaBlabdey/SagumeAutomata.git"
+  },
+  "keywords": [],
+  "author": "NeWive and OhnkytaBlabdey(sorted by letter)",
+  "license": "AGPL-3.0 License",
+  "bugs": {
+    "url": "https://github.com/OhnkytaBlabdey/SagumeAutomata/issues"
+  },
+  "homepage": "https://github.com/OhnkytaBlabdey/SagumeAutomata#readme",
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^4.23.0",
+    "@typescript-eslint/parser": "^4.23.0",
+    "eslint": "^7.26.0",
+    "nodemon": "^2.0.7",
+    "ts-node": "^9.1.1",
+    "typescript": "^4.2.4"
+  }
+}

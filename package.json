@@ -2,7 +2,7 @@
   "name": "sagume_automata",
   "version": "under development",
   "description": "A QQ bot project",
-  "main": "index.js",
+  "main": "main.js",
   "scripts": {
     "tsc": "tsc --watch --allowJs --removeComments",
     "start": "nodemon -e ts --exec ts-node src/main.ts"

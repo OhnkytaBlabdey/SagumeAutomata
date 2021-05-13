@@ -1,6 +1,6 @@
 {
   "name": "sagume_automata",
-  "version": "under development",
+  "version": "0.0.1",
   "description": "A QQ bot project",
   "main": "index.js",
   "scripts": {
@@ -19,10 +19,15 @@
   },
   "homepage": "https://github.com/OhnkytaBlabdey/SagumeAutomata#readme",
   "devDependencies": {
+    "@types/axios": "^0.14.0",
+    "@types/node": "^15.0.2",
+    "@types/qs": "^6.9.6",
+    "@types/sqlite3": "^3.1.7",
     "@typescript-eslint/eslint-plugin": "^4.23.0",
     "@typescript-eslint/parser": "^4.23.0",
     "eslint": "^7.26.0",
     "nodemon": "^2.0.7",
+    "sqlite3": "^5.0.2",
     "ts-node": "^9.1.1",
     "typescript": "^4.2.4"
   }

@@ -5,7 +5,7 @@ import * as RequesterInterface from "../requester.interface";
 
 async function testGet() {
     try {
-        let res: RequesterInterface.RequesterResponseType = <RequesterInterface.RequesterResponseType>await Requester.get({
+        const res: RequesterInterface.RequesterResponseType = <RequesterInterface.RequesterResponseType>await Requester.get({
             url: "https://api.live.bilibili.com/room/v1/Room/room_init",
             params: {
                 id: 528210

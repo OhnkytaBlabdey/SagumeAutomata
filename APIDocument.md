@@ -20,7 +20,7 @@ Requester.post({
     url: "path/to/post",
     data: "...",
     contentType: "..."
-}).and((res) => {
+}).then((res) => {
   
 }, (rej) => {
     

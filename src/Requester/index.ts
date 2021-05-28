@@ -47,7 +47,8 @@ class Requester {
                 return Promise.reject(({
                     errCode: err.code,
                     errMessage: err.message,
-                    status: RequesterStatusCode.ERROR
+                    status: RequesterStatusCode.ERROR,
+                    others: err
                 } as RequesterErrorType));
             }
         );

@@ -28,13 +28,6 @@ class Requester {
         this.__requesterConf = axiosConf;
     }
 
-    // private __interceptRequest(): void {
-    //     this.__service.interceptors.request.use((v: AxiosRequestConfig) => {
-    //        console.log(v);
-    //        return v;
-    //     });
-    // }
-
     private __interceptResponse(): void {
         this.__service.interceptors.response.use(
             (res: AxiosResponse) => {
@@ -48,7 +41,7 @@ class Requester {
                     errCode: err.code,
                     errMessage: err.message,
                     status: RequesterStatusCode.ERROR,
-                    others: err
+                    detail: err
                 } as RequesterErrorType));
             }
         );

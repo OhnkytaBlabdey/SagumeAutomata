@@ -1,5 +1,3 @@
-import exp from "constants";
-
 export enum RequesterStatusCode {
     ERROR,
     DONE
@@ -16,6 +14,7 @@ export interface RequesterResponseType extends RequesterReturnType {
 export interface RequesterErrorType extends RequesterReturnType {
     errCode: string;
     errMessage: string;
+    detail?: any;
 }
 
 export interface RequesterGetArgs {

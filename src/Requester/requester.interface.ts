@@ -17,13 +17,15 @@ export interface RequesterErrorType extends RequesterReturnType {
     detail?: any;
 }
 
-export interface RequesterGetArgs {
+export interface RequesterBaseArgs {
     url: string;
+}
+
+export interface RequesterGetArgs extends RequesterBaseArgs{
     params: Object;
 }
 
-export interface RequesterPostArgs {
-    url: string;
+export interface RequesterPostArgs extends RequesterBaseArgs{
     data: any;
     contentType: string;
 }

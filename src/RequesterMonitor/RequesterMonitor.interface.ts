@@ -1,3 +1,5 @@
+import {RequesterPostArgs, RequesterGetArgs} from "../Requester/requester.interface";
+
 export enum RequestMethod {
     GET = "GET",
     POST = "POST"
@@ -10,8 +12,9 @@ export enum MonitorWorkerType {
 
 export interface MonitorWorkerBaseType {
     requestMethod: RequestMethod;
-    url: string;
     type: MonitorWorkerType;
+    method: RequestMethod;
+    args: RequesterPostArgs | RequesterGetArgs;
 }
 
 export interface MonitorWorkerCallbackType extends MonitorWorkerBaseType{

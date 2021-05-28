@@ -3,3 +3,5 @@ node_modules/
 build/**/*.js
 build/**/*.js.map
 config/current/**
+src/**/*.js
+log/

@@ -77,9 +77,9 @@ class warpLogger{
         this.__makeDir();
     }
     public static getLogger():bunyan{
-        if(!this.__logger){
+        if(!warpLogger.__logger){
             new warpLogger();
-            this.__logger = logger;
+            warpLogger.__logger = logger;
         }
         return warpLogger.__logger ;
     }

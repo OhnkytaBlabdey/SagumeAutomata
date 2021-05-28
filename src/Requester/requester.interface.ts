@@ -2,7 +2,7 @@ import exp from "constants";
 
 export enum RequesterStatusCode {
     ERROR,
-    DONE
+    DONE,
 }
 
 export interface RequesterReturnType {

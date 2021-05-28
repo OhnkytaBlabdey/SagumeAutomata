@@ -5,3 +5,4 @@ build/**/*.js.map
 config/current/**
 src/**/*.js
 log/
+.prettierrc

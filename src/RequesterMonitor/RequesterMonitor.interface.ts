@@ -2,8 +2,8 @@ import {RequesterPostArgs, RequesterGetArgs} from "../Requester/requester.interf
 import EventEmitter from "events";
 
 export enum RequestMethod {
-    GET = "GET",
-    POST = "POST"
+    GET,
+    POST
 }
 
 export enum MonitorWorkerType {

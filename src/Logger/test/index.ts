@@ -1,4 +1,4 @@
-import log from "../loggger";
+import log from "..";
 
 try {
     log.debug("awa");

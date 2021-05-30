@@ -1,6 +1,6 @@
 export enum RequesterStatusCode {
     ERROR,
-    DONE
+    DONE,
 }
 
 export interface RequesterReturnType {

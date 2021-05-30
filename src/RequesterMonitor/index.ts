@@ -15,7 +15,6 @@ import {
     MonitorWorkerType,
     RequestMethod
 } from "./RequesterMonitor.interface";
-import {worker} from "cluster";
 
 class RequesterMonitor extends EventEmitter {
     private readonly __interval: number;

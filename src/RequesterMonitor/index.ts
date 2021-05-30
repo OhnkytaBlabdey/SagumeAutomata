@@ -1,7 +1,7 @@
 import RequesterMonitorConf from "./RequesterMonitor.config";
 import EventEmitter from "events";
 import Requester from "../Requester";
-import logger from "../Logger/loggger";
+import logger from "../Logger";
 import {
     RequesterErrorType,
     RequesterGetArgs,

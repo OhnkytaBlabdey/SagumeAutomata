@@ -1,4 +1,5 @@
 import {RequesterPostArgs, RequesterGetArgs} from "../Requester/requester.interface";
+import EventEmitter from "events";
 
 export enum RequestMethod {
     GET = "GET",
@@ -11,9 +12,8 @@ export enum MonitorWorkerType {
 }
 
 export interface MonitorWorkerBaseType {
-    requestMethod: RequestMethod;
     type: MonitorWorkerType;
-    method: RequestMethod;
+    requestMethod: RequestMethod;
     args: RequesterPostArgs | RequesterGetArgs;
 }
 
@@ -23,4 +23,5 @@ export interface MonitorWorkerCallbackType extends MonitorWorkerBaseType{
 
 export interface MonitorWorkerEventType extends MonitorWorkerBaseType{
     eventName: string;
+    eventListener: EventEmitter;
 }

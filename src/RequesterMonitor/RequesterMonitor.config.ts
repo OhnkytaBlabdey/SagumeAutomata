@@ -1,5 +1,5 @@
 const conf = {
-    timeout: 1000,
+    timeout: 500,
 }
 
 export default conf;

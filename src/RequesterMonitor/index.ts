@@ -23,6 +23,7 @@ class RequesterMonitor extends EventEmitter {
     private readonly __traverseQueueEvent: string;
     private __isWorking: boolean;
     private static __instance: RequesterMonitor;
+    private __timer: NodeJS.Timeout | null;
 
     constructor() {
         super();
@@ -30,51 +31,22 @@ class RequesterMonitor extends EventEmitter {
         this.__monitorQueue = [];
         this.__traverseQueueEvent = "checkWorkerQueue";
         this.__isWorking = false;
+        this.__timer = null;
         this.on(this.__traverseQueueEvent, () => {
-            let worker: MonitorWorkerCallbackType | MonitorWorkerEventType;
-            if (this.__monitorQueue.length) {
-                worker = this.__monitorQueue[0];
-                this.__monitorQueue.splice(0, 1);
-            }
             if (this.__isWorking && !this.__monitorQueue.length) {
                 // 停止工作
                 this.__isWorking = false;
+                clearInterval(<NodeJS.Timeout>this.__timer);
             } else if (this.__monitorQueue.length) {
                 if (!this.__isWorking) {
                     this.__isWorking = true;
                 }
-                setTimeout(() => {
-                    this.__handleWorker(worker);
-                }, this.__interval);
-            } else {
-                // 无操作
+                this.__handleWorker();
             }
         });
     }
 
-    private async __handleWorker(worker: MonitorWorkerCallbackType | MonitorWorkerEventType) {
-        let res: RequesterResponseType | RequesterErrorType;
-        logger.info(`请求URL: ${worker.args.url}, 请求方法: ${worker.requestMethod}`);
-        if (worker.requestMethod === RequestMethod.GET) {
-            worker.args = worker.args as RequesterGetArgs;
-            res = await Requester.get({
-                params: worker.args.params,
-                url: worker.args.url
-            });
-        } else if (worker.requestMethod === RequestMethod.POST) {
-            worker.args = worker.args as RequesterPostArgs;
-            res = await Requester.post({
-                contentType: worker.args.contentType,
-                data: worker.args.data,
-                url: worker.args.url
-            });
-        } else {
-            res = {
-                status: RequesterStatusCode.ERROR,
-                errCode: "-1",
-                errMessage: "未知的请求方法"
-            }
-        }
+    private __requestCb(res: RequesterResponseType | RequesterErrorType, worker: MonitorWorkerCallbackType | MonitorWorkerEventType) {
         if (res.status === RequesterStatusCode.DONE) {
             logger.info(`请求URL: ${worker.args.url}成功`);
             res = res as RequesterResponseType;
@@ -83,13 +55,40 @@ class RequesterMonitor extends EventEmitter {
                 worker.callback(res.data);
             } else {
                 worker = worker as MonitorWorkerEventType;
-                this.emit(worker.eventName, res.data);
+                worker.eventListener.emit(worker.eventName, res.data);
             }
         } else {
             res = res as RequesterErrorType;
             logger.error(`请求URL: ${worker.args.url}失败, 代码: ${res.errCode}, 错误信息: ${res.errMessage}`);
         }
-        this.emit(this.__traverseQueueEvent);
+        setTimeout(() => {
+            this.__monitorQueue.splice(0, 1);
+            this.emit(this.__traverseQueueEvent);
+        }, this.__interval);
+    }
+
+    private __handleWorker() {
+        let worker: MonitorWorkerCallbackType | MonitorWorkerEventType;
+        worker = this.__monitorQueue[0];
+        logger.info(`请求URL: ${worker.args.url}, 请求方法: ${worker.requestMethod}`);
+        if (worker.requestMethod === RequestMethod.GET) {
+            worker.args = worker.args as RequesterGetArgs;
+            Requester.get({
+                params: worker.args.params,
+                url: worker.args.url
+            }).then((res) => {
+                this.__requestCb(res, worker);
+            });
+        } else if (worker.requestMethod === RequestMethod.POST) {
+            worker.args = worker.args as RequesterPostArgs;
+            Requester.post({
+                contentType: worker.args.contentType,
+                data: worker.args.data,
+                url: worker.args.url
+            }).then((res) => {
+                this.__requestCb(res, worker);
+            });
+        }
     }
 
     public static getInstance(): RequesterMonitor {
@@ -100,7 +99,6 @@ class RequesterMonitor extends EventEmitter {
     public request(worker: MonitorWorkerCallbackType | MonitorWorkerEventType) {
         logger.info(`进入请求队列: ${worker.args}`);
         this.__monitorQueue.push(worker);
-        logger.info(`当前队列长度: ${this.__monitorQueue.length}`);
         if (!this.__isWorking) {
             this.emit(this.__traverseQueueEvent);
         }

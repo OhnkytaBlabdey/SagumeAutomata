@@ -1,6 +1,6 @@
 import Monitor from "../index";
 import EventEmitter from "events";
-import {MonitorWorkerType, RequestMethod} from "../RequesterMonitor.interface";
+import {MonitorWorkerType, RequestMethod} from "../interface";
 
 let event = new EventEmitter();
 event.on("test", (d) => {

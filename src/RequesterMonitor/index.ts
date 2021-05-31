@@ -8,13 +8,13 @@ import {
     RequesterPostArgs,
     RequesterResponseType,
     RequesterStatusCode
-} from "../Requester/requester.interface";
+} from "../Requester/interface";
 import {
     MonitorWorkerCallbackType,
     MonitorWorkerEventType,
     MonitorWorkerType,
     RequestMethod
-} from "./RequesterMonitor.interface";
+} from "./interface";
 
 class RequesterMonitor extends EventEmitter {
     private readonly __interval: number;
@@ -22,7 +22,6 @@ class RequesterMonitor extends EventEmitter {
     private readonly __traverseQueueEvent: string;
     private __isWorking: boolean;
     private static __instance: RequesterMonitor;
-    private __timer: NodeJS.Timeout | null;
 
     constructor() {
         super();
@@ -30,12 +29,9 @@ class RequesterMonitor extends EventEmitter {
         this.__monitorQueue = [];
         this.__traverseQueueEvent = "checkWorkerQueue";
         this.__isWorking = false;
-        this.__timer = null;
         this.on(this.__traverseQueueEvent, () => {
             if (this.__isWorking && !this.__monitorQueue.length) {
-                // 停止工作
                 this.__isWorking = false;
-                clearInterval(<NodeJS.Timeout>this.__timer);
             } else if (this.__monitorQueue.length) {
                 if (!this.__isWorking) {
                     this.__isWorking = true;
@@ -103,7 +99,6 @@ class RequesterMonitor extends EventEmitter {
         }
     }
 }
-
 
 const monitor = RequesterMonitor.getInstance();
 

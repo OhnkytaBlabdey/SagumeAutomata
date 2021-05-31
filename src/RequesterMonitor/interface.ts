@@ -1,4 +1,4 @@
-import {RequesterPostArgs, RequesterGetArgs} from "../Requester/requester.interface";
+import {RequesterPostArgs, RequesterGetArgs} from "../Requester/interface";
 import EventEmitter from "events";
 
 export enum RequestMethod {

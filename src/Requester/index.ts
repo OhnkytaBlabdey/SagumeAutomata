@@ -6,7 +6,7 @@ import {
     RequesterPostArgs,
     RequesterResponseType,
     RequesterStatusCode
-} from "./requester.interface";
+} from "./interface";
 
 /**
  * Class Requester:

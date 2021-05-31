@@ -6,3 +6,4 @@ config/current/**
 src/**/*.js
 log/
 .prettierrc
+db/*.db

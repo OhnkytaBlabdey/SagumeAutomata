@@ -1,5 +1,5 @@
 import Requester from "../index";
-import * as RequesterInterface from "../requester.interface";
+import * as RequesterInterface from "../interface";
 // import axios from "axios";
 // import AxiosConfig from "../axios.config";
 

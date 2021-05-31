@@ -1,0 +1,45 @@
+{
+    "DBTarget": "automata.db",
+    "tables": [
+        {
+            "tName": "yorha",
+            "columns": [
+                {
+                    "cName": "android_id",
+                    "cDataType": "INTEGER",
+                    "attributes": [
+                        "PRIMARY KEY",
+                        "AUTOINCREMENT"
+                    ]
+                },
+                {
+                    "cName": "android_name",
+                    "cDataType": "TEXT",
+                    "attributes": [
+                        "NOT NULL"
+                    ]
+                }
+            ]
+        },
+        {
+            "tName": "mankind",
+            "columns": [
+                {
+                    "cName": "mankind_id",
+                    "cDataType": "INTEGER",
+                    "attributes": [
+                        "PRIMARY KEY",
+                        "AUTOINCREMENT"
+                    ]
+                },
+                {
+                    "cName": "mankind_name",
+                    "cDataType": "TEXT",
+                    "attributes": [
+                        "NUO NULL"
+                    ]
+                }
+            ]
+        }
+    ]
+}

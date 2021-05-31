@@ -225,3 +225,102 @@ Monitor.request({
     -   `eventName?`: `string` 触发事件名称
     -   `eventListener?`: `Object<EventEmitter>` 触发事件监听器
 
+## Class：`DBHandler`
+
+### Example
+
+```typescript
+import dbHandler from "../index";
+import {DBText} from "../../Util/Text";
+
+async function main() {
+    await dbHandler.init();
+    await dbHandler.insertSingle("yorha", ["android_name"], ["2B"]);
+    await dbHandler.insertSingle("yorha", [], [100, "Commander"]);
+    await dbHandler.insertMulti("yorha", ["android_id", "android_name"], [
+        [2, "9S"],
+        [3, "A2"],
+        [4, "unknown"]
+    ]);
+    await dbHandler.insertMulti("yorha", ["android_name"], [
+        ["10S"],
+        ["A3"],
+        ["unknownN"]
+    ]);
+    await dbHandler.delete("yorha", [
+        "android_id=2"
+    ]);
+    await dbHandler.update("yorha", [
+        {
+            k: "android_name",
+            v: `${DBText("Conquer")}`
+        }
+    ], [
+        `android_name=${DBText("unknown")}`
+    ]);
+    console.log(await dbHandler.select("yorha", ["*"], [], false));
+    console.log(await dbHandler.select("yorha", ["android_name"], [
+        "android_id>0"
+    ], true));
+}
+
+```
+
+### Introduction
+
+-   使用前请先配置 `/path/to/project/db/db.config.json`, 配置完成后调用 `init()`方法，`DBHandler`会根据配置文件初始化完成数据库。
+
+```json
+{
+    "DBTarget": "automata.db",
+    "tables": [
+        {
+            "tName": "yorha",
+            "columns": [
+                {
+                    "cName": "android_id",
+                    "cDataType": "INTEGER",
+                    "attributes": [
+                        "PRIMARY KEY",
+                        "AUTOINCREMENT"
+                    ]
+                }
+            ]
+        }
+    ]
+}
+
+```
+
+其中 `DBTarget` 为目标数据库文件。
+
+-   具体API使用方法见Example
+
+-   当前未针对多表查询进行封装，故将数据库的部分基本方法暴露出来以供进行高阶操作
+
+### API Reference
+
+#### `run(query: string, value: Array<any> = [])`
+
+-   return: `Promise`
+
+传入并执行 `query` ，并将 `value` 传入执行过程
+
+#### `getSingle(query: string, value: Array<any> = [])`
+
+-   return: `Promise<Object<any>>`
+
+执行查找并在Promise中返回查找到的第一条结果
+
+#### `getMulti(query: string, value: Array<any> = [])`
+
+-   return: `Promise<Object<any>>`
+
+执行查找并在Promise中返回查找到的所有结果
+
+#### `getService()`
+
+-   return: `Database`
+
+返回数据库实例（不建议频繁使用）
+

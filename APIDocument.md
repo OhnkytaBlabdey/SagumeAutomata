@@ -258,8 +258,8 @@ async function main() {
     ], [
         `android_name=${DBText("unknown")}`
     ]);
-    console.log(await dbHandler.select("yorha", ["*"], [], false));
-    console.log(await dbHandler.select("yorha", ["android_name"], [
+    console.log(await dbHandler.select(["yorha"], ["*"], [], false));
+    console.log(await dbHandler.select(["yorha"], ["android_name"], [
         "android_id>0"
     ], true));
 }
@@ -268,6 +268,7 @@ async function main() {
 
 ### Introduction
 
+-   基于 [`better-sqlite3`](https://github.com/JoshuaWise/better-sqlite3)
 -   使用前请先配置 `/path/to/project/db/db.config.json`, 配置完成后调用 `init()`方法，`DBHandler`会根据配置文件初始化完成数据库。
 
 ```json

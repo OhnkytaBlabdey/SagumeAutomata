@@ -59,7 +59,6 @@ class DBHandler {
     private __initTable() {
         this.__dbConfig.tables.forEach(t => {
             const args = t.columns.map(c => `${c.cName} ${c.cDataType} ${c.attributes && c.attributes.join(" ")}`);
-            console.log(`create table ${t.tName} (${args})`);
             let info = this.__service.prepare(`create table ${t.tName} (${args})`).run().changes;
             logger.info(`changes: ${info}`);
         });
@@ -178,12 +177,12 @@ class DBHandler {
         });
     }
 
-    public select(tableName: string, columns: Array<string>, condition: Array<string>, all: boolean = false) {
+    public select(tableName: Array<string>, columns: Array<string>, condition: Array<string>, all: boolean = false) {
         return new Promise((res, rej) => {
             try {
                 let columnQuery = columns.join(",");
                 let conditionQuery = condition.length ? `where ${condition.join(" and ")}` : "";
-                let stmt = this.__service.prepare(`select ${columnQuery} from ${tableName} ${conditionQuery}`);
+                let stmt = this.__service.prepare(`select ${columnQuery} from ${tableName.join(",")} ${conditionQuery}`);
                 if (all) {
                     res(stmt.all());
                 } else {

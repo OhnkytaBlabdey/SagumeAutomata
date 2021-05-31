@@ -26,8 +26,8 @@ async function main() {
     ], [
         `android_name=${utils.DBText("unknown")}`
     ]);
-    console.log(await dbHandler.select("yorha", ["*"], [], false));
-    console.log(await dbHandler.select("yorha", ["android_name"], [
+    console.log(await dbHandler.select(["yorha"], ["*"], [], false));
+    console.log(await dbHandler.select(["yorha"], ["android_name"], [
         "android_id>0"
     ], true));
 }

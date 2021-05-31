@@ -1,5 +1,5 @@
 import dbHandler from "../index";
-import {DBText} from "../../Util/Text";
+import utils from "../../Util";
 
 async function main() {
     await dbHandler.init();
@@ -21,10 +21,10 @@ async function main() {
     await dbHandler.update("yorha", [
         {
             k: "android_name",
-            v: `${DBText("Conquer")}`
+            v: `${utils.DBText("Conquer")}`
         }
     ], [
-        `android_name=${DBText("unknown")}`
+        `android_name=${utils.DBText("unknown")}`
     ]);
     console.log(await dbHandler.select("yorha", ["*"], [], false));
     console.log(await dbHandler.select("yorha", ["android_name"], [

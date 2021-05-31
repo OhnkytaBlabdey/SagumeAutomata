@@ -3,5 +3,5 @@ import {DBText} from "./Text";
 
 export default {
     ...FileUtil,
-    DBText
+    DBText: DBText
 }

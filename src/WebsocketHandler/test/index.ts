@@ -1,7 +1,6 @@
 import WebSocket from "ws";
 import WebsocketHandler from "../index";
 import EventEmitter from "events";
-import set = Reflect.set;
 
 let e = new EventEmitter();
 e.on("nmd", (e) => {
@@ -20,9 +19,16 @@ wss.on('connection', function connection(ws) {
     ws.send('something');
 });
 
-let client = new WebsocketHandler("ws://localhost", 11451, e, "nmd");
-setTimeout(() => {
-    client.sendMessage("wdnmd");
-}, 1000);
+async function main() {
+    let client = new WebsocketHandler("localhost", 11451, e, "nmd");
+    try {
+        await client.connect();
+    } catch (e) {
+        console.log(e);
+    }
+    setTimeout(() => {
+        client.sendMessage("wdnmd");
+    }, 1000);
+}
 
-
+main();

@@ -6,7 +6,8 @@ import process from "process";
 class WebsocketHandler extends EventEmitter {
     private __port: number;
     private __host: string;
-    private __wsClient;
+    // @ts-ignore
+    private __wsClient: Websocket;
     private __eventListener: EventEmitter;
     private __eventTarget: string;
 
@@ -16,20 +17,26 @@ class WebsocketHandler extends EventEmitter {
         this.__host = host;
         this.__eventListener = eventListener;
         this.__eventTarget = eventTarget;
-        this.__wsClient = new Websocket(`${this.__host}:${this.__port}`);
-        this.__wsClient.on("open", () => {
-            logger.info("已建立连接");
-        });
-        this.__wsClient.on("error", (e) => {
-            logger.error("连接发生错误");
-            logger.error(e);
-        });
-        this.__wsClient.on("message", (data) => {
-            logger.info("接收到来自服务端消息");
-            this.__eventListener.emit(this.__eventTarget, data);
-        });
-        process.on("exit", () => {
-            this.__wsClient.close();
+    }
+
+    connect() {
+        return new Promise((res, rej) => {
+            this.__wsClient = new Websocket(`ws://${this.__host}:${this.__port}`);
+            this.__wsClient.on("open", () => {
+                logger.info("已建立连接");
+                res(1);
+            });
+            this.__wsClient.on("error", (e) => {
+                logger.error("连接发生错误");
+                rej(e);
+            });
+            this.__wsClient.on("message", (data) => {
+                logger.info("接收到来自服务端消息");
+                this.__eventListener.emit(this.__eventTarget, data);
+            });
+            process.on("exit", () => {
+                this.__wsClient.close();
+            });
         });
     }
 

@@ -5,6 +5,7 @@ import logger from "../Logger";
 import utils from "../Util";
 import {ReadDoneType, UtilBaseType} from "../Util/interface";
 import {DBConfig, DBTable, UpdatePairType} from "./interface";
+import process from "process";
 
 class DBHandler {
     private static __instance: DBHandler;
@@ -19,6 +20,9 @@ class DBHandler {
         this.__rootDir = path.resolve(__dirname, "../../db");
         this.__service = null;
         this.__targetDir = "";
+        process.on("exit", () => {
+            this.__service.close();
+        });
     }
 
     public static getInstance(): DBHandler {

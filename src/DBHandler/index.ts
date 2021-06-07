@@ -77,9 +77,9 @@ class DBHandler {
             if (!status) {
                 logger.warn(`数据库文件不存在，将要创建数据库文件`);
                 await utils.writeFile(this.__targetDir, "");
+                this.__connectDB();
+                this.__initTable();
             }
-            this.__connectDB();
-            this.__initTable();
         }
         logger.info(`数据库初始化完成`);
     }

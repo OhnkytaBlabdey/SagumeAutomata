@@ -7,17 +7,12 @@
                 {
                     "cName": "android_id",
                     "cDataType": "INTEGER",
-                    "attributes": [
-                        "PRIMARY KEY",
-                        "AUTOINCREMENT"
-                    ]
+                    "attributes": ["PRIMARY KEY", "AUTOINCREMENT"]
                 },
                 {
                     "cName": "android_name",
                     "cDataType": "TEXT",
-                    "attributes": [
-                        "NOT NULL"
-                    ]
+                    "attributes": ["NOT NULL"]
                 }
             ]
         },
@@ -27,17 +22,47 @@
                 {
                     "cName": "mankind_id",
                     "cDataType": "INTEGER",
-                    "attributes": [
-                        "PRIMARY KEY",
-                        "AUTOINCREMENT"
-                    ]
+                    "attributes": ["PRIMARY KEY", "AUTOINCREMENT"]
                 },
                 {
                     "cName": "mankind_name",
                     "cDataType": "TEXT",
-                    "attributes": [
-                        "NUO NULL"
-                    ]
+                    "attributes": ["NUO NULL"]
+                }
+            ]
+        },
+        {
+            "tName": "bili_video",
+            "columns": [
+                {
+                    "cName": "bili_video_id",
+                    "cDataType": "INTEGER",
+                    "attributes": ["PRIMARY KEY", "AUTOINCREMENT"]
+                },
+                {
+                    "cName": "group_id",
+                    "cDataType": "INTEGER",
+                    "attributes": ["NOT NULL"]
+                },
+                {
+                    "cName": "uid",
+                    "cDataType": "INTEGER",
+                    "attributes": ["NOT NULL"]
+                },
+                {
+                    "cName": "name",
+                    "cDataType": "TEXT",
+                    "attributes": ["NOT NULL"]
+                },
+                {
+                    "cName": "hit_count",
+                    "cDataType": "INTEGER",
+                    "attributes": ["NOT NULL"]
+                },
+                {
+                    "cName": "latest_av",
+                    "cDataType": "INTEGER",
+                    "attributes": ["NOT NULL"]
                 }
             ]
         }

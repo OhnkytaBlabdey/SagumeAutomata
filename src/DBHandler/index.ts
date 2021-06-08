@@ -87,8 +87,8 @@ class DBHandler {
     public run(query: string, value: Array<any> = []) {
         return new Promise((res, rej) => {
             try {
-                this.__service.prepare(query).run(...value);
-                res(1);
+                let info = this.__service.prepare(query).run(...value);
+                res(info);
             } catch (e) {
                 logger.error("执行run失败");
                 rej(e);
@@ -156,9 +156,9 @@ class DBHandler {
         return new Promise(async (res, rej) => {
             try {
                 let cQuery = condition.join(" and ");
-                await this.run(`delete from ${tableName} where ${cQuery}`);
+                let info = await this.run(`delete from ${tableName} where ${cQuery}`);
                 logger.info("删除成功");
-                res(1);
+                res(info);
             } catch (e) {
                 logger.error("删除失败");
                 rej(e);
@@ -171,9 +171,9 @@ class DBHandler {
             try {
                 let nPQuery = newPair.map(i => `${i.k}=${i.v}`).join(",");
                 let cQuery = condition.join(" and ");
-                await this.run(`update ${tableName} set ${nPQuery} where ${cQuery}`);
+                let info = await this.run(`update ${tableName} set ${nPQuery} where ${cQuery}`);
                 logger.info("更新成功");
-                res(1);
+                res(info);
             } catch (e) {
                 logger.error("更新失败");
                 rej(e);

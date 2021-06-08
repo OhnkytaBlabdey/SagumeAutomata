@@ -1,8 +1,10 @@
 import dbHandler from "../../DBHandler";
 import req from "../../Requester";
 import log from "../../Logger";
-import { RequesterErrorType } from "../../Requester/interface";
-import { time } from "console";
+import {
+    RequesterErrorType,
+    RequesterResponseType,
+} from "../../Requester/interface";
 
 /**
  * victory lies in a simple soul.
@@ -13,7 +15,7 @@ class videoSubscriber {
     private static tableName = "bili_video";
     private static __instance: videoSubscriber;
 
-    public async getLatestVideo(uid: number) {
+    private async getLatestVideo(uid: number) {
         return new Promise((res, rej) => {
             req.get({
                 url: "https://api.bilibili.com/x/space/arc/search",
@@ -22,12 +24,12 @@ class videoSubscriber {
                     ps: 1,
                 },
             })
-                .then((result) => {
+                .then((result: RequesterResponseType) => {
                     if (result && result.data) {
-                        result = result.data;
-                        log.debug(result);
-                        if (result.data) {
-                            const data = result.data;
+                        const jsondata = result.data;
+                        log.debug(jsondata);
+                        if (jsondata.data) {
+                            const data = jsondata.data;
                             if (data["list"] && data["list"]["vlist"]) {
                                 const item = data["list"]["vlist"][0];
                                 res({
@@ -63,6 +65,15 @@ class videoSubscriber {
     public async addSub(groupId: number, uid: number, name: string) {
         log.info("将要添加视频订阅");
         log.info("group:", groupId, ", uid:", uid, " ,name:", name);
+        const chk = await dbHandler.select(
+            [videoSubscriber.tableName],
+            ["bili_video_id"],
+            ["group_id=" + groupId, "uid=" + uid, "`name`='" + name + "'"]
+        );
+        if (chk) {
+            log.error("已经添加过该视频订阅了");
+            return;
+        }
         dbHandler
             .insertSingle(
                 videoSubscriber.tableName,
@@ -78,6 +89,49 @@ class videoSubscriber {
             .catch((rej) => {
                 if (rej) {
                     log.warn("添加视频订阅失败，原因");
+                    log.warn(rej);
+                }
+            });
+    }
+
+    public async removeSubByUid(groupId: number, uid: number) {
+        log.info("将要移除视频订阅");
+        log.info("group:", groupId, ", uid:", uid);
+        dbHandler
+            .delete(videoSubscriber.tableName, [
+                "`group_id`=" + groupId,
+                "`uid`=" + uid,
+            ])
+            .then((res) => {
+                if (res) {
+                    //回复移除成功
+                    log.info(uid, "视频订阅已移除", res);
+                }
+            })
+            .catch((rej) => {
+                if (rej) {
+                    log.warn(uid, "视频订阅移除失败，原因");
+                    log.warn(rej);
+                }
+            });
+    }
+    public async removeSubByName(groupId: number, name: string) {
+        log.info("将要移除视频订阅");
+        log.info("group:", groupId, ", name:", name);
+        dbHandler
+            .delete(videoSubscriber.tableName, [
+                "`group_id` = " + groupId,
+                "`name` = '" + name + "'",
+            ])
+            .then((res) => {
+                if (res) {
+                    //回复移除成功
+                    log.info(name, "视频订阅已移除", res);
+                }
+            })
+            .catch((rej) => {
+                if (rej) {
+                    log.warn(name, "视频订阅移除失败，原因");
                     log.warn(rej);
                 }
             });

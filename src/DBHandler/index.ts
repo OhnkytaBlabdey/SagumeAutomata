@@ -208,10 +208,21 @@ class DBHandler {
             res(1);
         });
     }
+
+    public getTableName() {
+        return new Promise(async (res, rej) => {
+            try {
+                let query = `select name from sqlite_master where type='table' order be name`;
+                let result = this.__service.prepare(query).run();
+                res(result);
+            } catch (e) {
+                logger.error("获取数据库表名失败");
+                rej(e);
+            }
+        });
+    }
 }
 
 let dbHandler = DBHandler.getInstance();
 
 export default dbHandler;
-
-

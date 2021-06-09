@@ -24,9 +24,10 @@ class videoSubscriber {
                     ps: 1,
                 },
             })
-                .then((result: RequesterResponseType) => {
-                    if (result && result.data) {
-                        const jsondata = result.data;
+                //TODO 入队，交给request monitor 调度
+                .then((result: RequesterResponseType | RequesterErrorType) => {
+                    if (result && (<RequesterResponseType>result).data) {
+                        const jsondata = (<RequesterResponseType>result).data;
                         log.debug(jsondata);
                         if (jsondata.data) {
                             const data = jsondata.data;
@@ -105,7 +106,7 @@ class videoSubscriber {
             .then((res) => {
                 if (res) {
                     //回复移除成功
-                    log.info(uid, "视频订阅已移除", res);
+                    log.info(uid, "视频订阅已移除", res.changes);
                 }
             })
             .catch((rej) => {
@@ -126,7 +127,7 @@ class videoSubscriber {
             .then((res) => {
                 if (res) {
                     //回复移除成功
-                    log.info(name, "视频订阅已移除", res);
+                    log.info(name, "视频订阅已移除", res.changes);
                 }
             })
             .catch((rej) => {

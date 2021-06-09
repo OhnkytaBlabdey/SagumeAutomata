@@ -1,3 +1,5 @@
+import * as stream from "stream";
+
 export interface DBColumn {
     cName: string;
     cDataType: string;
@@ -17,4 +19,8 @@ export interface DBConfig {
 export interface UpdatePairType {
     k: string;
     v: any;
+}
+
+export interface TableInfo {
+    name: string;
 }

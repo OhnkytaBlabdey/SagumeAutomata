@@ -4,7 +4,7 @@ import path from "path";
 import logger from "../Logger";
 import utils from "../Util";
 import {ReadDoneType, UtilBaseType} from "../Util/interface";
-import {DBConfig, DBTable, UpdatePairType} from "./interface";
+import {DBConfig, DBTable, TableInfo, UpdatePairType} from "./interface";
 import process from "process";
 
 class DBHandler {
@@ -34,19 +34,23 @@ class DBHandler {
         return this.__service;
     }
 
+    private async __getDBConfig(): Promise<DBConfig> {
+        let {data} = <ReadDoneType>(await utils.readFile(path.resolve(this.__rootDir, "db.config.json")));
+        try {
+            return JSON.parse(data);
+        } catch (e) {
+            logger.error("配置文件解析失败");
+            throw e;
+        }
+    }
+
     private async __readConfig() {
         logger.info(`读取数据库配置文件`);
         try {
-            let {data} = <ReadDoneType>(await utils.readFile(path.resolve(this.__rootDir, "db.config.json")));
-            try {
-                return JSON.parse(data);
-            } catch (e) {
-                logger.error("配置文件解析失败");
-                logger.error(e);
-            }
+            return await this.__getDBConfig();
         } catch (e) {
             logger.error("读取配置文件失败");
-            logger.error(e);
+            throw e;
         }
     }
 
@@ -60,11 +64,15 @@ class DBHandler {
         });
     }
 
+    private __createTable(t: DBTable) {
+        const args = t.columns.map(c => `${c.cName} ${c.cDataType} ${c.attributes && c.attributes.join(" ")}`);
+        let info = this.__service.prepare(`create table ${t.tName} (${args})`).run().changes;
+        logger.info(`changes: ${info}`);
+    }
+
     private __initTable() {
         this.__dbConfig.tables.forEach(t => {
-            const args = t.columns.map(c => `${c.cName} ${c.cDataType} ${c.attributes && c.attributes.join(" ")}`);
-            let info = this.__service.prepare(`create table ${t.tName} (${args})`).run().changes;
-            logger.info(`changes: ${info}`);
+            this.__createTable(t);
         });
     }
 
@@ -208,10 +216,39 @@ class DBHandler {
             res(1);
         });
     }
+
+    public getTableName(): Promise<Array<TableInfo>> {
+        return new Promise(async (res, rej) => {
+            try {
+                let query = `select name from sqlite_master where type='table' order by name`;
+                let result = this.__service.prepare(query).all();
+                res(<Array<TableInfo>>result);
+            } catch (e) {
+                logger.error("获取数据库表名失败");
+                rej(e);
+            }
+        });
+    }
+
+    public updateTable() {
+        return new Promise(async (res, rej) => {
+            try {
+                let tableInfo = await this.getTableName();
+                this.__dbConfig = await this.__getDBConfig();
+                this.__dbConfig.tables.forEach(t => {
+                    if (tableInfo.findIndex(temp => temp.name === t.tName) > -1) {
+                        logger.info(`表${t.tName}已存在`);
+                    } else {
+                        this.__createTable(t);
+                    }
+                });
+            }  catch (e) {
+                rej(e);
+            }
+        });
+    }
 }
 
 let dbHandler = DBHandler.getInstance();
 
 export default dbHandler;
-
-

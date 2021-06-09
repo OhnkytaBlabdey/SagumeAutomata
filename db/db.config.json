@@ -65,6 +65,16 @@
                     "attributes": ["NOT NULL"]
                 }
             ]
+        },
+        {
+            "tName": "CounterStrike",
+            "columns": [
+                {
+                    "cName": "armor_name",
+                    "cDataType": "INTEGER",
+                    "attributes": ["NOT NULL"]
+                }
+            ]
         }
     ]
 }

@@ -24,9 +24,9 @@ class videoSubscriber {
                     ps: 1,
                 },
             })
-                .then((result: RequesterResponseType) => {
-                    if (result && result.data) {
-                        const jsondata = result.data;
+                .then((result) => {
+                    if (result && (<RequesterResponseType>result).data) {
+                        const jsondata = (<RequesterResponseType>result).data;
                         log.debug(jsondata);
                         if (jsondata.data) {
                             const data = jsondata.data;

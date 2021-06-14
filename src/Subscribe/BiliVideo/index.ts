@@ -7,10 +7,22 @@ import {
 } from "../../Requester/interface";
 
 /**
+ * 订阅B站的视频
+ */
+
+// 每个文件来点二刺螈语录
+/**
  * victory lies in a simple soul.
  *  								____ RWBY vol.1
  */
 
+/**
+ * 表示查询的结果
+ */
+interface DBRes {
+    lastInsertRowid: number;
+    changes: number;
+}
 class videoSubscriber {
     private static tableName = "bili_video";
     private static __instance: videoSubscriber;
@@ -104,9 +116,15 @@ class videoSubscriber {
                 "`uid`=" + uid,
             ])
             .then((res) => {
-                if (res) {
+                if ((<DBRes>res).changes > 0) {
                     //回复移除成功
-                    log.info(uid, "视频订阅已移除", res.changes);
+                    log.info(uid, "视频订阅已移除", (<DBRes>res).changes);
+                } else {
+                    log.info(
+                        "视频移除失败，该群没有订阅uid为[",
+                        uid,
+                        "]的up主"
+                    );
                 }
             })
             .catch((rej) => {
@@ -125,9 +143,15 @@ class videoSubscriber {
                 "`name` = '" + name + "'",
             ])
             .then((res) => {
-                if (res) {
+                if ((<DBRes>res).changes > 0) {
                     //回复移除成功
-                    log.info(name, "视频订阅已移除", res.changes);
+                    log.info(name, "视频订阅已移除", (<DBRes>res).changes);
+                } else {
+                    log.info(
+                        "视频移除失败，该群没有订阅名为[",
+                        name,
+                        "]的up主"
+                    );
                 }
             })
             .catch((rej) => {

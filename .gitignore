@@ -1,10 +1,8 @@
 .idea/
 node_modules/
-build/**/*.js
-build/**/*.js.map
 config/current/**
-src/**/*.js
 log/
 .prettierrc
 db/*.db
 db/*.db-journal
+build/

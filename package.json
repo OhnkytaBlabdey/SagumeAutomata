@@ -28,6 +28,7 @@
     "@typescript-eslint/eslint-plugin": "^4.23.0",
     "@typescript-eslint/parser": "^4.23.0",
     "better-sqlite3": "^7.4.0",
+    "cross-env": "^7.0.3",
     "eslint": "^7.26.0",
     "nodemon": "^2.0.7",
     "qs": "^6.10.1",

@@ -11,7 +11,12 @@ class WebsocketHandler extends EventEmitter {
     private __eventListener: EventEmitter;
     private __eventTarget: string;
 
-    constructor(host: string, port: number, eventListener: EventEmitter, eventTarget: string) {
+    constructor(
+        host: string,
+        port: number,
+        eventListener: EventEmitter,
+        eventTarget: string
+    ) {
         super();
         this.__port = port;
         this.__host = host;
@@ -21,7 +26,9 @@ class WebsocketHandler extends EventEmitter {
 
     connect() {
         return new Promise((res, rej) => {
-            this.__wsClient = new Websocket(`ws://${this.__host}:${this.__port}`);
+            this.__wsClient = new Websocket(
+                `ws://${this.__host}:${this.__port}`
+            );
             this.__wsClient.on("open", () => {
                 logger.info("已建立连接");
                 res(1);
@@ -31,7 +38,7 @@ class WebsocketHandler extends EventEmitter {
                 rej(e);
             });
             this.__wsClient.on("message", (data) => {
-                logger.info("接收到来自服务端消息");
+                logger.debug("接收到来自服务端消息");
                 this.__eventListener.emit(this.__eventTarget, data);
             });
             process.on("exit", () => {

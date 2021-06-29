@@ -1,80 +1,110 @@
 {
-    "DBTarget": "automata.db",
-    "tables": [
-        {
-            "tName": "yorha",
-            "columns": [
-                {
-                    "cName": "android_id",
-                    "cDataType": "INTEGER",
-                    "attributes": ["PRIMARY KEY", "AUTOINCREMENT"]
-                },
-                {
-                    "cName": "android_name",
-                    "cDataType": "TEXT",
-                    "attributes": ["NOT NULL"]
-                }
-            ]
-        },
-        {
-            "tName": "mankind",
-            "columns": [
-                {
-                    "cName": "mankind_id",
-                    "cDataType": "INTEGER",
-                    "attributes": ["PRIMARY KEY", "AUTOINCREMENT"]
-                },
-                {
-                    "cName": "mankind_name",
-                    "cDataType": "TEXT",
-                    "attributes": ["NUO NULL"]
-                }
-            ]
-        },
-        {
-            "tName": "bili_video",
-            "columns": [
-                {
-                    "cName": "bili_video_id",
-                    "cDataType": "INTEGER",
-                    "attributes": ["PRIMARY KEY", "AUTOINCREMENT"]
-                },
-                {
-                    "cName": "group_id",
-                    "cDataType": "INTEGER",
-                    "attributes": ["NOT NULL"]
-                },
-                {
-                    "cName": "uid",
-                    "cDataType": "INTEGER",
-                    "attributes": ["NOT NULL"]
-                },
-                {
-                    "cName": "name",
-                    "cDataType": "TEXT",
-                    "attributes": ["NOT NULL"]
-                },
-                {
-                    "cName": "hit_count",
-                    "cDataType": "INTEGER",
-                    "attributes": ["NOT NULL"]
-                },
-                {
-                    "cName": "latest_av",
-                    "cDataType": "INTEGER",
-                    "attributes": ["NOT NULL"]
-                }
-            ]
-        },
-        {
-            "tName": "CounterStrike",
-            "columns": [
-                {
-                    "cName": "armor_name",
-                    "cDataType": "INTEGER",
-                    "attributes": ["NOT NULL"]
-                }
-            ]
-        }
-    ]
+	"DBTarget": "automata.db",
+	"tables": [
+		{
+			"tName": "yorha",
+			"columns": [
+				{
+					"cName": "android_id",
+					"cDataType": "INTEGER",
+					"attributes": ["PRIMARY KEY", "AUTOINCREMENT"]
+				},
+				{
+					"cName": "android_name",
+					"cDataType": "TEXT",
+					"attributes": ["NOT NULL"]
+				}
+			]
+		},
+		{
+			"tName": "group_msg",
+			"columns": [
+				{
+					"cName": "id",
+					"cDataType": "INTEGER",
+					"attributes": ["PRIMARY KEY", "AUTOINCREMENT"]
+				},
+				{
+					"cName": "group_id",
+					"cDataType": "INTEGER",
+					"attributes": []
+				},
+				{
+					"cName": "user_id",
+					"cDataType": "INTEGER",
+					"attributes": []
+				},
+				{
+					"cName": "time",
+					"cDataType": "INTEGER",
+					"attributes": []
+				},
+				{
+					"cName": "msg",
+					"cDataType": "TEXT",
+					"attributes": ["NOT NULL"]
+				}
+			]
+		},
+		{
+			"tName": "mankind",
+			"columns": [
+				{
+					"cName": "mankind_id",
+					"cDataType": "INTEGER",
+					"attributes": ["PRIMARY KEY", "AUTOINCREMENT"]
+				},
+				{
+					"cName": "mankind_name",
+					"cDataType": "TEXT",
+					"attributes": ["NUO NULL"]
+				}
+			]
+		},
+		{
+			"tName": "bili_video",
+			"columns": [
+				{
+					"cName": "bili_video_id",
+					"cDataType": "INTEGER",
+					"attributes": ["PRIMARY KEY", "AUTOINCREMENT"]
+				},
+				{
+					"cName": "group_id",
+					"cDataType": "INTEGER",
+					"attributes": ["NOT NULL"]
+				},
+				{
+					"cName": "uid",
+					"cDataType": "INTEGER",
+					"attributes": ["NOT NULL"]
+				},
+				{
+					"cName": "name",
+					"cDataType": "TEXT",
+					"attributes": ["NOT NULL"]
+				},
+				{
+					"cName": "hit_count",
+					"cDataType": "INTEGER",
+					"attributes": ["NOT NULL"]
+				},
+				{
+					"cName": "latest_av",
+					"cDataType": "INTEGER",
+					"attributes": ["NOT NULL"]
+				}
+			]
+		},
+		{
+			"tName": "CounterStrike",
+			"columns": [
+				{
+					"cName": "armor_name",
+					"cDataType": "INTEGER",
+					"attributes": ["NOT NULL"]
+				}
+			]
+		}
+	]
 }

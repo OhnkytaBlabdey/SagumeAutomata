@@ -5,6 +5,7 @@ import {
     RequesterErrorType,
     RequesterResponseType,
 } from "../../Requester/interface";
+import QQMessage from "../../QQMessage";
 
 /**
  * 订阅B站的视频
@@ -85,6 +86,7 @@ class videoSubscriber {
         );
         if (chk) {
             log.error("已经添加过该视频订阅了");
+            QQMessage.sendToGroup(groupId, "已经添加过该视频订阅了");
             return;
         }
         dbHandler
@@ -97,12 +99,14 @@ class videoSubscriber {
                 if (res) {
                     //回复订阅成功
                     log.info("添加视频订阅成功");
+                    QQMessage.sendToGroup(groupId, "添加视频订阅成功");
                 }
             })
             .catch((rej) => {
                 if (rej) {
                     log.warn("添加视频订阅失败，原因");
                     log.warn(rej);
+                    QQMessage.sendToGroup(groupId, "添加视频订阅失败");
                 }
             });
     }

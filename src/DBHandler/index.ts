@@ -3,8 +3,8 @@ import Database from "better-sqlite3";
 import path from "path";
 import logger from "../Logger";
 import utils from "../Util";
-import {ReadDoneType, UtilBaseType} from "../Util/interface";
-import {DBConfig, DBTable, TableInfo, UpdatePairType} from "./interface";
+import { ReadDoneType, UtilBaseType } from "../Util/interface";
+import { DBConfig, DBTable, TableInfo, UpdatePairType } from "./interface";
 import process from "process";
 
 class DBHandler {
@@ -35,7 +35,9 @@ class DBHandler {
     }
 
     private async __getDBConfig(): Promise<DBConfig> {
-        let {data} = <ReadDoneType>(await utils.readFile(path.resolve(this.__rootDir, "db.config.json")));
+        let { data } = <ReadDoneType>(
+            await utils.readFile(path.resolve(this.__rootDir, "db.config.json"))
+        );
         try {
             return JSON.parse(data);
         } catch (e) {
@@ -57,21 +59,28 @@ class DBHandler {
     private __connectDB() {
         logger.info("连接数据库...");
         this.__service = new Database(this.__targetDir, {
-            verbose: message => {
+            verbose: (message) => {
                 logger.info(message);
             },
-            fileMustExist: true
+            fileMustExist: true,
         });
     }
 
     private __createTable(t: DBTable) {
-        const args = t.columns.map(c => `${c.cName} ${c.cDataType} ${c.attributes && c.attributes.join(" ")}`);
-        let info = this.__service.prepare(`create table ${t.tName} (${args})`).run().changes;
+        const args = t.columns.map(
+            (c) =>
+                `${c.cName} ${c.cDataType} ${
+                    c.attributes && c.attributes.join(" ")
+                }`
+        );
+        let info = this.__service
+            .prepare(`create table ${t.tName} (${args})`)
+            .run().changes;
         logger.info(`changes: ${info}`);
     }
 
     private __initTable() {
-        this.__dbConfig.tables.forEach(t => {
+        this.__dbConfig.tables.forEach((t) => {
             this.__createTable(t);
         });
     }
@@ -81,7 +90,9 @@ class DBHandler {
             this.__connectDB();
         } catch (e) {
             logger.info(e);
-            let {status} = <UtilBaseType>await utils.checkExists(this.__targetDir);
+            let { status } = <UtilBaseType>(
+                await utils.checkExists(this.__targetDir)
+            );
             if (!status) {
                 logger.warn(`数据库文件不存在，将要创建数据库文件`);
                 await utils.writeFile(this.__targetDir, "");
@@ -126,13 +137,20 @@ class DBHandler {
         });
     }
 
-    public insertSingle(tableName: string, columns: Array<string>, values: Array<any>) {
+    public insertSingle(
+        tableName: string,
+        columns: Array<string>,
+        values: Array<any>
+    ) {
         return new Promise(async (res, rej) => {
             try {
                 let vQuery = new Array(values.length).fill("?").join(",");
                 let cQuery = columns.length ? `(${columns.join(",")})` : "";
-                await this.run(`insert into ${tableName} ${cQuery} values (${vQuery})`, values);
-                logger.info("插入成功");
+                await this.run(
+                    `insert into ${tableName} ${cQuery} values (${vQuery})`,
+                    values
+                );
+                logger.debug("插入成功");
                 res(1);
             } catch (e) {
                 logger.error("插入失败");
@@ -141,16 +159,23 @@ class DBHandler {
         });
     }
 
-    public insertMulti(tableName: string, columns: Array<string>, values: Array<Array<any>>) {
+    public insertMulti(
+        tableName: string,
+        columns: Array<string>,
+        values: Array<Array<any>>
+    ) {
         return new Promise(async (res, rej) => {
             try {
                 let vQuery = new Array(values[0].length).fill("?").join(",");
                 let cQuery = columns.length ? `(${columns.join(",")})` : "";
-                let stmt = this.__service.prepare(`insert into ${tableName} ${cQuery} values (${vQuery})`);
-                const handler = this.__service.transaction((q: Array<Array<any>>) => {
-                    for (let i of q)
-                        stmt.run(...i);
-                });
+                let stmt = this.__service.prepare(
+                    `insert into ${tableName} ${cQuery} values (${vQuery})`
+                );
+                const handler = this.__service.transaction(
+                    (q: Array<Array<any>>) => {
+                        for (let i of q) stmt.run(...i);
+                    }
+                );
                 handler(values);
                 res(1);
             } catch (e) {
@@ -164,7 +189,9 @@ class DBHandler {
         return new Promise(async (res, rej) => {
             try {
                 let cQuery = condition.join(" and ");
-                let info = await this.run(`delete from ${tableName} where ${cQuery}`);
+                let info = await this.run(
+                    `delete from ${tableName} where ${cQuery}`
+                );
                 logger.info("删除成功");
                 res(info);
             } catch (e) {
@@ -174,12 +201,18 @@ class DBHandler {
         });
     }
 
-    public update(tableName: string, newPair: Array<UpdatePairType>, condition: Array<string>) {
+    public update(
+        tableName: string,
+        newPair: Array<UpdatePairType>,
+        condition: Array<string>
+    ) {
         return new Promise(async (res, rej) => {
             try {
-                let nPQuery = newPair.map(i => `${i.k}=${i.v}`).join(",");
+                let nPQuery = newPair.map((i) => `${i.k}=${i.v}`).join(",");
                 let cQuery = condition.join(" and ");
-                let info = await this.run(`update ${tableName} set ${nPQuery} where ${cQuery}`);
+                let info = await this.run(
+                    `update ${tableName} set ${nPQuery} where ${cQuery}`
+                );
                 logger.info("更新成功");
                 res(info);
             } catch (e) {
@@ -189,12 +222,23 @@ class DBHandler {
         });
     }
 
-    public select(tableName: Array<string>, columns: Array<string>, condition: Array<string>, all: boolean = false) {
+    public select(
+        tableName: Array<string>,
+        columns: Array<string>,
+        condition: Array<string>,
+        all: boolean = false
+    ) {
         return new Promise((res, rej) => {
             try {
                 let columnQuery = columns.join(",");
-                let conditionQuery = condition.length ? `where ${condition.join(" and ")}` : "";
-                let stmt = this.__service.prepare(`select ${columnQuery} from ${tableName.join(",")} ${conditionQuery}`);
+                let conditionQuery = condition.length
+                    ? `where ${condition.join(" and ")}`
+                    : "";
+                let stmt = this.__service.prepare(
+                    `select ${columnQuery} from ${tableName.join(
+                        ","
+                    )} ${conditionQuery}`
+                );
                 if (all) {
                     res(stmt.all());
                 } else {
@@ -210,8 +254,11 @@ class DBHandler {
     public init() {
         return new Promise(async (res) => {
             logger.info(`初始化数据库，数据库根目录: ${this.__rootDir}`);
-            this.__dbConfig = <DBConfig>(await this.__readConfig());
-            this.__targetDir = path.resolve(this.__rootDir, this.__dbConfig.DBTarget);
+            this.__dbConfig = <DBConfig>await this.__readConfig();
+            this.__targetDir = path.resolve(
+                this.__rootDir,
+                this.__dbConfig.DBTarget
+            );
             await this.__initDB();
             res(1);
         });
@@ -235,14 +282,17 @@ class DBHandler {
             try {
                 let tableInfo = await this.getTableName();
                 this.__dbConfig = await this.__getDBConfig();
-                this.__dbConfig.tables.forEach(t => {
-                    if (tableInfo.findIndex(temp => temp.name === t.tName) > -1) {
+                this.__dbConfig.tables.forEach((t) => {
+                    if (
+                        tableInfo.findIndex((temp) => temp.name === t.tName) >
+                        -1
+                    ) {
                         logger.info(`表${t.tName}已存在`);
                     } else {
                         this.__createTable(t);
                     }
                 });
-            }  catch (e) {
+            } catch (e) {
                 rej(e);
             }
         });

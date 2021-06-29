@@ -123,11 +123,16 @@ class videoSubscriber {
                 if ((<DBRes>res).changes > 0) {
                     //回复移除成功
                     log.info(uid, "视频订阅已移除", (<DBRes>res).changes);
+                    QQMessage.sendToGroup(groupId, uid + "视频订阅已移除");
                 } else {
-                    log.info(
+                    log.warn(
                         "视频移除失败，该群没有订阅uid为[",
                         uid,
                         "]的up主"
+                    );
+                    QQMessage.sendToGroup(
+                        groupId,
+                        `视频移除失败，该群没有订阅uid为[${uid}]的up主`
                     );
                 }
             })
@@ -135,6 +140,7 @@ class videoSubscriber {
                 if (rej) {
                     log.warn(uid, "视频订阅移除失败，原因");
                     log.warn(rej);
+                    QQMessage.sendToGroup(groupId, "视频订阅移除失败");
                 }
             });
     }
@@ -150,11 +156,16 @@ class videoSubscriber {
                 if ((<DBRes>res).changes > 0) {
                     //回复移除成功
                     log.info(name, "视频订阅已移除", (<DBRes>res).changes);
+                    QQMessage.sendToGroup(groupId, name + "视频订阅已移除");
                 } else {
                     log.info(
                         "视频移除失败，该群没有订阅名为[",
                         name,
                         "]的up主"
+                    );
+                    QQMessage.sendToGroup(
+                        groupId,
+                        `视频移除失败，该群没有订阅name为[${name}]的up主`
                     );
                 }
             })
@@ -162,6 +173,7 @@ class videoSubscriber {
                 if (rej) {
                     log.warn(name, "视频订阅移除失败，原因");
                     log.warn(rej);
+                    QQMessage.sendToGroup(groupId, "视频订阅移除失败");
                 }
             });
     }

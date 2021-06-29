@@ -1,7 +1,7 @@
 import { messageEvent } from "../QQMessage/event.interface";
 
 export interface cmdHandler {
-    (ev: messageEvent, args: any[]): void;
+    (ev: messageEvent): void;
 }
 
 export interface cmd {

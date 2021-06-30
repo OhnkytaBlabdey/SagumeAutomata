@@ -4,8 +4,8 @@ async function main() {
     let lv = await live;
 
     setTimeout(async () => {
-        // await lv.removeSubByName(905253381, "环球时报");
-        // await lv.addSub(905253381, 10303206, "环球时报");
+        // await lv.removeSubByName(251567869, "👴");
+        await lv.addSub(251567869, 15126927, "👴");
         await lv.test();
     }, 1000);
 }

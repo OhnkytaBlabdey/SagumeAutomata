@@ -154,33 +154,71 @@ class liveSubscriber {
                         }
                     });
             } else if (info.liveStatus == 0) {
-                const recs: liveRec[] = await dbHandler.select(
-                    [liveSubscriber.tableName],
-                    ["*"],
-                    [`uid=${rec.uid}`],
-                    true
-                );
-                recs.forEach((live: liveRec) => {
-                    QQMessage.sendToGroup(
-                        live.group_id,
-                        `${live.name} 的直播结束了\n${info.url}\n[CQ:image,file=${info.cover}]\n` +
-                            `直播间人气 ${info.online} 直播间标题【${info.title}】\n主播id${live.uid}`
-                    );
-                });
+                dbHandler
+                    .update(
+                        liveSubscriber.tableName,
+                        [
+                            {
+                                k: "liveStatus",
+                                v: info.liveStatus,
+                            },
+                        ],
+                        [`uid=${DBText(rec.uid.toString())}`]
+                    )
+                    .then(async (res) => {
+                        log.info(res);
+                        const recs: liveRec[] = await dbHandler.select(
+                            [liveSubscriber.tableName],
+                            ["*"],
+                            [`uid=${rec.uid}`],
+                            true
+                        );
+                        recs.forEach((live: liveRec) => {
+                            QQMessage.sendToGroup(
+                                live.group_id,
+                                `${live.name} 的直播结束了\n${info.url}\n[CQ:image,file=${info.cover}]\n` +
+                                    `直播间人气 ${info.online} 直播间标题【${info.title}】\n主播id${live.uid}`
+                            );
+                        });
+                    })
+                    .catch((e) => {
+                        if (e) {
+                            log.warn(e);
+                        }
+                    });
             } else if (info.liveStatus == 2) {
-                const recs: liveRec[] = await dbHandler.select(
-                    [liveSubscriber.tableName],
-                    ["*"],
-                    [`uid=${rec.uid}`],
-                    true
-                );
-                recs.forEach((live: liveRec) => {
-                    QQMessage.sendToGroup(
-                        live.group_id,
-                        `${live.name} 的直播进入轮播\n${info.url}\n[CQ:image,file=${info.cover}]\n` +
-                            `直播间人气 ${info.online} 直播间标题【${info.title}】\n主播id${live.uid}`
-                    );
-                });
+                dbHandler
+                    .update(
+                        liveSubscriber.tableName,
+                        [
+                            {
+                                k: "liveStatus",
+                                v: info.liveStatus,
+                            },
+                        ],
+                        [`uid=${DBText(rec.uid.toString())}`]
+                    )
+                    .then(async (res) => {
+                        log.info(res);
+                        const recs: liveRec[] = await dbHandler.select(
+                            [liveSubscriber.tableName],
+                            ["*"],
+                            [`uid=${rec.uid}`],
+                            true
+                        );
+                        recs.forEach((live: liveRec) => {
+                            QQMessage.sendToGroup(
+                                live.group_id,
+                                `${live.name} 的直播进入轮播\n${info.url}\n[CQ:image,file=${info.cover}]\n` +
+                                    `直播间人气 ${info.online} 直播间标题【${info.title}】\n主播id${live.uid}`
+                            );
+                        });
+                    })
+                    .catch((e) => {
+                        if (e) {
+                            log.warn(e);
+                        }
+                    });
             }
         }, 5000);
     }

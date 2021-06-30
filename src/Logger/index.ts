@@ -118,8 +118,7 @@ class warpLogger {
         this.__logger.error(
             util.format("[error]<%s>", new Date().toLocaleString("zh-CN")),
             obj,
-            para.join(" "),
-            Error.captureStackTrace(obj)
+            para.join(" ")
         );
     }
     public fatal(obj: any, ...para: any[]): void {

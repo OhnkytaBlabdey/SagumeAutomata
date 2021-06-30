@@ -114,7 +114,7 @@ class liveSubscriber {
             if (rec.liveStatus == info.liveStatus) {
                 log.debug(rec.uid, "直播间状态没有变化");
                 return;
-            } else {
+            } else if (info.liveStatus == 1) {
                 // 命中次数增加
                 dbHandler
                     .update(
@@ -153,6 +153,34 @@ class liveSubscriber {
                             log.warn(e);
                         }
                     });
+            } else if (info.liveStatus == 0) {
+                const recs: liveRec[] = await dbHandler.select(
+                    [liveSubscriber.tableName],
+                    ["*"],
+                    [`uid=${rec.uid}`],
+                    true
+                );
+                recs.forEach((live: liveRec) => {
+                    QQMessage.sendToGroup(
+                        live.group_id,
+                        `${live.name} 的直播结束了\n${info.url}\n[CQ:image,file=${info.cover}]\n` +
+                            `直播间人气 ${info.online} 直播间标题【${info.title}】\n主播id${live.uid}`
+                    );
+                });
+            } else if (info.liveStatus == 2) {
+                const recs: liveRec[] = await dbHandler.select(
+                    [liveSubscriber.tableName],
+                    ["*"],
+                    [`uid=${rec.uid}`],
+                    true
+                );
+                recs.forEach((live: liveRec) => {
+                    QQMessage.sendToGroup(
+                        live.group_id,
+                        `${live.name} 的直播进入轮播\n${info.url}\n[CQ:image,file=${info.cover}]\n` +
+                            `直播间人气 ${info.online} 直播间标题【${info.title}】\n主播id${live.uid}`
+                    );
+                });
             }
         }, 5000);
     }

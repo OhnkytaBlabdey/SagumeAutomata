@@ -1,4 +1,4 @@
 export interface Config {
-    onebot_port: number;
+    onebot_port: number | string;
     onebot_host: string;
 }

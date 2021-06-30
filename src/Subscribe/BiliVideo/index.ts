@@ -6,6 +6,7 @@ import {
     RequesterResponseType,
 } from "../../Requester/interface";
 import QQMessage from "../../QQMessage";
+import { videoInfo } from "./video.interface";
 
 /**
  * 订阅B站的视频
@@ -55,7 +56,7 @@ class videoSubscriber {
                                         item.created * 1000
                                     ).toLocaleDateString("zh-cn"),
                                     title: item.title, //string
-                                });
+                                } as videoInfo);
                                 return;
                             }
                         }

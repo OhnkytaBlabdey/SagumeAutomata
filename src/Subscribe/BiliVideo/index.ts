@@ -140,7 +140,7 @@ class videoSubscriber {
                         recs.forEach((av: videoRec) => {
                             QQMessage.sendToGroup(
                                 av.group_id,
-                                `${av.name} 更新了视频\nb23.tv/av${av.latest_av}\n[CQ:image,file=${info.cover}]\n` +
+                                `${av.name} 更新了视频 ${info.title}\nb23.tv/av${av.latest_av}\n[CQ:image,file=${info.cover}]\n` +
                                     `发布日期 ${info.pubdate} 视频时长【${info.length}】\n` +
                                     `视频简介：${info.desc} ${
                                         info.desc.length > 200 ? " ..." : " "

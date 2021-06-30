@@ -14,10 +14,21 @@ class sampler {
             return null;
         }
         // Logger.info(dist);
-        const epsilon = 0.2;
+        const epsilon = 0.5;
         if (Math.random() < epsilon) {
             Logger.debug("均匀随机选择");
-            return objs[Math.floor(Math.random() * objs.length)];
+            try {
+                return objs[
+                    Math.min(
+                        Math.floor(Math.random() * objs.length),
+                        objs.length - 1
+                    )
+                ];
+            } catch (error) {
+                if (error) {
+                    Logger.error(error);
+                }
+            }
         } else {
             Logger.debug("按分布选择");
             const r = Math.random();

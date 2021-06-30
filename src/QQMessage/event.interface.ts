@@ -13,7 +13,7 @@ export interface messageEvent {
         user_id: number;
         nickname: string;
         card: string;
-        role: string;
+        role: string; //owner admin
     } | null;
 }
 

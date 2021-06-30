@@ -228,7 +228,7 @@ class DBHandler {
         condition: Array<string>,
         all: boolean = false
     ) {
-        return new Promise((res, rej) => {
+        return new Promise<any>((res, rej) => {
             try {
                 let columnQuery = columns.join(",");
                 let conditionQuery = condition.length

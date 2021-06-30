@@ -6,7 +6,8 @@ import {
     RequesterResponseType,
 } from "../../Requester/interface";
 import QQMessage from "../../QQMessage";
-import { videoInfo } from "./video.interface";
+import { videoInfo, videoRec } from "./video.interface";
+import sampler from "../../Util/sampler";
 
 /**
  * 订阅B站的视频
@@ -70,6 +71,29 @@ class videoSubscriber {
                 });
         });
     }
+    private async sampleRec(): Promise<videoRec> {
+        // 获取每个记录的命中次数
+        const recs: videoRec[] = await dbHandler.select(
+            [videoSubscriber.tableName],
+            ["*"],
+            [],
+            true
+        );
+        const total: number = (
+            await dbHandler.select(
+                [videoSubscriber.tableName],
+                ["count(hit_count) as total"],
+                []
+            )
+        ).total;
+        // log.info(total);
+        return sampler.sampleWithDist(
+            recs,
+            recs.map((it: videoRec) => {
+                return it.hit_count / total;
+            })
+        );
+    }
     public static async getInstance(): Promise<videoSubscriber> {
         if (!this.__instance) {
             this.__instance = new videoSubscriber();
@@ -100,7 +124,7 @@ class videoSubscriber {
                 if (res) {
                     //回复订阅成功
                     log.info("添加视频订阅成功");
-                    QQMessage.sendToGroup(groupId, "添加视频订阅成功");
+                    QQMessage.sendToGroup(groupId, `添加${uid}视频订阅成功`);
                 }
             })
             .catch((rej) => {
@@ -177,6 +201,9 @@ class videoSubscriber {
                     QQMessage.sendToGroup(groupId, "视频订阅移除失败");
                 }
             });
+    }
+    public async test(): Promise<void> {
+        log.info("选中的是", JSON.stringify(await this.sampleRec()));
     }
 }
 

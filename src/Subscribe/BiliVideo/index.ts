@@ -101,7 +101,7 @@ class videoSubscriber {
         );
     }
 
-    private run(): void {
+    public run(): void {
         setInterval(async () => {
             const rec = await this.sampleRec();
             if (rec == null) {

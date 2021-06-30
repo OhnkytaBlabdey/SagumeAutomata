@@ -93,7 +93,7 @@ class liveSubscriber {
         );
     }
 
-    private run(): void {
+    public run(): void {
         setInterval(async () => {
             const rec = await this.sampleRec();
             if (rec == null) {
@@ -222,6 +222,9 @@ class liveSubscriber {
             }
         }, 5000);
     }
+    // constructor() {
+    //     this.run();
+    // }
     public static async getInstance(): Promise<liveSubscriber> {
         if (!this.__instance) {
             this.__instance = new liveSubscriber();

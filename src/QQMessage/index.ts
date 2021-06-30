@@ -84,7 +84,10 @@ class QQMessage {
         log.info(env.NODE_ENV);
         if (env.NODE_ENV === "production") {
             log.warn("使用Production配置");
-            if (typeof (<Config>(<unknown>config)).onebot_port === "number") {
+            if (
+                typeof (<Config>(<unknown>config)).onebot_port === "number" &&
+                typeof (<Config>(<unknown>config)).onebot_host === "string"
+            ) {
                 conf = config;
             } else {
                 log.warn("配置不正确，改为使用默认配置运行");
@@ -92,7 +95,7 @@ class QQMessage {
             }
         } else if (env.NODE_ENV === "dev") {
             log.warn("使用Dev配置");
-            conf = configExample;
+            conf = config;
         } else {
             log.warn("使用默认配置");
             conf = configExample;

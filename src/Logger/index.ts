@@ -81,7 +81,7 @@ class warpLogger {
         }
         return warpLogger.__warpLogger;
     }
-    public debug(obj: unknown, ...para: unknown[]): void {
+    public debug(obj: any, ...para: any[]): void {
         if (!this.__logger) {
             throw new Error("未初始化");
         }
@@ -91,7 +91,7 @@ class warpLogger {
             para.join(" ")
         );
     }
-    public info(obj: unknown, ...para: unknown[]): void {
+    public info(obj: any, ...para: any[]): void {
         if (!this.__logger) {
             throw new Error("未初始化");
         }
@@ -101,7 +101,7 @@ class warpLogger {
             para.join(" ")
         );
     }
-    public warn(obj: unknown, ...para: unknown[]): void {
+    public warn(obj: any, ...para: any[]): void {
         if (!this.__logger) {
             throw new Error("未初始化");
         }
@@ -111,17 +111,18 @@ class warpLogger {
             para.join(" ")
         );
     }
-    public error(obj: unknown, ...para: unknown[]): void {
+    public error(obj: any, ...para: any[]): void {
         if (!this.__logger) {
             throw new Error("未初始化");
         }
         this.__logger.error(
             util.format("[error]<%s>", new Date().toLocaleString("zh-CN")),
             obj,
-            para.join(" ")
+            para.join(" "),
+            Error.captureStackTrace(obj)
         );
     }
-    public fatal(obj: unknown, ...para: unknown[]): void {
+    public fatal(obj: any, ...para: any[]): void {
         if (!this.__logger) {
             throw new Error("未初始化");
         }

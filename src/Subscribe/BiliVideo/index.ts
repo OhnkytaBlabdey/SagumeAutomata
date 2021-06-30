@@ -45,7 +45,7 @@ class videoSubscriber {
                 .then((result: RequesterResponseType | RequesterErrorType) => {
                     if (result && (<RequesterResponseType>result).data) {
                         const jsondata = (<RequesterResponseType>result).data;
-                        log.debug(jsondata);
+                        // log.debug(jsondata);
                         if (jsondata.data) {
                             const data = jsondata.data;
                             if (data["list"] && data["list"]["vlist"]) {
@@ -73,7 +73,7 @@ class videoSubscriber {
                 });
         });
     }
-    private async sampleRec(): Promise<videoRec> {
+    private async sampleRec(): Promise<videoRec | null> {
         // 获取每个记录的命中次数
         const recs: videoRec[] = await dbHandler.select(
             [videoSubscriber.tableName],
@@ -81,6 +81,10 @@ class videoSubscriber {
             [],
             true
         );
+        if (recs.length == 0) {
+            log.warn("数据库里没有记录");
+            return null;
+        }
         const total: number = (
             await dbHandler.select(
                 [videoSubscriber.tableName],
@@ -100,6 +104,9 @@ class videoSubscriber {
     private run(): void {
         setInterval(async () => {
             const rec = await this.sampleRec();
+            if (rec == null) {
+                return;
+            }
             const info: videoInfo = await this.getLatestVideo(rec.uid);
             if (rec.latest_av == info.av) {
                 // log.info(rec.uid, "最新视频没有变化");
@@ -158,12 +165,12 @@ class videoSubscriber {
         return this.__instance;
     }
     public async addSub(groupId: number, uid: number, name: string) {
-        log.info("将要添加视频订阅");
-        log.info("group:", groupId, ", uid:", uid, " ,name:", name);
+        log.debug("将要添加视频订阅");
+        log.debug("group:", groupId, ", uid:", uid, " ,name:", name);
         const chk = await dbHandler.select(
             [videoSubscriber.tableName],
             ["bili_video_id"],
-            ["group_id=" + groupId, "uid=" + uid, "`name`='" + name + "'"]
+            ["group_id=" + groupId, "uid=" + uid]
         );
         if (chk) {
             log.error("已经添加过该视频订阅了");
@@ -193,8 +200,8 @@ class videoSubscriber {
     }
 
     public async removeSubByUid(groupId: number, uid: number) {
-        log.info("将要移除视频订阅");
-        log.info("group:", groupId, ", uid:", uid);
+        log.debug("将要移除视频订阅");
+        log.debug("group:", groupId, ", uid:", uid);
         dbHandler
             .delete(videoSubscriber.tableName, [
                 "`group_id`=" + groupId,
@@ -226,8 +233,8 @@ class videoSubscriber {
             });
     }
     public async removeSubByName(groupId: number, name: string) {
-        log.info("将要移除视频订阅");
-        log.info("group:", groupId, ", name:", name);
+        log.debug("将要移除视频订阅");
+        log.debug("group:", groupId, ", name:", name);
         dbHandler
             .delete(videoSubscriber.tableName, [
                 "`group_id` = " + groupId,

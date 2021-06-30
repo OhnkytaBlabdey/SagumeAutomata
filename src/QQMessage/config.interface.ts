@@ -1,4 +1,6 @@
 export interface Config {
-    onebot_port: number | string;
+    cookie: string | null;
     onebot_host: string;
+    onebot_port: number | string;
+    onebot_pw: string | null;
 }

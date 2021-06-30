@@ -1,5 +1,6 @@
 {
-	"onebot_port": 2333,
-	"onebot_host": "127.0.0.1",
-	"onebot_pw": "阿巴阿巴"
+	"onebot_port": "onebot正向ws端口",
+	"onebot_host": "onebot服务所在的主机IP/域名",
+	"onebot_pw": "访问口令，目前还没完成该功能",
+	"cookie": "访问网站需要用"
 }

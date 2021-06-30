@@ -97,6 +97,41 @@
 			]
 		},
 		{
+			"tName": "bili_live",
+			"columns": [
+				{
+					"cName": "bili_live_id",
+					"cDataType": "INTEGER",
+					"attributes": ["PRIMARY KEY", "AUTOINCREMENT"]
+				},
+				{
+					"cName": "group_id",
+					"cDataType": "INTEGER",
+					"attributes": ["NOT NULL"]
+				},
+				{
+					"cName": "uid",
+					"cDataType": "INTEGER",
+					"attributes": ["NOT NULL"]
+				},
+				{
+					"cName": "name",
+					"cDataType": "TEXT",
+					"attributes": ["NOT NULL"]
+				},
+				{
+					"cName": "hit_count",
+					"cDataType": "INTEGER",
+					"attributes": ["NOT NULL"]
+				},
+				{
+					"cName": "liveStatus",
+					"cDataType": "INTEGER",
+					"attributes": ["NOT NULL"]
+				}
+			]
+		},
+		{
 			"tName": "CounterStrike",
 			"columns": [
 				{

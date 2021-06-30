@@ -1,8 +1,9 @@
 .idea/
 node_modules/
-config/current/**
+config/
 log/
 .prettierrc
 db/*.db
 db/*.db-journal
 build/
+!config/template

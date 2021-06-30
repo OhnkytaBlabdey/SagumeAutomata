@@ -14,28 +14,20 @@ class sampler {
             return null;
         }
         // Logger.info(dist);
-        const epsilon = 0;
+        const epsilon = 0.2;
         if (Math.random() < epsilon) {
-            // Logger.info("均匀随机选择");
+            Logger.debug("均匀随机选择");
             return objs[Math.floor(Math.random() * objs.length)];
         } else {
-            // Logger.info("按分布选择");
+            Logger.debug("按分布选择");
             const r = Math.random();
-            let x = 0.2;
+            let x = 0;
             for (let i = 0; i < objs.length; i++) {
                 x += dist[i];
                 if (x >= r) {
-                    // Logger.info({
-                    //     x: x,
-                    //     r: r,
-                    // });
                     return objs[i];
                 }
             }
-            // Logger.info({
-            //     x: x,
-            //     r: r,
-            // });
             return objs[objs.length - 1];
         }
     }

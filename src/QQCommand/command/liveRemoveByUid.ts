@@ -1,6 +1,6 @@
 import { messageEvent } from "../../QQMessage/event.interface";
 import { cmd } from "../cmd.interface";
-import video from "../../Subscribe/BiliVideo";
+import live from "../../Subscribe/BiliLive";
 
 let removeLiveSubscribeByUid: cmd = {
     pattern: /^取消直播订阅\s\d+/,
@@ -9,7 +9,7 @@ let removeLiveSubscribeByUid: cmd = {
         const params = ev.message.split(RegExp(/\s/), 2);
         const idStr = params[1];
         const id = parseInt(idStr);
-        let av = await video;
+        let av = await live;
         av.removeSubByUid(group_id, id);
     },
 };

@@ -112,7 +112,7 @@ class liveSubscriber {
             }
 
             if (rec.liveStatus == info.liveStatus) {
-                // log.info(rec.uid, "直播间状态没有变化");
+                log.debug(rec.uid, "直播间状态没有变化");
                 return;
             } else {
                 // 命中次数增加
@@ -143,8 +143,8 @@ class liveSubscriber {
                         recs.forEach((live: liveRec) => {
                             QQMessage.sendToGroup(
                                 live.group_id,
-                                `${live.name} 的直播开始了\nb23.tv/av${info.url}\n[CQ:image,file=${info.cover}]\n` +
-                                    `直播间人气 ${info.online} 直播间标题【${info.title}】\n`
+                                `${live.name} 的直播开始了\n${info.url}\n[CQ:image,file=${info.cover}]\n` +
+                                    `直播间人气 ${info.online} 直播间标题【${info.title}】\n主播id${live.uid}`
                             );
                         });
                     })

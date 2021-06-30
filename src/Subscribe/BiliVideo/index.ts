@@ -8,6 +8,8 @@ import {
 import QQMessage from "../../QQMessage";
 import { videoInfo, videoRec } from "./video.interface";
 import sampler from "../../Util/sampler";
+import Util from "../../Util";
+import { DBText } from "../../Util/Text";
 
 /**
  * 订阅B站的视频
@@ -31,7 +33,7 @@ class videoSubscriber {
     private static __instance: videoSubscriber;
 
     private async getLatestVideo(uid: number) {
-        return new Promise((res, rej) => {
+        return new Promise<videoInfo>((res, rej) => {
             req.get({
                 url: "https://api.bilibili.com/x/space/arc/search",
                 params: {
@@ -94,9 +96,61 @@ class videoSubscriber {
             })
         );
     }
+
+    private run(): void {
+        setInterval(async () => {
+            const rec = await this.sampleRec();
+            const info: videoInfo = await this.getLatestVideo(rec.uid);
+            if (rec.latest_av == info.av) {
+                // log.info(rec.uid, "最新视频没有变化");
+                return;
+            } else {
+                // 命中次数增加
+                dbHandler
+                    .update(
+                        videoSubscriber.tableName,
+                        [
+                            {
+                                k: "hit_count",
+                                v: "hit_count+1",
+                            },
+                            {
+                                k: "latest_av",
+                                v: info.av,
+                            },
+                        ],
+                        [`uid=${DBText(rec.uid.toString())}`]
+                    )
+                    .then(async (res) => {
+                        log.info(res);
+                        // log.info("通知更新");
+                        const recs: videoRec[] = await dbHandler.select(
+                            [videoSubscriber.tableName],
+                            ["*"],
+                            [`uid=${rec.uid}`],
+                            true
+                        );
+                        recs.forEach((av: videoRec) => {
+                            QQMessage.sendToGroup(
+                                av.group_id,
+                                `${av.name} 更新了视频\nb23.tv/av${av.latest_av}\n[CQ:image,file=${info.cover}]\n` +
+                                    `发布日期 ${info.pubdate} 视频时长【${info.length}】\n` +
+                                    `视频简介：${info.desc}`
+                            );
+                        });
+                    })
+                    .catch((e) => {
+                        if (e) {
+                            log.warn(e);
+                        }
+                    });
+            }
+        }, 6000);
+    }
     public static async getInstance(): Promise<videoSubscriber> {
         if (!this.__instance) {
             this.__instance = new videoSubscriber();
+            QQMessage;
             await dbHandler.init();
         }
         return this.__instance;
@@ -203,7 +257,8 @@ class videoSubscriber {
             });
     }
     public async test(): Promise<void> {
-        log.info("选中的是", JSON.stringify(await this.sampleRec()));
+        // log.info("选中的是", JSON.stringify(await this.sampleRec()));
+        this.run();
     }
 }
 

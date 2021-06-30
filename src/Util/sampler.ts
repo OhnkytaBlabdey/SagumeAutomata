@@ -16,10 +16,10 @@ class sampler {
         // Logger.info(dist);
         const epsilon = 0;
         if (Math.random() < epsilon) {
-            Logger.info("均匀随机选择");
+            // Logger.info("均匀随机选择");
             return objs[Math.floor(Math.random() * objs.length)];
         } else {
-            Logger.info("按分布选择");
+            // Logger.info("按分布选择");
             const r = Math.random();
             let x = 0.2;
             for (let i = 0; i < objs.length; i++) {

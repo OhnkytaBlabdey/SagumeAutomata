@@ -117,6 +117,7 @@ class QQMessage {
 
     public sendToGroup(groupId: number, msg: string): void {
         // TODO 过长的消息截断划分，不能截断带转义的部分
+        // TODO 分成多段需要保证先后顺序
         this.wsc.sendMessage(
             JSON.stringify({
                 action: "send_group_msg",

@@ -21,7 +21,7 @@ class DBHandler {
         this.__service = null;
         this.__targetDir = "";
         process.on("exit", () => {
-            this.__service.close();
+            if (this.__service) this.__service.close();
         });
     }
 

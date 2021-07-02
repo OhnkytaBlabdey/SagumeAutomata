@@ -46,6 +46,10 @@ class liveSubscriber {
                         // log.debug(jsondata);
                         if (jsondata.data) {
                             const data = jsondata.data.live_room;
+                            if (!data) {
+                                log.warn("获取直播间状态失败");
+                                return;
+                            }
                             res({
                                 cover: data.cover,
                                 liveStatus: data.liveStatus,

@@ -50,6 +50,10 @@ class videoSubscriber {
                             const data = jsondata.data;
                             if (data["list"] && data["list"]["vlist"]) {
                                 const item = data["list"]["vlist"][0];
+                                if (!item) {
+                                    log.warn("获取最新视频失败");
+                                    return;
+                                }
                                 res({
                                     av: item.aid, //number
                                     cover: item.pic, //string

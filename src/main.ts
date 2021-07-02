@@ -9,4 +9,8 @@ async function main() {
         (await video).run();
     }, 1000);
 }
-main();
+try {
+    main();
+} catch (error) {
+    console.warn(error);
+}

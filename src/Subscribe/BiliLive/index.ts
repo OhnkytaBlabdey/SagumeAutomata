@@ -114,6 +114,10 @@ class liveSubscriber {
                 log.error("没有捕获到异常");
                 return;
             }
+            if (!info) {
+                log.info("获取直播间状态失败");
+                return;
+            }
 
             if (rec.liveStatus == info.liveStatus) {
                 log.debug(rec.uid, "直播间状态没有变化");

@@ -112,6 +112,11 @@ class videoSubscriber {
                 return;
             }
             const info: videoInfo = await this.getLatestVideo(rec.uid);
+            if (!info) {
+                log.info("获取最新视频失败");
+                return;
+            }
+
             if (rec.latest_av == info.av) {
                 // log.info(rec.uid, "最新视频没有变化");
                 return;

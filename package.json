@@ -37,7 +37,8 @@
         "ws": "^7.4.6"
     },
     "dependencies": {
-        "bunyan": "^1.8.15"
+        "bunyan": "^1.8.15",
+        "random-js": "^2.1.0"
     },
     "optionalDependencies": {
         "bufferutil": "^4.0.3",

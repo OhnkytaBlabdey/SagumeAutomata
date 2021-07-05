@@ -118,7 +118,7 @@ class videoSubscriber {
             }
 
             if (rec.latest_av == info.av) {
-                // log.info(rec.uid, "最新视频没有变化");
+                log.debug(rec.uid, "最新视频没有变化");
                 return;
             } else {
                 // 命中次数增加

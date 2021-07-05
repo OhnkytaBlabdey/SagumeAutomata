@@ -1,46 +1,46 @@
 {
-	"name": "sagume_automata",
-	"version": "0.0.1",
-	"description": "A QQ bot project",
-	"main": "main.js",
-	"scripts": {
-		"tsc": "tsc --watch --allowJs --removeComments",
-		"start": "cross-env NODE_ENV=production nodemon -e ts --exec ts-node src/main.ts |./node_modules/.bin/bunyan"
-	},
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/OhnkytaBlabdey/SagumeAutomata.git"
-	},
-	"keywords": [],
-	"author": "NeWive and OhnkytaBlabdey(sorted by letter)",
-	"license": "AGPL-3.0 License",
-	"bugs": {
-		"url": "https://github.com/OhnkytaBlabdey/SagumeAutomata/issues"
-	},
-	"homepage": "https://github.com/OhnkytaBlabdey/SagumeAutomata#readme",
-	"devDependencies": {
-		"@types/axios": "^0.14.0",
-		"@types/better-sqlite3": "^5.4.1",
-		"@types/bunyan": "^1.8.6",
-		"@types/node": "^15.0.2",
-		"@types/qs": "^6.9.6",
-		"@types/ws": "^7.4.4",
-		"@typescript-eslint/eslint-plugin": "^4.23.0",
-		"@typescript-eslint/parser": "^4.23.0",
-		"better-sqlite3": "^7.4.0",
-		"cross-env": "^7.0.3",
-		"eslint": "^7.26.0",
-		"nodemon": "^2.0.7",
-		"qs": "^6.10.1",
-		"ts-node": "^9.1.1",
-		"typescript": "^4.2.4",
-		"ws": "^7.4.6"
-	},
-	"dependencies": {
-		"bunyan": "^1.8.15"
-	},
-	"optionalDependencies": {
-		"bufferutil": "^4.0.3",
-		"utf-8-validate": "^5.0.5"
-	}
+    "name": "sagume_automata",
+    "version": "0.0.1",
+    "description": "A QQ bot project",
+    "main": "main.js",
+    "scripts": {
+        "tsc": "tsc --watch --allowJs --removeComments",
+        "start": "cross-env NODE_ENV=production nodemon -e ts --exec ts-node src/main.ts |cross-env ./node_modules/.bin/bunyan"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/OhnkytaBlabdey/SagumeAutomata.git"
+    },
+    "keywords": [],
+    "author": "NeWive and OhnkytaBlabdey(sorted by letter)",
+    "license": "AGPL-3.0 License",
+    "bugs": {
+        "url": "https://github.com/OhnkytaBlabdey/SagumeAutomata/issues"
+    },
+    "homepage": "https://github.com/OhnkytaBlabdey/SagumeAutomata#readme",
+    "devDependencies": {
+        "@types/axios": "^0.14.0",
+        "@types/better-sqlite3": "^5.4.1",
+        "@types/bunyan": "^1.8.6",
+        "@types/node": "^15.0.2",
+        "@types/qs": "^6.9.6",
+        "@types/ws": "^7.4.4",
+        "@typescript-eslint/eslint-plugin": "^4.23.0",
+        "@typescript-eslint/parser": "^4.23.0",
+        "better-sqlite3": "^7.4.0",
+        "cross-env": "^7.0.3",
+        "eslint": "^7.26.0",
+        "nodemon": "^2.0.7",
+        "qs": "^6.10.1",
+        "ts-node": "^9.1.1",
+        "typescript": "^4.2.4",
+        "ws": "^7.4.6"
+    },
+    "dependencies": {
+        "bunyan": "^1.8.15"
+    },
+    "optionalDependencies": {
+        "bufferutil": "^4.0.3",
+        "utf-8-validate": "^5.0.5"
+    }
 }

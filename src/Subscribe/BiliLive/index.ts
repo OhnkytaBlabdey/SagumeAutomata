@@ -145,7 +145,10 @@ class liveSubscriber {
                         const recs: liveRec[] = await dbHandler.select(
                             [liveSubscriber.tableName],
                             ["*"],
-                            [`uid=${rec.uid}`],
+                            [
+                                `uid=${rec.uid}`,
+                                `liveStatus!=${info.liveStatus}`,
+                            ],
                             true
                         );
                         recs.forEach((live: liveRec) => {
@@ -178,7 +181,10 @@ class liveSubscriber {
                         const recs: liveRec[] = await dbHandler.select(
                             [liveSubscriber.tableName],
                             ["*"],
-                            [`uid=${rec.uid}`],
+                            [
+                                `uid=${rec.uid}`,
+                                `liveStatus!=${info.liveStatus}`,
+                            ],
                             true
                         );
                         recs.forEach((live: liveRec) => {
@@ -211,7 +217,10 @@ class liveSubscriber {
                         const recs: liveRec[] = await dbHandler.select(
                             [liveSubscriber.tableName],
                             ["*"],
-                            [`uid=${rec.uid}`],
+                            [
+                                `uid=${rec.uid}`,
+                                `liveStatus!=${info.liveStatus}`,
+                            ],
                             true
                         );
                         recs.forEach((live: liveRec) => {

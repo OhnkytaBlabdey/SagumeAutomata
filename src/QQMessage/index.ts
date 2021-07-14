@@ -42,6 +42,9 @@ class QQMessage {
                 switch ((<responseEvent>event).retcode) {
                     case 1400:
                         log.warn("api的请求400错误", event);
+                        if ((<responseEvent>event).echo == null) {
+                            return;
+                        }
                         this.e.emit(
                             ((<responseEvent>event).echo as number).toString(),
                             event
@@ -49,6 +52,9 @@ class QQMessage {
                         break;
                     case 1404:
                         log.warn("api的请求404错误", event);
+                        if ((<responseEvent>event).echo == null) {
+                            return;
+                        }
                         this.e.emit(
                             ((<responseEvent>event).echo as number).toString(),
                             event
@@ -56,6 +62,9 @@ class QQMessage {
                         break;
                     case 0:
                         //api调用正常
+                        if ((<responseEvent>event).echo == null) {
+                            return;
+                        }
                         this.e.emit(
                             ((<responseEvent>event).echo as number).toString(),
                             event

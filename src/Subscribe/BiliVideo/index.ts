@@ -14,7 +14,6 @@ import { DBText } from "../../Util/Text";
  * 订阅B站的视频
  */
 
-// 每个文件来点二刺螈语录
 /**
  * victory lies in a simple soul.
  *  								____ RWBY vol.1

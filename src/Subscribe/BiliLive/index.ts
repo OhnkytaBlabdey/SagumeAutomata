@@ -14,7 +14,8 @@ import { DBText } from "../../Util/Text";
  */
 
 /**
- *
+ *	あの鸟はまだ うまく飞べないけど
+	いつかは风を切って知る					____ 鳥の詩 《AIR》 OP
  */
 
 /**
@@ -40,7 +41,6 @@ class liveSubscriber {
                 .then((result: RequesterResponseType | RequesterErrorType) => {
                     if (result && (<RequesterResponseType>result).data) {
                         const jsondata = (<RequesterResponseType>result).data;
-                        // log.debug(jsondata);
                         if (jsondata.data) {
                             const data = jsondata.data.live_room;
                             if (!data) {
@@ -75,7 +75,7 @@ class liveSubscriber {
             true
         );
         if (recs.length == 0) {
-            log.warn("数据库里没有记录");
+            log.warn("bili live数据库里没有记录");
             return null;
         }
         const total: number = (
@@ -85,7 +85,6 @@ class liveSubscriber {
                 []
             )
         ).total;
-        // log.info(total);
         return sampler.sampleWithDist(
             recs,
             recs.map((it: liveRec) => {
@@ -419,7 +418,6 @@ class liveSubscriber {
             });
     }
     public async test(): Promise<void> {
-        // log.info("选中的是", JSON.stringify(await this.sampleRec()));
         this.run();
     }
 }

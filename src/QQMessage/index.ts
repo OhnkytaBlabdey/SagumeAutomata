@@ -85,7 +85,6 @@ class QQMessage {
                     // 处理命令
                 } else {
                     // 储存聊天
-                    // log.debug(ev);
                     this.db
                         .insertSingle(
                             "group_msg",
@@ -159,7 +158,7 @@ class QQMessage {
 
     public async sendToGroupSync(groupId: number, msg: string) {
         // TODO 过长的消息截断划分，不能截断带转义的部分
-        // TODO 分成多段需要保证先后顺序
+        // TODO 分成多段需要保证先后顺序//mirai提前进行了返回，并不能保证这个是同步发送的
         this.wsc.sendMessage(
             JSON.stringify({
                 action: "send_group_msg",

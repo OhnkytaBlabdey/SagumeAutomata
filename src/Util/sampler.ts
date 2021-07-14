@@ -15,7 +15,6 @@ class sampler {
             Logger.error("采样的分布数组与元素个数不相等");
             return null;
         }
-        // Logger.info(dist);
         const epsilon = 0.5;
         if (this.real() < epsilon) {
             Logger.debug("均匀随机选择");

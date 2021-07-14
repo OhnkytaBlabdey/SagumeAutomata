@@ -207,8 +207,15 @@ class videoSubscriber {
         dbHandler
             .insertSingle(
                 videoSubscriber.tableName,
-                ["group_id", "uid", "name", "hit_count", "latest_av"],
-                [groupId, uid, name, 1, 0]
+                [
+                    "group_id",
+                    "uid",
+                    "name",
+                    "hit_count",
+                    "latest_av",
+                    "before_update",
+                ],
+                [groupId, uid, name, 1, 0, 0]
             )
             .then((res) => {
                 if (res) {

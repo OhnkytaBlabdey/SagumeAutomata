@@ -326,8 +326,15 @@ class liveSubscriber {
         dbHandler
             .insertSingle(
                 liveSubscriber.tableName,
-                ["group_id", "uid", "name", "hit_count", "liveStatus"],
-                [groupId, uid, name, 1, 0]
+                [
+                    "group_id",
+                    "uid",
+                    "name",
+                    "hit_count",
+                    "liveStatus",
+                    "before_update",
+                ],
+                [groupId, uid, name, 1, 0, 0]
             )
             .then((res) => {
                 if (res) {

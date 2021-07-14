@@ -135,7 +135,7 @@ class liveSubscriber {
                         ],
                         [
                             `uid=${DBText(rec.uid.toString())}`,
-                            `before_update!=${rec.liveStatus}`,
+                            `liveStatus!=${rec.liveStatus}`,
                         ]
                     )
                     .then(async (res) => {
@@ -193,7 +193,7 @@ class liveSubscriber {
                         ],
                         [
                             `uid=${DBText(rec.uid.toString())}`,
-                            `before_update!=${rec.liveStatus}`,
+                            `liveStatus!=${rec.liveStatus}`,
                         ]
                     )
                     .then(async (res) => {
@@ -251,7 +251,7 @@ class liveSubscriber {
                         ],
                         [
                             `uid=${DBText(rec.uid.toString())}`,
-                            `before_update!=${rec.liveStatus}`,
+                            `liveStatus!=${rec.liveStatus}`,
                         ]
                     )
                     .then(async (res) => {

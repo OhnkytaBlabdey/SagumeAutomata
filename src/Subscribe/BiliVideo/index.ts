@@ -143,7 +143,8 @@ class videoSubscriber {
                         const recs: videoRec[] = await dbHandler.select(
                             [videoSubscriber.tableName],
                             ["*"],
-                            [`uid=${rec.uid}`, `latest_av!=${info.av}`],
+                            [`uid=${rec.uid}`],
+                            // [`uid=${rec.uid}`, `latest_av!=${info.av}`],
                             true
                         );
                         recs.forEach((av: videoRec) => {

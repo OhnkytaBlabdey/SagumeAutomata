@@ -23,4 +23,5 @@ export interface responseEvent {
     data: {
         ClassType: string;
     };
+    echo: null | number;
 }

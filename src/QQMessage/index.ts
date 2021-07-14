@@ -1,3 +1,4 @@
+/* eslint-disable indent */
 import log from "../Logger";
 import wsClient from "../WebsocketHandler";
 import config from "../../config/config.json";
@@ -28,6 +29,7 @@ class QQMessage {
     private e: EventEmitter;
     private cmd: command;
     private db = dbm;
+    private cnt = 0;
     private static instance: QQMessage;
 
     constructor() {
@@ -40,12 +42,27 @@ class QQMessage {
                 switch ((<responseEvent>event).retcode) {
                     case 1400:
                         log.warn("api的请求400错误", event);
+                        this.e.emit(
+                            ((<responseEvent>event).echo as number).toString(),
+                            event
+                        );
                         break;
                     case 1404:
                         log.warn("api的请求404错误", event);
+                        this.e.emit(
+                            ((<responseEvent>event).echo as number).toString(),
+                            event
+                        );
                         break;
                     case 0:
+                        //api调用正常
+                        this.e.emit(
+                            ((<responseEvent>event).echo as number).toString(),
+                            event
+                        );
+                        break;
                     default:
+                        log.warn("未知的retcode");
                         break;
                 }
                 return;
@@ -54,7 +71,7 @@ class QQMessage {
                 (<messageEvent>event).message_type === "group"
             ) {
                 // 响应命令
-                let ev = <messageEvent>event;
+                const ev = <messageEvent>event;
                 if (this.cmd.dispatchCommand(ev, ev.message)) {
                     // 处理命令
                 } else {
@@ -108,7 +125,7 @@ class QQMessage {
             "qwq"
         );
         this.wsc.connect();
-        // TODO 等待初始化
+        // TODO 等待初始化//等不了 这是同步方法
         process.on("exit", () => {
             this.wsc.close();
         });
@@ -119,8 +136,7 @@ class QQMessage {
     }
 
     public sendToGroup(groupId: number, msg: string): void {
-        // TODO 过长的消息截断划分，不能截断带转义的部分
-        // TODO 分成多段需要保证先后顺序
+        this.cnt++;
         this.wsc.sendMessage(
             JSON.stringify({
                 action: "send_group_msg",
@@ -130,6 +146,33 @@ class QQMessage {
                 },
             })
         );
+    }
+
+    public async sendToGroupSync(groupId: number, msg: string) {
+        // TODO 过长的消息截断划分，不能截断带转义的部分
+        // TODO 分成多段需要保证先后顺序
+        this.wsc.sendMessage(
+            JSON.stringify({
+                action: "send_group_msg",
+                params: {
+                    group_id: groupId,
+                    message: msg,
+                },
+                echo: this.cnt,
+            })
+        );
+        return new Promise((res, rej) => {
+            this.e.once(`${this.cnt}`, (ev) => {
+                if ((ev as responseEvent).retcode != 0) {
+                    log.warn(msg, "发送失败");
+                    rej(new Error("QQ消息发送失败"));
+                } else {
+                    log.debug(msg, "发送成功");
+                    res((ev as responseEvent).echo);
+                }
+            });
+            this.cnt++;
+        });
     }
 }
 export default QQMessage.getInstance();

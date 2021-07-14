@@ -147,7 +147,7 @@ class liveSubscriber {
                             ["*"],
                             [
                                 `uid=${rec.uid}`,
-                                `liveStatus!=${info.liveStatus}`,
+                                // `liveStatus!=${info.liveStatus}`,
                             ],
                             true
                         );
@@ -183,7 +183,7 @@ class liveSubscriber {
                             ["*"],
                             [
                                 `uid=${rec.uid}`,
-                                `liveStatus!=${info.liveStatus}`,
+                                // `liveStatus!=${info.liveStatus}`,
                             ],
                             true
                         );
@@ -219,7 +219,7 @@ class liveSubscriber {
                             ["*"],
                             [
                                 `uid=${rec.uid}`,
-                                `liveStatus!=${info.liveStatus}`,
+                                // `liveStatus!=${info.liveStatus}`,
                             ],
                             true
                         );

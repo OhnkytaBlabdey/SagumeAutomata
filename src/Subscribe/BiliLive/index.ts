@@ -133,10 +133,7 @@ class liveSubscriber {
                                 v: info.liveStatus,
                             },
                         ],
-                        [
-                            `uid=${DBText(rec.uid.toString())}`,
-                            `liveStatus!=${rec.liveStatus}`,
-                        ]
+                        [`uid=${rec.uid}`, `liveStatus!=${info.liveStatus}`]
                     )
                     .then(async (res) => {
                         log.info(res);
@@ -162,12 +159,12 @@ class liveSubscriber {
                                 [
                                     {
                                         k: "before_update",
-                                        v: rec.liveStatus,
+                                        v: info.liveStatus,
                                     },
                                 ],
                                 [
                                     `uid=${rec.uid}`,
-                                    `before_update!=${rec.liveStatus}`,
+                                    `before_update!=${info.liveStatus}`,
                                 ]
                             )
                             .catch((e) => {
@@ -191,10 +188,7 @@ class liveSubscriber {
                                 v: info.liveStatus,
                             },
                         ],
-                        [
-                            `uid=${DBText(rec.uid.toString())}`,
-                            `liveStatus!=${rec.liveStatus}`,
-                        ]
+                        [`uid=${rec.uid}`, `liveStatus!=${info.liveStatus}`]
                     )
                     .then(async (res) => {
                         log.info(res);
@@ -220,12 +214,12 @@ class liveSubscriber {
                                 [
                                     {
                                         k: "before_update",
-                                        v: rec.liveStatus,
+                                        v: info.liveStatus,
                                     },
                                 ],
                                 [
                                     `uid=${rec.uid}`,
-                                    `before_update!=${rec.liveStatus}`,
+                                    `before_update!=${info.liveStatus}`,
                                 ]
                             )
                             .catch((e) => {
@@ -249,10 +243,7 @@ class liveSubscriber {
                                 v: info.liveStatus,
                             },
                         ],
-                        [
-                            `uid=${DBText(rec.uid.toString())}`,
-                            `liveStatus!=${rec.liveStatus}`,
-                        ]
+                        [`uid=${rec.uid}`, `liveStatus!=${info.liveStatus}`]
                     )
                     .then(async (res) => {
                         log.info(res);
@@ -278,12 +269,12 @@ class liveSubscriber {
                                 [
                                     {
                                         k: "before_update",
-                                        v: rec.liveStatus,
+                                        v: info.liveStatus,
                                     },
                                 ],
                                 [
                                     `uid=${rec.uid}`,
-                                    `before_update!=${rec.liveStatus}`,
+                                    `before_update!=${info.liveStatus}`,
                                 ]
                             )
                             .catch((e) => {

@@ -4,6 +4,7 @@
     "description": "A QQ bot project",
     "main": "main.js",
     "scripts": {
+        "init-db": "nodemon -e ts --exec ts-node src/DBHandler/test/init.ts",
         "tsc": "tsc --watch --allowJs --removeComments",
         "start": "cross-env NODE_ENV=production nodemon -e ts --exec ts-node src/main.ts |cross-env ./node_modules/.bin/bunyan"
     },

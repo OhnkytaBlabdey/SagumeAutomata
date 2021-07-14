@@ -8,7 +8,6 @@ import {
 import QQMessage from "../../QQMessage";
 import { videoInfo, videoRec } from "./video.interface";
 import sampler from "../../Util/sampler";
-import Util from "../../Util";
 import { DBText } from "../../Util/Text";
 
 /**
@@ -135,7 +134,10 @@ class videoSubscriber {
                                 v: info.av,
                             },
                         ],
-                        [`uid=${DBText(rec.uid.toString())}`]
+                        [
+                            `uid=${DBText(rec.uid.toString())}`,
+                            `latest_av!=${info.av}`,
+                        ]
                     )
                     .then(async (res) => {
                         log.info(res);
@@ -143,8 +145,7 @@ class videoSubscriber {
                         const recs: videoRec[] = await dbHandler.select(
                             [videoSubscriber.tableName],
                             ["*"],
-                            [`uid=${rec.uid}`],
-                            // [`uid=${rec.uid}`, `latest_av!=${info.av}`],
+                            [`uid=${rec.uid}`, `before_update!=${info.av}`],
                             true
                         );
                         recs.forEach((av: videoRec) => {
@@ -157,6 +158,22 @@ class videoSubscriber {
                                     }`
                             );
                         });
+                        dbHandler
+                            .update(
+                                videoSubscriber.tableName,
+                                [
+                                    {
+                                        k: "before_update",
+                                        v: info.av,
+                                    },
+                                ],
+                                [`uid=${rec.uid}`, `before_update!=${info.av}`]
+                            )
+                            .catch((e) => {
+                                if (e) {
+                                    log.warn(e);
+                                }
+                            });
                     })
                     .catch((e) => {
                         if (e) {

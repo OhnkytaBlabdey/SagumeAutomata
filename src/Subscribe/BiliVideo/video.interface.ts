@@ -4,6 +4,7 @@ export interface videoRec {
     name: string;
     hit_count: number;
     latest_av: number;
+    // before_update: number;
 }
 
 export interface videoInfo {

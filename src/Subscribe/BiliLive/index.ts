@@ -8,10 +8,7 @@ import {
 import QQMessage from "../../QQMessage";
 import { liveRec, liveInfo } from "./live.interface";
 import sampler from "../../Util/sampler";
-import Util from "../../Util";
 import { DBText } from "../../Util/Text";
-import config from "../../../config/config.json";
-import { Config } from "../../QQMessage/config.interface";
 /**
  * 订阅B站的直播
  */
@@ -137,17 +134,19 @@ class liveSubscriber {
                                 v: info.liveStatus,
                             },
                         ],
-                        [`uid=${DBText(rec.uid.toString())}`]
+                        [
+                            `uid=${DBText(rec.uid.toString())}`,
+                            `before_update!=${rec.liveStatus}`,
+                        ]
                     )
                     .then(async (res) => {
                         log.info(res);
-                        // log.info("通知更新");
                         const recs: liveRec[] = await dbHandler.select(
                             [liveSubscriber.tableName],
                             ["*"],
                             [
                                 `uid=${rec.uid}`,
-                                // `liveStatus!=${info.liveStatus}`,
+                                `before_update!=${info.liveStatus}`,
                             ],
                             true
                         );
@@ -158,6 +157,25 @@ class liveSubscriber {
                                     `直播间人气 ${info.online} 直播间标题【${info.title}】\n主播id${live.uid}`
                             );
                         });
+                        dbHandler
+                            .update(
+                                liveSubscriber.tableName,
+                                [
+                                    {
+                                        k: "before_update",
+                                        v: rec.liveStatus,
+                                    },
+                                ],
+                                [
+                                    `uid=${rec.uid}`,
+                                    `before_update!=${rec.liveStatus}`,
+                                ]
+                            )
+                            .catch((e) => {
+                                if (e) {
+                                    log.warn(e);
+                                }
+                            });
                     })
                     .catch((e) => {
                         if (e) {
@@ -174,7 +192,10 @@ class liveSubscriber {
                                 v: info.liveStatus,
                             },
                         ],
-                        [`uid=${DBText(rec.uid.toString())}`]
+                        [
+                            `uid=${DBText(rec.uid.toString())}`,
+                            `before_update!=${rec.liveStatus}`,
+                        ]
                     )
                     .then(async (res) => {
                         log.info(res);
@@ -183,7 +204,7 @@ class liveSubscriber {
                             ["*"],
                             [
                                 `uid=${rec.uid}`,
-                                // `liveStatus!=${info.liveStatus}`,
+                                `before_update!=${info.liveStatus}`,
                             ],
                             true
                         );
@@ -194,6 +215,25 @@ class liveSubscriber {
                                     `直播间人气 ${info.online} 直播间标题【${info.title}】\n主播id${live.uid}`
                             );
                         });
+                        dbHandler
+                            .update(
+                                liveSubscriber.tableName,
+                                [
+                                    {
+                                        k: "before_update",
+                                        v: rec.liveStatus,
+                                    },
+                                ],
+                                [
+                                    `uid=${rec.uid}`,
+                                    `before_update!=${rec.liveStatus}`,
+                                ]
+                            )
+                            .catch((e) => {
+                                if (e) {
+                                    log.warn(e);
+                                }
+                            });
                     })
                     .catch((e) => {
                         if (e) {
@@ -210,7 +250,10 @@ class liveSubscriber {
                                 v: info.liveStatus,
                             },
                         ],
-                        [`uid=${DBText(rec.uid.toString())}`]
+                        [
+                            `uid=${DBText(rec.uid.toString())}`,
+                            `before_update!=${rec.liveStatus}`,
+                        ]
                     )
                     .then(async (res) => {
                         log.info(res);
@@ -219,7 +262,7 @@ class liveSubscriber {
                             ["*"],
                             [
                                 `uid=${rec.uid}`,
-                                // `liveStatus!=${info.liveStatus}`,
+                                `before_update!=${info.liveStatus}`,
                             ],
                             true
                         );
@@ -230,6 +273,25 @@ class liveSubscriber {
                                     `直播间人气 ${info.online} 直播间标题【${info.title}】\n主播id${live.uid}`
                             );
                         });
+                        dbHandler
+                            .update(
+                                liveSubscriber.tableName,
+                                [
+                                    {
+                                        k: "before_update",
+                                        v: rec.liveStatus,
+                                    },
+                                ],
+                                [
+                                    `uid=${rec.uid}`,
+                                    `before_update!=${rec.liveStatus}`,
+                                ]
+                            )
+                            .catch((e) => {
+                                if (e) {
+                                    log.warn(e);
+                                }
+                            });
                     })
                     .catch((e) => {
                         if (e) {
@@ -239,9 +301,7 @@ class liveSubscriber {
             }
         }, 5000);
     }
-    // constructor() {
-    //     this.run();
-    // }
+
     public static async getInstance(): Promise<liveSubscriber> {
         if (!this.__instance) {
             this.__instance = new liveSubscriber();

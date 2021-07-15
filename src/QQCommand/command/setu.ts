@@ -12,10 +12,19 @@ const setu: cmd = {
         const keyword = params.length > 1 ? params[1] : null;
         getSetu(keyword)
             .then((info: setuInfo) => {
-                QQMessage.sendToGroup(
+                QQMessage.sendToGroupSync(
                     groupId,
                     `作者：${info.author}\t标题：${info.title}\n${info.url}\n[CQ:image,file=${info.url}]`
-                );
+                ).catch((e) => {
+                    if (e) {
+                        QQMessage.sendToGroup(
+                            groupId,
+                            `作者：${info.author}\t标题：${info.title}\n${
+                                info.url
+                            }\n 图片发送失败原因${JSON.stringify(e)}`
+                        );
+                    }
+                });
             })
             .catch((e: Error) => {
                 if (e) {

@@ -70,6 +70,15 @@ class QQMessage {
                             event
                         );
                         break;
+                    case 103:
+                        if ((<responseEvent>event).echo == null) {
+                            return;
+                        }
+                        this.e.emit(
+                            ((<responseEvent>event).echo as number).toString(),
+                            event
+                        );
+                        break;
                     default:
                         log.warn("未知的retcode");
                         log.warn(event);

@@ -72,6 +72,7 @@ class QQMessage {
                         break;
                     default:
                         log.warn("未知的retcode");
+                        log.warn(event);
                         break;
                 }
                 return;

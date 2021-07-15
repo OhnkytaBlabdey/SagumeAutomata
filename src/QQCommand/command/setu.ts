@@ -14,7 +14,7 @@ const setu: cmd = {
             .then((info: setuInfo) => {
                 QQMessage.sendToGroup(
                     groupId,
-                    `作者：${info.author}\t标题：${info.title}\n[CQ:image,file=${info.url}]`
+                    `作者：${info.author}\t标题：${info.title}\n${info.url}\n[CQ:image,file=${info.url}]`
                 );
             })
             .catch((e: Error) => {

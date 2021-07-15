@@ -11,7 +11,7 @@ function getSetuUrl(keyword: string | null): Promise<setuInfo> {
         //请求api
         let reqUrl = "https://api.lolicon.app/setu/v2";
         if (keyword) {
-            reqUrl = `https://api.lolicon.app/setu/v2?r18=${2}&keyword=${encodeURI(
+            reqUrl = `https://api.lolicon.app/setu/v2?r18=${1}&keyword=${encodeURI(
                 keyword
             )}`;
         }
@@ -19,7 +19,7 @@ function getSetuUrl(keyword: string | null): Promise<setuInfo> {
             url: reqUrl,
             params: {
                 // keyword: keyword,
-                // r18: 2, //都是成年人（
+                // r18: 1, //都是成年人（ //企鹅觉得不行
             },
         })
             .then((result: RequesterResponseType | RequesterErrorType) => {
@@ -51,7 +51,7 @@ function getSetuUrl(keyword: string | null): Promise<setuInfo> {
                     rej(new Error("原因你猜猜4"));
                 }
             })
-            .catch((e: RequesterErrorType) => {
+            .catch((e: Error) => {
                 if (e) {
                     log.error("色图获取错误5");
                     log.error(e);

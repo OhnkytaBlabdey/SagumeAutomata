@@ -4,7 +4,7 @@ export default {
     name: "sagume-automata",
     streams: [
         {
-            level: "debug",
+            level: "info",
             stream: process.stdout,
         },
         {

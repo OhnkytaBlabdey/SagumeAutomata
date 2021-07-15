@@ -9,7 +9,7 @@ SagumeAutomata 是一个 QQ 聊天机器人，现正处于开发阶段。
 -   [x] `B站`直播订阅
 -   [x] `B站`视频订阅
 -   [ ] `B站`动态订阅
--   [ ] `Lolicon` 色图
+-   [x] `Lolicon` 色图
 
 ## 运行环境
 

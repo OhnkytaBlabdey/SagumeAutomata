@@ -35,7 +35,7 @@ class QQMessage {
     constructor() {
         this.cmd = new command();
         this.e = new EventEmitter();
-        this.e.on("qwq", (event) => {
+        this.e.on("qwq", async (event) => {
             event = JSON.parse(event);
             if ((<responseEvent>event).status) {
                 //api 响应结果
@@ -81,7 +81,7 @@ class QQMessage {
             ) {
                 // 响应命令
                 const ev = <messageEvent>event;
-                if (this.cmd.dispatchCommand(ev, ev.message)) {
+                if (await this.cmd.dispatchCommand(ev, ev.message)) {
                     // 处理命令
                 } else {
                     // 储存聊天
@@ -149,6 +149,7 @@ class QQMessage {
             JSON.stringify({
                 action: "send_group_msg",
                 params: {
+                    // eslint-disable-next-line camelcase
                     group_id: groupId,
                     message: msg,
                 },
@@ -163,6 +164,7 @@ class QQMessage {
             JSON.stringify({
                 action: "send_group_msg",
                 params: {
+                    // eslint-disable-next-line camelcase
                     group_id: groupId,
                     message: msg,
                 },

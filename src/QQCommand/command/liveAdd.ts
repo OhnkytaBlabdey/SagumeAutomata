@@ -2,7 +2,7 @@ import { messageEvent } from "../../QQMessage/event.interface";
 import { cmd } from "../cmd.interface";
 import live from "../../Subscribe/BiliLive";
 
-let addLiveSubscribe: cmd = {
+const addLiveSubscribe: cmd = {
     pattern: /^直播订阅\s\d+\s\S+/,
     exec: async (ev: messageEvent) => {
         if (ev.sender?.role !== "owner" && ev.sender?.role !== "admin") {

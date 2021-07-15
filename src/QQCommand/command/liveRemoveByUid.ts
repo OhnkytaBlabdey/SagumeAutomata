@@ -2,7 +2,7 @@ import { messageEvent } from "../../QQMessage/event.interface";
 import { cmd } from "../cmd.interface";
 import live from "../../Subscribe/BiliLive";
 
-let removeLiveSubscribeByUid: cmd = {
+const removeLiveSubscribeByUid: cmd = {
     pattern: /^取消直播订阅\s\d+/,
     exec: async (ev: messageEvent) => {
         if (ev.sender?.role !== "owner" && ev.sender?.role !== "admin") {
@@ -12,7 +12,7 @@ let removeLiveSubscribeByUid: cmd = {
         const params = ev.message.split(RegExp(/\s/), 2);
         const idStr = params[1];
         const id = parseInt(idStr);
-        let av = await live;
+        const av = await live;
         av.removeSubByUid(group_id, id);
     },
 };

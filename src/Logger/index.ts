@@ -81,6 +81,37 @@ class warpLogger {
         }
         return warpLogger.__warpLogger;
     }
+    protected static getCallerFileNameAndLine(): string {
+        function getException() {
+            try {
+                throw Error("");
+            } catch (err) {
+                return err;
+            }
+        }
+        const err = getException();
+        const stack = err.stack;
+        const stackArr = stack.split("\n");
+        let callerLogIndex = 0;
+        for (let i = 0; i < stackArr.length; i++) {
+            if (
+                stackArr[i].indexOf("warpLogger") > 0 &&
+                i + 1 < stackArr.length
+            ) {
+                callerLogIndex = i + 1;
+                break;
+            }
+        }
+        if (callerLogIndex !== 0) {
+            const callerStackLine = stackArr[callerLogIndex];
+            return `[${callerStackLine.substring(
+                callerStackLine.lastIndexOf(path.sep) + 1,
+                callerStackLine.lastIndexOf(":")
+            )}]`;
+        } else {
+            return "[-]";
+        }
+    }
     public debug(obj: any, ...para: any[]): void {
         if (!this.__logger) {
             throw new Error("未初始化");
@@ -107,6 +138,7 @@ class warpLogger {
         }
         this.__logger.warn(
             util.format("[warn]<%s>", new Date().toLocaleString("zh-CN")),
+            warpLogger.getCallerFileNameAndLine(),
             obj,
             para.join(" ")
         );
@@ -117,6 +149,7 @@ class warpLogger {
         }
         this.__logger.error(
             util.format("[error]<%s>", new Date().toLocaleString("zh-CN")),
+            warpLogger.getCallerFileNameAndLine(),
             obj,
             para.join(" ")
         );
@@ -127,6 +160,7 @@ class warpLogger {
         }
         this.__logger.fatal(
             util.format("[fatal]<%s>", new Date().toLocaleString("zh-CN")),
+            warpLogger.getCallerFileNameAndLine(),
             obj,
             para.join(" ")
         );

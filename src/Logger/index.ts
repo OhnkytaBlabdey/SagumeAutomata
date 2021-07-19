@@ -103,10 +103,11 @@ class warpLogger {
             }
         }
         if (callerLogIndex !== 0) {
-            const callerStackLine = stackArr[callerLogIndex];
+            const callerStackLine = stackArr[callerLogIndex + 1];
+            // return callerStackLine;
             return `[${callerStackLine.substring(
-                callerStackLine.lastIndexOf(path.sep) + 1,
-                callerStackLine.lastIndexOf(":")
+                callerStackLine.indexOf("("),
+                callerStackLine.lastIndexOf(")")
             )}]`;
         } else {
             return "[-]";

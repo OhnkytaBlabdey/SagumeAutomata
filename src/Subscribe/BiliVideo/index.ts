@@ -180,7 +180,7 @@ class videoSubscriber {
                         }
                     });
             }
-        }, 6000);
+        }, 8000);
     }
     public static async getInstance(): Promise<videoSubscriber> {
         if (!this.__instance) {

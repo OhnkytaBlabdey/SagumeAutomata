@@ -11,7 +11,7 @@ function getSetuUrl(keyword: string | null): Promise<setuInfo> {
         //请求api
         let reqUrl = "https://api.lolicon.app/setu/v2";
         if (keyword) {
-            reqUrl = `https://api.lolicon.app/setu/v2?r18=${1}&keyword=${encodeURI(
+            reqUrl = `https://api.lolicon.app/setu/v2?r18=${0}&keyword=${encodeURI(
                 keyword
             )}`;
         }
@@ -19,7 +19,7 @@ function getSetuUrl(keyword: string | null): Promise<setuInfo> {
             url: reqUrl,
             params: {
                 // keyword: keyword,
-                // r18: 1, //都是成年人（ //企鹅觉得不行
+                // r18: 0, //都是成年人（ //企鹅觉得不行
             },
         })
             .then((result: RequesterResponseType | RequesterErrorType) => {

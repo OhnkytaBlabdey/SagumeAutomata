@@ -104,7 +104,7 @@ class liveSubscriber {
                 info = await this.getRoomInfo(rec.uid);
             } catch (error) {
                 if (error) {
-                    log.warn(error);
+                    log.warn(error.errMessage);
                     return;
                 }
                 log.error("没有捕获到异常");
@@ -289,7 +289,7 @@ class liveSubscriber {
                         }
                     });
             }
-        }, 5000);
+        }, 6000);
     }
 
     public static async getInstance(): Promise<liveSubscriber> {

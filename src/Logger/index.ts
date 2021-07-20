@@ -105,10 +105,10 @@ class warpLogger {
         if (callerLogIndex !== 0) {
             const callerStackLine = stackArr[callerLogIndex + 1];
             // return callerStackLine;
-            return `[${callerStackLine.substring(
-                callerStackLine.indexOf("("),
+            return `[file://${callerStackLine.substring(
+                callerStackLine.indexOf("(") + 1,
                 callerStackLine.lastIndexOf(")")
-            )}]`;
+            )}]`.replace(RegExp(`\\${path.sep}`, "g"), "/");
         } else {
             return "[-]";
         }

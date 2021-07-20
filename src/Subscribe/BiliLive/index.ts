@@ -14,7 +14,7 @@ import sampler from "../../Util/sampler";
 
 /**
  *	あの鸟はまだ うまく飞べないけど
-	いつかは风を切って知る					____ 鳥の詩 《AIR》 OP
+    いつかは风を切って知る					____ 鳥の詩 《AIR》 OP
  */
 
 /**
@@ -60,7 +60,13 @@ class liveSubscriber {
                 })
                 .catch((error: RequesterErrorType | Error) => {
                     if (error) {
-                        rej(error);
+                        rej(
+                            (<RequesterErrorType>error).errMessage
+                                ? new Error(
+                                      (<RequesterErrorType>error).errMessage
+                                  )
+                                : Error
+                        );
                     }
                 });
         });
@@ -103,7 +109,7 @@ class liveSubscriber {
                 info = await this.getRoomInfo(rec.uid);
             } catch (error) {
                 if (error) {
-                    log.warn(error.errMessage);
+                    log.warn((<Error>error).message);
                     return;
                 }
                 log.error("没有捕获到异常");

@@ -8,7 +8,6 @@ import {
 import QQMessage from "../../QQMessage";
 import { liveRec, liveInfo } from "./live.interface";
 import sampler from "../../Util/sampler";
-import { DBText } from "../../Util/Text";
 /**
  * 订阅B站的直播
  */
@@ -59,7 +58,7 @@ class liveSubscriber {
                     }
                     log.warn("直播间返回格式错误");
                 })
-                .catch((error: RequesterErrorType) => {
+                .catch((error: RequesterErrorType | Error) => {
                     if (error) {
                         rej(error);
                     }

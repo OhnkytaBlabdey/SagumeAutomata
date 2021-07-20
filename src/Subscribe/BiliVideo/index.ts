@@ -68,9 +68,15 @@ class videoSubscriber {
                     }
                     log.warn("视频返回格式错误");
                 })
-                .catch((error: RequesterErrorType) => {
+                .catch((error: RequesterErrorType | Error) => {
                     if (error) {
-                        rej(error);
+                        rej(
+                            (<RequesterErrorType>error).errMessage
+                                ? new Error(
+                                      (<RequesterErrorType>error).errMessage
+                                  )
+                                : Error
+                        );
                     }
                 });
         });
@@ -109,7 +115,18 @@ class videoSubscriber {
             if (rec == null) {
                 return;
             }
-            const info: videoInfo = await this.getLatestVideo(rec.uid);
+            let info: videoInfo;
+            try {
+                info = await this.getLatestVideo(rec.uid);
+            } catch (error) {
+                if (error) {
+                    log.warn((<Error>error).message);
+                    return;
+                }
+                log.error("没有捕获到异常");
+                return;
+            }
+
             if (!info) {
                 log.info("获取最新视频失败");
                 return;

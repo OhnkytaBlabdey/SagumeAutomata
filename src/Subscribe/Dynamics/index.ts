@@ -228,7 +228,7 @@ class DynamicSubscriber {
                                 v: "hit_count+1",
                             },
                             {
-                                k: "dynamic_id",
+                                k: "latest_dynamic_id",
                                 v: info.dynamic_id,
                             },
                         ],
@@ -280,14 +280,14 @@ class DynamicSubscriber {
                         }
                     });
             }
-        }, 4000);
+        }, 8000);
     }
     public async addSub(groupId: number, uid: number, name: string) {
         log.debug("将要添加动态订阅");
         log.debug("group:", groupId, ", uid:", uid, " ,name:", name);
         const chk = await dbHandler.select(
             [DynamicSubscriber.tableName],
-            ["bili_video_id"],
+            ["bili_dynamic_id"],
             ["group_id=" + groupId, "uid=" + uid]
         );
         if (chk) {

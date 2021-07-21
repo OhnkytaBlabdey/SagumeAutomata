@@ -232,7 +232,10 @@ class DynamicSubscriber {
                                 v: info.dynamic_id,
                             },
                         ],
-                        [`uid=${rec.uid}`, `dynamic_id!=${info.dynamic_id}`]
+                        [
+                            `uid=${rec.uid}`,
+                            `latest_dynamic_id!=${info.dynamic_id}`,
+                        ]
                     )
                     .then(async (res) => {
                         log.info(res);

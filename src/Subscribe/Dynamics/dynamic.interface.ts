@@ -8,7 +8,7 @@ export interface dynamicRec {
     before_update: number;
     group_id: number;
     hit_count: number;
-    latest_dynamic: number;
+    latest_dynamic_id: number;
     name: string;
     uid: number;
 }

@@ -214,7 +214,7 @@ class DynamicSubscriber {
                 return;
             }
 
-            if (rec.latest_dynamic == info.dynamic_id) {
+            if (rec.latest_dynamic_id == info.dynamic_id) {
                 log.debug(rec.uid, "最新动态没有变化");
                 return;
             } else {

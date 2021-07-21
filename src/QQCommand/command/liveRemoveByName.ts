@@ -10,8 +10,8 @@ const removeLiveSubscribeByName: cmd = {
         }
         const group_id = ev.group_id;
         const params = ev.message.split(RegExp(/\s/), 2);
-        const av = await live;
-        av.removeSubByName(group_id, params[1]);
+        const sub = await live;
+        sub.removeSubByName(group_id, params[1]);
     },
 };
 export default removeLiveSubscribeByName;

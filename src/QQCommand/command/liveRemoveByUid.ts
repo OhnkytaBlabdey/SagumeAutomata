@@ -12,8 +12,8 @@ const removeLiveSubscribeByUid: cmd = {
         const params = ev.message.split(RegExp(/\s/), 2);
         const idStr = params[1];
         const id = parseInt(idStr);
-        const av = await live;
-        av.removeSubByUid(group_id, id);
+        const sub = await live;
+        sub.removeSubByUid(group_id, id);
     },
 };
 export default removeLiveSubscribeByUid;

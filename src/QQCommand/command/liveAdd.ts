@@ -12,8 +12,8 @@ const addLiveSubscribe: cmd = {
         const params = ev.message.split(RegExp(/\s/), 3);
         const idStr = params[1];
         const id = parseInt(idStr);
-        let av = await live;
-        av.addSub(group_id, id, params[2]);
+        const sub = await live;
+        sub.addSub(group_id, id, params[2]);
     },
 };
 export default addLiveSubscribe;

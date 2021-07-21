@@ -37,9 +37,9 @@ class liveSubscriber {
                 },
             })
                 //TODO 入队，交给request monitor 调度
-                .then((result: RequesterResponseType | RequesterErrorType) => {
-                    if (result && (<RequesterResponseType>result).data) {
-                        const jsondata = (<RequesterResponseType>result).data;
+                .then((result: RequesterResponseType) => {
+                    if (result && result.data) {
+                        const jsondata = result.data;
                         if (jsondata.data) {
                             const data = jsondata.data.live_room;
                             if (!data) {
@@ -58,15 +58,9 @@ class liveSubscriber {
                     }
                     log.warn("直播间返回格式错误");
                 })
-                .catch((error: RequesterErrorType | Error) => {
+                .catch((error: Error) => {
                     if (error) {
-                        rej(
-                            (<RequesterErrorType>error).errMessage
-                                ? new Error(
-                                      (<RequesterErrorType>error).errMessage
-                                  )
-                                : Error
-                        );
+                        rej(error);
                     }
                 });
         });

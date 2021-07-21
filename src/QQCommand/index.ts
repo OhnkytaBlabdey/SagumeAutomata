@@ -7,6 +7,9 @@ import removeLiveSubscribeByUid from "./command/liveRemoveByUid";
 import addVideoSubscribe from "./command/videoAdd";
 import removeVideoSubscribeByName from "./command/videoRemoveByName";
 import removeVideoSubscribeByUid from "./command/videoRemoveByUid";
+import addDynamicSubscribe from "./command/dynamicAdd";
+import removeDynamicSubscribeByUid from "./command/dynamicRemoveByUid";
+import removeDynamicSubscribeByName from "./command/dynamicRemoveByName";
 import setu from "./command/setu";
 class command {
     private cmds: Cmd[];
@@ -18,6 +21,9 @@ class command {
         this.cmds.push(addLiveSubscribe);
         this.cmds.push(removeLiveSubscribeByName);
         this.cmds.push(removeLiveSubscribeByUid);
+        this.cmds.push(addDynamicSubscribe);
+        this.cmds.push(removeDynamicSubscribeByName);
+        this.cmds.push(removeDynamicSubscribeByUid);
         this.cmds.push(setu);
     }
     public async dispatchCommand(

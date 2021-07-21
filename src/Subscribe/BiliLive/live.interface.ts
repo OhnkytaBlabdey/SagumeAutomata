@@ -1,4 +1,5 @@
 export interface liveRec {
+    before_update: number;
     group_id: number;
     hit_count: number;
     liveStatus: number;

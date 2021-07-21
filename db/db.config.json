@@ -142,6 +142,46 @@
             ]
         },
         {
+            "tName": "bili_dynamic",
+            "columns": [
+                {
+                    "cName": "bili_dynamic_id",
+                    "cDataType": "INTEGER",
+                    "attributes": ["PRIMARY KEY", "AUTOINCREMENT"]
+                },
+                {
+                    "cName": "group_id",
+                    "cDataType": "INTEGER",
+                    "attributes": ["NOT NULL"]
+                },
+                {
+                    "cName": "uid",
+                    "cDataType": "INTEGER",
+                    "attributes": ["NOT NULL"]
+                },
+                {
+                    "cName": "name",
+                    "cDataType": "TEXT",
+                    "attributes": ["NOT NULL"]
+                },
+                {
+                    "cName": "hit_count",
+                    "cDataType": "INTEGER",
+                    "attributes": ["NOT NULL"]
+                },
+                {
+                    "cName": "latest_dynamic_id",
+                    "cDataType": "INTEGER",
+                    "attributes": ["NOT NULL"]
+                },
+                {
+                    "cName": "before_update",
+                    "cDataType": "INTEGER",
+                    "attributes": ["NOT NULL"]
+                }
+            ]
+        },
+        {
             "tName": "CounterStrike",
             "columns": [
                 {

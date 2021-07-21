@@ -1,10 +1,7 @@
 import dbHandler from "../../DBHandler";
 import req from "../../Requester";
 import log from "../../Logger";
-import {
-    RequesterErrorType,
-    RequesterResponseType,
-} from "../../Requester/interface";
+import { RequesterResponseType } from "../../Requester/interface";
 import QQMessage from "../../QQMessage";
 import { videoInfo, videoRec } from "./video.interface";
 import sampler from "../../Util/sampler";
@@ -94,7 +91,6 @@ class videoSubscriber {
                 []
             )
         ).total;
-        // log.info(total);
         return sampler.sampleWithDist(
             recs,
             recs.map((it: videoRec) => {

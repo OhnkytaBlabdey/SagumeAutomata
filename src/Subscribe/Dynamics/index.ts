@@ -94,20 +94,27 @@ class DynamicSubscriber {
                 log.warn("格式错误");
                 return "无法解析的格式";
             }
-
-            const desc: string = itm.description;
-            const picCount: number = itm.pictures_count;
-            const pictures: any[] = itm.pictures;
-            let origDynamicStr = desc;
-            if (picCount > 0) {
-                const picCQs = pictures
-                    .map((pic) => {
-                        return `[CQ:image,file=${pic.img_src}]`;
-                    })
-                    .reduce((prev, cur) => prev + "\n" + cur);
-                origDynamicStr += picCQs;
+            if (itm.pictures) {
+                // 转发图片
+                const desc: string = itm.description;
+                const picCount: number = itm.pictures_count;
+                const pictures: any[] = itm.pictures;
+                let origDynamicStr = desc;
+                if (picCount > 0) {
+                    const picCQs = pictures
+                        .map((pic) => {
+                            return `[CQ:image,file=${pic.img_src}]`;
+                        })
+                        .reduce((prev, cur) => prev + "\n" + cur);
+                    origDynamicStr += picCQs;
+                }
+                return (
+                    `转发了动态 评论：${comment}\n 原动态：` + origDynamicStr
+                );
+            } else {
+                // 投票详情在JSON.parse(card.origin_extension)中
+                return `转发了动态 评论：${comment}\n 原动态：${itm.content}`;
             }
-            return `转发了动态 评论：${comment}\n 原动态：` + origDynamicStr;
         } else {
             // TODO 原创动态
             const itm = card.item;
@@ -115,19 +122,25 @@ class DynamicSubscriber {
                 log.warn("无法解析");
                 return "无法解析的格式";
             }
-            const desc: string = itm.description;
-            const picCount: number = itm.pictures_count;
-            const pictures: any[] = itm.pictures;
-            let dynamicStr = "发布了动态 " + desc;
-            if (picCount > 0) {
-                const picCQs = pictures
-                    .map((pic) => {
-                        return `[CQ:image,file=${pic.img_src}]`;
-                    })
-                    .reduce((prev, cur) => prev + "\n" + cur);
-                dynamicStr += picCQs;
+            if (itm.pictures) {
+                // 原创图片
+                const desc: string = itm.description;
+                const picCount: number = itm.pictures_count;
+                const pictures: any[] = itm.pictures;
+                let dynamicStr = "发布了动态 " + desc;
+                if (picCount > 0) {
+                    const picCQs = pictures
+                        .map((pic) => {
+                            return `[CQ:image,file=${pic.img_src}]`;
+                        })
+                        .reduce((prev, cur) => prev + "\n" + cur);
+                    dynamicStr += picCQs;
+                }
+                return dynamicStr;
+            } else {
+                // 原创文本
+                return `发布了动态 ${itm.content}`;
             }
-            return dynamicStr;
         }
     }
 }

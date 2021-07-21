@@ -65,7 +65,7 @@ class videoSubscriber {
                     }
                     log.warn("视频返回格式错误");
                 })
-                .catch((error: Error) => {
+                .catch((error) => {
                     if (error) {
                         rej(error);
                     }
@@ -110,7 +110,7 @@ class videoSubscriber {
                 info = await this.getLatestVideo(rec.uid);
             } catch (error) {
                 if (error) {
-                    log.warn((<Error>error).message);
+                    log.warn(error);
                     return;
                 }
                 log.error("没有捕获到异常");

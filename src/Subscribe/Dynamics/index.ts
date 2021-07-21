@@ -62,7 +62,7 @@ class DynamicSubscriber {
                         card: cards[0].card,
                     } as dynamicInfo);
                 })
-                .catch((error: Error) => {
+                .catch((error) => {
                     if (error) {
                         rej(error);
                     }
@@ -202,7 +202,7 @@ class DynamicSubscriber {
                 info = await this.getLatestItem(rec.uid);
             } catch (error) {
                 if (error) {
-                    log.warn((<Error>error).message);
+                    log.warn(error);
                     return;
                 }
                 log.error("没有捕获到异常");

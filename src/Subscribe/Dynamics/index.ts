@@ -87,55 +87,26 @@ class DynamicSubscriber {
             const desc = card.desc;
             const av = card.aid;
             const videoText = `简介：${desc}\n链接：b23.tv/av${av}\n封面：[CQ:image,file=${picUrl}]`;
-            if (card.up_from_v2) {
-                // TODO 投稿视频（？）
-                return "投稿了视频" + videoText;
-            } else {
-                // TODO 转发视频（？）
-                const comment = card.dynamic;
-                return "转发了视频" + `转发评论：${comment}\n原` + videoText;
-            }
+            // if (card.up_from_v2) {
+            // TODO 投稿视频（？）
+            return (
+                "发了视频 " +
+                `${card.dynamic ? card.dynamic + "\n" : ""} ` +
+                videoText
+            );
+            // } else {
+            //     // TODO 转发视频（？）
+            //     const comment = card.dynamic;
+            //     return "转发了视频" + `转发评论：${comment}\n原` + videoText;
+            // }
         } else if (card.origin) {
             // TODO 转发动态（？）
             // origin.item
-            // if (!item.origin) {
-            //     log.warn("无法解析");
-            //     return "无法解析的格式";
-            // }
-            let originItem = null;
-            try {
-                originItem = JSON.parse(card.origin);
-            } catch (ex) {
-                log.warn(ex);
-                return "解析失败";
-            }
             const comment = card.item.content;
-            const itm = originItem.item;
-            if (!itm) {
-                log.warn("格式错误");
-                return "无法解析的格式";
-            }
-            if (itm.pictures) {
-                // 转发图片
-                const desc: string = itm.description;
-                const picCount: number = itm.pictures_count;
-                const pictures: any[] = itm.pictures;
-                let origDynamicStr = desc;
-                if (picCount > 0) {
-                    const picCQs = pictures
-                        .map((pic) => {
-                            return `[CQ:image,file=${pic.img_src}]`;
-                        })
-                        .reduce((prev, cur) => prev + "\n" + cur);
-                    origDynamicStr += picCQs;
-                }
-                return (
-                    `转发了动态 评论：${comment}\n 原动态：` + origDynamicStr
-                );
-            } else {
-                // 投票详情在JSON.parse(card.origin_extension)中
-                return `转发了动态 评论：${comment}\n 原动态：${itm.content}`;
-            }
+            // 投票详情在JSON.parse(card.origin_extension)中
+            return `转发了动态 评论：${comment}\n 原动态：${this.parseDynamicCardtoString(
+                card.origin
+            )}`;
         } else {
             // TODO 原创动态
             const itm = card.item;

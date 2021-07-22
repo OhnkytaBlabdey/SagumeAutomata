@@ -1,10 +1,7 @@
 import dbHandler from "../../DBHandler";
 import req from "../../Requester";
 import log from "../../Logger";
-import {
-    RequesterErrorType,
-    RequesterResponseType,
-} from "../../Requester/interface";
+import { RequesterResponseType } from "../../Requester/interface";
 import QQMessage from "../../QQMessage";
 import { liveRec, liveInfo } from "./live.interface";
 import sampler from "../../Util/sampler";
@@ -103,7 +100,7 @@ class liveSubscriber {
                 info = await this.getRoomInfo(rec.uid);
             } catch (error) {
                 if (error) {
-                    log.warn(error);
+                    log.warn(error.errMessage ? error.errMessage : error);
                     return;
                 }
                 log.error("没有捕获到异常");

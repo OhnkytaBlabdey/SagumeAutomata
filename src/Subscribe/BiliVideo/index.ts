@@ -110,7 +110,7 @@ class videoSubscriber {
                 info = await this.getLatestVideo(rec.uid);
             } catch (error) {
                 if (error) {
-                    log.warn(error);
+                    log.warn(error.errMessage ? error.errMessage : error);
                     return;
                 }
                 log.error("没有捕获到异常");

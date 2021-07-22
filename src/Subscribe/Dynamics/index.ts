@@ -202,7 +202,7 @@ class DynamicSubscriber {
                 info = await this.getLatestItem(rec.uid);
             } catch (error) {
                 if (error) {
-                    log.warn(error);
+                    log.warn(error.errMessage ? error.errMessage : error);
                     return;
                 }
                 log.error("没有捕获到异常");

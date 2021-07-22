@@ -94,11 +94,6 @@ class DynamicSubscriber {
                 `${card.dynamic ? card.dynamic + "\n" : ""} ` +
                 videoText
             );
-            // } else {
-            //     // TODO 转发视频（？）
-            //     const comment = card.dynamic;
-            //     return "转发了视频" + `转发评论：${comment}\n原` + videoText;
-            // }
         } else if (card.origin) {
             // TODO 转发动态（？）
             // origin.item
@@ -131,6 +126,23 @@ class DynamicSubscriber {
                 return dynamicStr;
             } else {
                 // 原创文本
+                // card.origin_image_urls 预览图列表
+                if (card.summary) {
+                    let dynamicStr = `发布了专栏 ${card.title}\n`;
+                    if (
+                        card.origin_image_urls &&
+                        card.origin_image_urls.length
+                    ) {
+                        const urls: any[] = card.origin_image_urls;
+                        const picCQs = urls
+                            .map((pic) => {
+                                return `[CQ:image,file=${pic.img_src}]`;
+                            })
+                            .reduce((prev, cur) => prev + "\n" + cur);
+                        dynamicStr += picCQs;
+                    }
+                    return dynamicStr;
+                }
                 return `发布了动态 ${itm.content}`;
             }
         }

@@ -36,17 +36,24 @@ abstract class Subscriber {
             log.warn(`${this.tableName}数据库里没有记录`);
             return null;
         }
-        const total: number = (
-            await dbHandler.select(
-                [this.tableName],
-                ["count(hit_count) as total"],
-                []
-            )
-        ).total;
+        // const total: number = (
+        //     await dbHandler.select(
+        //         [this.tableName],
+        //         ["count(hit_count) as total"],
+        //         []
+        //     )
+        // ).total;
+        const logp = recs.map((it: Rec) => {
+            // return it.hit_count / total; //均匀
+            return Math.log(it.hit_count);
+        });
+        const sumup = logp.reduce((a, b) => {
+            return a + b;
+        });
         return sampler.sampleWithDist(
             recs,
-            recs.map((it: Rec) => {
-                return it.hit_count / total;
+            logp.map((it: number) => {
+                return it / sumup;
             })
         );
     }

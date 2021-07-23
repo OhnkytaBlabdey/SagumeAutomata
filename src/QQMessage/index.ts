@@ -2,7 +2,6 @@
 import log from "../Logger";
 import wsClient from "../WebsocketHandler";
 import config from "../../config/config.json";
-import configExample from "../../config/template/config.json";
 import { Config } from "./config.interface";
 import EventEmitter from "events";
 import { env } from "process";
@@ -30,6 +29,7 @@ class QQMessage {
     private cmd: command;
     private db = dbm;
     private cnt = 0;
+    protected qqid: number;
     private static instance: QQMessage;
 
     constructor() {
@@ -126,14 +126,26 @@ class QQMessage {
                 conf = config;
             } else {
                 log.warn("配置不正确，改为使用默认配置运行");
-                conf = configExample;
+                conf = {
+                    cookie: "",
+                    onebot_host: "",
+                    onebot_port: 1,
+                    onebot_pw: "",
+                    qq: 1,
+                };
             }
         } else if (env.NODE_ENV === "dev") {
             log.warn("使用Dev配置");
             conf = config;
         } else {
             log.warn("使用默认配置");
-            conf = configExample;
+            conf = conf = {
+                cookie: "",
+                onebot_host: "",
+                onebot_port: 1,
+                onebot_pw: "",
+                qq: 1,
+            };
         }
 
         this.wsc = new wsClient(
@@ -147,9 +159,15 @@ class QQMessage {
         process.on("exit", () => {
             this.wsc.close();
         });
+        this.qqid = conf.qq;
     }
-    public static getInstance() {
+    public static async getInstance() {
         this.instance || (this.instance = new QQMessage());
+        await new Promise<void>((res) => {
+            setTimeout(() => {
+                res();
+            }, 2000);
+        });
         return this.instance;
     }
 
@@ -165,6 +183,10 @@ class QQMessage {
                 },
             })
         );
+    }
+
+    public getId() {
+        return this.qqid;
     }
 
     public async sendToGroupSync(groupId: number, msg: string) {
@@ -195,4 +217,5 @@ class QQMessage {
         });
     }
 }
-export default QQMessage.getInstance();
+const qq = QQMessage.getInstance();
+export default qq;

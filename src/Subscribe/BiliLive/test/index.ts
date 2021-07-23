@@ -1,7 +1,7 @@
 import live from "../";
 import log from "../../../Logger";
 async function main() {
-    let lv = await live;
+    const lv = await live;
 
     setTimeout(async () => {
         // await lv.removeSubByName(251567869, "👴");

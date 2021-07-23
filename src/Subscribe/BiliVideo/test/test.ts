@@ -1,7 +1,7 @@
 import video from "../";
 import log from "../../../Logger";
 async function main() {
-    let av = await video;
+    const av = await video;
     // await av.removeSubByName(123456, "红科搬");
     setTimeout(async () => {
         await av.removeSubByName(905253381, "红科搬");

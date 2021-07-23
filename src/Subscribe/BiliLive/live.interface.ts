@@ -1,4 +1,6 @@
-export interface liveRec {
+/* eslint-disable camelcase */
+import { Info, Rec } from "../subscriber.interface";
+export interface liveRec extends Rec {
     before_update: number;
     group_id: number;
     hit_count: number;
@@ -7,7 +9,7 @@ export interface liveRec {
     uid: number;
 }
 
-export interface liveInfo {
+export interface liveInfo extends Info {
     cover: string;
     liveStatus: number;
     online: number;

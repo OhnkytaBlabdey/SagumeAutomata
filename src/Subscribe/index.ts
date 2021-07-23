@@ -65,7 +65,7 @@ abstract class Subscriber {
             ["*"],
             ["group_id=" + groupId, "uid=" + uid]
         );
-        if (chk && chk.length && chk.length > 0) {
+        if (chk) {
             log.error(`已经添加过该${this.actionName}订阅了`);
             (await QQMessage).sendToGroup(
                 groupId,

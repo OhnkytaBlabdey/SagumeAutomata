@@ -1,4 +1,5 @@
-export interface videoRec {
+import { Info, Rec } from "../subscriber.interface";
+export interface videoRec extends Rec {
     group_id: number;
     uid: number;
     name: string;
@@ -7,7 +8,7 @@ export interface videoRec {
     before_update: number;
 }
 
-export interface videoInfo {
+export interface videoInfo extends Info {
     av: number;
     cover: string;
     desc: string;

@@ -4,9 +4,8 @@ import log from "../../Logger";
 import { RequesterResponseType } from "../../Requester/interface";
 import QQMessage from "../../QQMessage";
 import { videoInfo, videoRec } from "./video.interface";
-import sampler from "../../Util/sampler";
 import { DBText } from "../../Util/Text";
-
+import Subscriber from "..";
 /**
  * 订阅B站的视频
  */
@@ -17,17 +16,18 @@ import { DBText } from "../../Util/Text";
  */
 
 /**
- * 表示查询的结果
+ * 订阅视频
  */
-interface DBRes {
-    lastInsertRowid: number;
-    changes: number;
-}
-class videoSubscriber {
-    private static tableName = "bili_video";
+class videoSubscriber extends Subscriber {
     private static __instance: videoSubscriber;
+    tableName = "bili_video";
+    actionName = "视频";
+    flagCol = "latest_av";
+    constructor() {
+        super();
+    }
 
-    private async getLatestVideo(uid: number) {
+    getLatestInfo(uid: number) {
         return new Promise<videoInfo>((res, rej) => {
             req.get({
                 url: "https://api.bilibili.com/x/space/arc/search",
@@ -72,42 +72,16 @@ class videoSubscriber {
                 });
         });
     }
-    private async sampleRec(): Promise<videoRec | null> {
-        // 获取每个记录的命中次数
-        const recs: videoRec[] = await dbHandler.select(
-            [videoSubscriber.tableName],
-            ["*"],
-            [],
-            true
-        );
-        if (recs.length == 0) {
-            log.warn("数据库里没有记录");
-            return null;
-        }
-        const total: number = (
-            await dbHandler.select(
-                [videoSubscriber.tableName],
-                ["count(hit_count) as total"],
-                []
-            )
-        ).total;
-        return sampler.sampleWithDist(
-            recs,
-            recs.map((it: videoRec) => {
-                return it.hit_count / total;
-            })
-        );
-    }
 
     public run(): void {
         setInterval(async () => {
-            const rec = await this.sampleRec();
+            const rec = (await this.sampleRec()) as videoRec;
             if (rec == null) {
                 return;
             }
             let info: videoInfo;
             try {
-                info = await this.getLatestVideo(rec.uid);
+                info = await this.getLatestInfo(rec.uid);
             } catch (error) {
                 if (error) {
                     log.warn(error.errMessage ? error.errMessage : error);
@@ -129,27 +103,27 @@ class videoSubscriber {
                 // 命中次数增加
                 dbHandler
                     .update(
-                        videoSubscriber.tableName,
+                        this.tableName,
                         [
                             {
                                 k: "hit_count",
                                 v: "hit_count+1",
                             },
                             {
-                                k: "latest_av",
+                                k: this.flagCol,
                                 v: info.av,
                             },
                         ],
                         [
                             `uid=${DBText(rec.uid.toString())}`,
-                            `latest_av!=${info.av}`,
+                            `${this.flagCol}!=${info.av}`,
                         ]
                     )
                     .then(async (res) => {
                         log.info(res);
                         // log.info("通知更新");
                         const recs: videoRec[] = await dbHandler.select(
-                            [videoSubscriber.tableName],
+                            [this.tableName],
                             ["*"],
                             [`uid=${rec.uid}`, `before_update!=${info.av}`],
                             true
@@ -166,7 +140,7 @@ class videoSubscriber {
                         });
                         dbHandler
                             .update(
-                                videoSubscriber.tableName,
+                                this.tableName,
                                 [
                                     {
                                         k: "before_update",
@@ -197,114 +171,7 @@ class videoSubscriber {
         }
         return this.__instance;
     }
-    public async addSub(groupId: number, uid: number, name: string) {
-        log.debug("将要添加视频订阅");
-        log.debug("group:", groupId, ", uid:", uid, " ,name:", name);
-        const chk = await dbHandler.select(
-            [videoSubscriber.tableName],
-            ["bili_video_id"],
-            ["group_id=" + groupId, "uid=" + uid]
-        );
-        if (chk) {
-            log.error("已经添加过该视频订阅了");
-            QQMessage.sendToGroup(groupId, "已经添加过该视频订阅了");
-            return;
-        }
-        dbHandler
-            .insertSingle(
-                videoSubscriber.tableName,
-                [
-                    "group_id",
-                    "uid",
-                    "name",
-                    "hit_count",
-                    "latest_av",
-                    "before_update",
-                ],
-                [groupId, uid, name, 1, 0, 0]
-            )
-            .then((res) => {
-                if (res) {
-                    //回复订阅成功
-                    log.info("添加视频订阅成功");
-                    QQMessage.sendToGroup(groupId, `添加${uid}视频订阅成功`);
-                }
-            })
-            .catch((rej) => {
-                if (rej) {
-                    log.warn("添加视频订阅失败，原因");
-                    log.warn(rej);
-                    QQMessage.sendToGroup(groupId, "添加视频订阅失败");
-                }
-            });
-    }
 
-    public async removeSubByUid(groupId: number, uid: number) {
-        log.debug("将要移除视频订阅");
-        log.debug("group:", groupId, ", uid:", uid);
-        dbHandler
-            .delete(videoSubscriber.tableName, [
-                "`group_id`=" + groupId,
-                "`uid`=" + uid,
-            ])
-            .then((res) => {
-                if ((<DBRes>res).changes > 0) {
-                    //回复移除成功
-                    log.info(uid, "视频订阅已移除", (<DBRes>res).changes);
-                    QQMessage.sendToGroup(groupId, uid + "视频订阅已移除");
-                } else {
-                    log.warn(
-                        "视频移除失败，该群没有订阅uid为[",
-                        uid,
-                        "]的up主"
-                    );
-                    QQMessage.sendToGroup(
-                        groupId,
-                        `视频移除失败，该群没有订阅uid为[${uid}]的up主`
-                    );
-                }
-            })
-            .catch((rej) => {
-                if (rej) {
-                    log.warn(uid, "视频订阅移除失败，原因");
-                    log.warn(rej);
-                    QQMessage.sendToGroup(groupId, "视频订阅移除失败");
-                }
-            });
-    }
-    public async removeSubByName(groupId: number, name: string) {
-        log.debug("将要移除视频订阅");
-        log.debug("group:", groupId, ", name:", name);
-        dbHandler
-            .delete(videoSubscriber.tableName, [
-                "`group_id` = " + groupId,
-                "`name` = '" + name + "'",
-            ])
-            .then((res) => {
-                if ((<DBRes>res).changes > 0) {
-                    //回复移除成功
-                    log.info(name, "视频订阅已移除", (<DBRes>res).changes);
-                    QQMessage.sendToGroup(groupId, name + "视频订阅已移除");
-                } else {
-                    log.info(
-                        "视频移除失败，该群没有订阅名为[",
-                        name,
-                        "]的up主"
-                    );
-                    QQMessage.sendToGroup(
-                        groupId,
-                        `视频移除失败，该群没有订阅name为[${name}]的up主`
-                    );
-                }
-            })
-            .catch((rej) => {
-                if (rej) {
-                    log.warn(name, "视频订阅移除失败，原因");
-                    log.warn(rej);
-                    QQMessage.sendToGroup(groupId, "视频订阅移除失败");
-                }
-            });
-    }
     public async test(): Promise<void> {
         // log.info("选中的是", JSON.stringify(await this.sampleRec()));
         this.run();

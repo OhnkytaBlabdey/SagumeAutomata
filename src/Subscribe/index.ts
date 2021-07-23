@@ -14,7 +14,7 @@ import sampler from "../Util/sampler";
 /**
  * 表示查询的结果
  */
-interface DBRes {
+export interface DBRes {
     lastInsertRowid: number;
     changes: number;
 }

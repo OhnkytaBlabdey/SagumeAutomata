@@ -15,12 +15,9 @@ import Subscriber from "..";
  */
 
 /**
- * 表示查询的结果
+ * 订阅直播
  */
-interface DBRes {
-    lastInsertRowid: number;
-    changes: number;
-}
+
 class liveSubscriber extends Subscriber {
     private static __instance: liveSubscriber;
     tableName = "bili_live";
@@ -281,111 +278,7 @@ class liveSubscriber extends Subscriber {
             res(liveSubscriber.__instance);
         });
     }
-    public async addSub(groupId: number, uid: number, name: string) {
-        log.debug("将要添加直播订阅");
-        log.debug("group:", groupId, ", uid:", uid, " ,name:", name);
-        const chk = await dbHandler.select(
-            [this.tableName],
-            ["bili_live_id"],
-            ["group_id=" + groupId, "uid=" + uid]
-        );
-        if (chk) {
-            log.error("已经添加过该直播订阅了");
-            QQMessage.sendToGroup(groupId, "已经添加过该直播订阅了");
-            return;
-        }
-        dbHandler
-            .insertSingle(
-                this.tableName,
-                [
-                    "group_id",
-                    "uid",
-                    "name",
-                    "hit_count",
-                    "liveStatus",
-                    "before_update",
-                ],
-                [groupId, uid, name, 1, 0, 0]
-            )
-            .then((res) => {
-                if (res) {
-                    //回复订阅成功
-                    log.info("添加直播订阅成功");
-                    QQMessage.sendToGroup(groupId, `添加${name}直播订阅成功`);
-                }
-            })
-            .catch((rej) => {
-                if (rej) {
-                    log.warn("添加直播订阅失败，原因");
-                    log.warn(rej);
-                    QQMessage.sendToGroup(groupId, "添加直播订阅失败");
-                }
-            });
-    }
 
-    public async removeSubByUid(groupId: number, uid: number) {
-        log.debug("将要移除直播订阅");
-        log.debug("group:", groupId, ", uid:", uid);
-        dbHandler
-            .delete(this.tableName, ["`group_id`=" + groupId, "`uid`=" + uid])
-            .then((res) => {
-                if ((<DBRes>res).changes > 0) {
-                    //回复移除成功
-                    log.info(uid, "直播订阅已移除", (<DBRes>res).changes);
-                    QQMessage.sendToGroup(groupId, uid + "直播订阅已移除");
-                } else {
-                    log.warn(
-                        "直播移除失败，该群没有订阅uid为[",
-                        uid,
-                        "]的up主"
-                    );
-                    QQMessage.sendToGroup(
-                        groupId,
-                        `直播移除失败，该群没有订阅uid为[${uid}]的up主`
-                    );
-                }
-            })
-            .catch((rej) => {
-                if (rej) {
-                    log.warn(uid, "直播订阅移除失败，原因");
-                    log.warn(rej);
-                    QQMessage.sendToGroup(groupId, "直播订阅移除失败");
-                }
-            });
-    }
-    public async removeSubByName(groupId: number, name: string) {
-        log.debug("将要移除直播订阅");
-        log.debug("group:", groupId, ", name:", name);
-        dbHandler
-            .delete(this.tableName, [
-                "`group_id` = " + groupId,
-                "`name` = '" + name + "'",
-            ])
-            .then((res) => {
-                if ((<DBRes>res).changes > 0) {
-                    //回复移除成功
-                    log.info(name, "直播订阅已移除", (<DBRes>res).changes);
-                    QQMessage.sendToGroup(groupId, name + "直播订阅已移除");
-                } else {
-                    log.info(
-                        "直播移除失败，该群没有订阅名为[",
-                        name,
-                        "]的up主"
-                    );
-                    QQMessage.sendToGroup(
-                        groupId,
-                        `直播移除失败，该群没有订阅名为[${name}]的up主`
-                    );
-                }
-            })
-            .catch((rej) => {
-                if (rej) {
-                    log.warn(name, "直播订阅移除失败，原因");
-                    log.warn(rej);
-                    QQMessage.sendToGroup(groupId, "直播订阅移除失败");
-                }
-            });
-    }
     public async test(): Promise<void> {
         this.run();
     }

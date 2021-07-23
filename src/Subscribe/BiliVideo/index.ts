@@ -136,8 +136,8 @@ class videoSubscriber extends Subscriber {
                             [`uid=${rec.uid}`, `before_update!=${info.av}`],
                             true
                         );
-                        recs.forEach((av: videoRec) => {
-                            QQMessage.sendToGroup(
+                        recs.forEach(async (av: videoRec) => {
+                            (await QQMessage).sendToGroup(
                                 av.group_id,
                                 `${av.name} 更新了视频 ${info.title}\nb23.tv/av${av.latest_av}\n[CQ:image,file=${info.cover}]\n` +
                                     `发布日期 ${info.pubdate} 视频时长【${info.length}】\n` +

@@ -120,8 +120,8 @@ class liveSubscriber extends Subscriber {
                             ],
                             true
                         );
-                        recs.forEach((live: liveRec) => {
-                            QQMessage.sendToGroup(
+                        recs.forEach(async (live: liveRec) => {
+                            (await QQMessage).sendToGroup(
                                 live.group_id,
                                 `${live.name} 的直播开始了\n${info.url}\n[CQ:image,file=${info.cover}]\n` +
                                     `直播间人气 ${info.online} 直播间标题【${info.title}】\n主播id${live.uid}`
@@ -175,8 +175,8 @@ class liveSubscriber extends Subscriber {
                             ],
                             true
                         );
-                        recs.forEach((live: liveRec) => {
-                            QQMessage.sendToGroup(
+                        recs.forEach(async (live: liveRec) => {
+                            (await QQMessage).sendToGroup(
                                 live.group_id,
                                 `${live.name} 的直播结束了\n${info.url}\n[CQ:image,file=${info.cover}]\n` +
                                     `直播间人气 ${info.online} 直播间标题【${info.title}】\n主播id${live.uid}`
@@ -230,8 +230,8 @@ class liveSubscriber extends Subscriber {
                             ],
                             true
                         );
-                        recs.forEach((live: liveRec) => {
-                            QQMessage.sendToGroup(
+                        recs.forEach(async (live: liveRec) => {
+                            (await QQMessage).sendToGroup(
                                 live.group_id,
                                 `${live.name} 的直播进入轮播\n${info.url}\n[CQ:image,file=${info.cover}]\n` +
                                     `直播间人气 ${info.online} 直播间标题【${info.title}】\n主播id${live.uid}`

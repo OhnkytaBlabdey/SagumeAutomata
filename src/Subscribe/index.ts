@@ -67,7 +67,7 @@ abstract class Subscriber {
         );
         if (chk && chk.length && chk.length > 0) {
             log.error(`已经添加过该${this.actionName}订阅了`);
-            QQMessage.sendToGroup(
+            (await QQMessage).sendToGroup(
                 groupId,
                 `已经添加过该${this.actionName}订阅了`
             );
@@ -86,21 +86,21 @@ abstract class Subscriber {
                 ],
                 [groupId, uid, name, 1, 0, 0]
             )
-            .then((res) => {
+            .then(async (res) => {
                 if (res) {
                     //回复订阅成功
                     log.info(`添加${this.actionName}订阅成功`);
-                    QQMessage.sendToGroup(
+                    (await QQMessage).sendToGroup(
                         groupId,
                         `添加${name}${this.actionName}订阅成功`
                     );
                 }
             })
-            .catch((rej) => {
+            .catch(async (rej) => {
                 if (rej) {
                     log.warn(`添加${this.actionName}订阅失败，原因`);
                     log.warn(rej);
-                    QQMessage.sendToGroup(
+                    (await QQMessage).sendToGroup(
                         groupId,
                         `添加${this.actionName}订阅失败`
                     );
@@ -113,7 +113,7 @@ abstract class Subscriber {
         log.debug("group:", groupId, ", uid:", uid);
         dbHandler
             .delete(this.tableName, ["`group_id`=" + groupId, "`uid`=" + uid])
-            .then((res) => {
+            .then(async (res) => {
                 if ((<DBRes>res).changes > 0) {
                     //回复移除成功
                     log.info(
@@ -121,7 +121,7 @@ abstract class Subscriber {
                         `${this.actionName}订阅已移除`,
                         (<DBRes>res).changes
                     );
-                    QQMessage.sendToGroup(
+                    (await QQMessage).sendToGroup(
                         groupId,
                         uid + `${this.actionName}订阅已移除`
                     );
@@ -129,17 +129,17 @@ abstract class Subscriber {
                     log.warn(
                         `${this.actionName}移除失败，该群没有订阅uid为[${uid}]的up主`
                     );
-                    QQMessage.sendToGroup(
+                    (await QQMessage).sendToGroup(
                         groupId,
                         `${this.actionName}移除失败，该群没有订阅uid为[${uid}]的up主`
                     );
                 }
             })
-            .catch((rej) => {
+            .catch(async (rej) => {
                 if (rej) {
                     log.warn(uid, `${this.actionName}订阅移除失败，原因`);
                     log.warn(rej);
-                    QQMessage.sendToGroup(
+                    (await QQMessage).sendToGroup(
                         groupId,
                         `${this.actionName}订阅移除失败`
                     );
@@ -154,7 +154,7 @@ abstract class Subscriber {
                 "`group_id` = " + groupId,
                 "`name` = '" + name + "'",
             ])
-            .then((res) => {
+            .then(async (res) => {
                 if ((<DBRes>res).changes > 0) {
                     //回复移除成功
                     log.info(
@@ -162,7 +162,7 @@ abstract class Subscriber {
                         `${this.actionName}订阅已移除`,
                         (<DBRes>res).changes
                     );
-                    QQMessage.sendToGroup(
+                    (await QQMessage).sendToGroup(
                         groupId,
                         name + `${this.actionName}订阅已移除`
                     );
@@ -170,17 +170,17 @@ abstract class Subscriber {
                     log.info(
                         `${this.actionName}移除失败，该群没有订阅名为[${name}]的up主`
                     );
-                    QQMessage.sendToGroup(
+                    (await QQMessage).sendToGroup(
                         groupId,
                         `${this.actionName}移除失败，该群没有订阅名为[${name}]的up主`
                     );
                 }
             })
-            .catch((rej) => {
+            .catch(async (rej) => {
                 if (rej) {
                     log.warn(name, `${this.actionName}订阅移除失败，原因`);
                     log.warn(rej);
-                    QQMessage.sendToGroup(
+                    (await QQMessage).sendToGroup(
                         groupId,
                         `${this.actionName}订阅移除失败`
                     );

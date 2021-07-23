@@ -11,6 +11,7 @@ import addDynamicSubscribe from "./command/dynamicAdd";
 import removeDynamicSubscribeByUid from "./command/dynamicRemoveByUid";
 import removeDynamicSubscribeByName from "./command/dynamicRemoveByName";
 import setu from "./command/setu";
+import help from "./command/help";
 class command {
     private cmds: Cmd[];
     constructor() {
@@ -24,6 +25,7 @@ class command {
         this.cmds.push(addDynamicSubscribe);
         this.cmds.push(removeDynamicSubscribeByName);
         this.cmds.push(removeDynamicSubscribeByUid);
+        this.cmds.push(help);
         this.cmds.push(setu);
     }
     public async dispatchCommand(

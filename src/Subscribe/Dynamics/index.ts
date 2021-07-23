@@ -210,8 +210,8 @@ class DynamicSubscriber extends Subscriber {
                             ],
                             true
                         );
-                        recs.forEach((dynamic: dynamicRec) => {
-                            QQMessage.sendToGroup(
+                        recs.forEach(async (dynamic: dynamicRec) => {
+                            (await QQMessage).sendToGroup(
                                 dynamic.group_id,
                                 `${dynamic.name}${this.parseDynamicCardtoString(
                                     info.card

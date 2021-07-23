@@ -171,6 +171,9 @@ class DynamicSubscriber extends Subscriber {
             if (rec.latest_dynamic_id == info.dynamic_id) {
                 log.debug(rec.uid, "最新动态没有变化");
                 return;
+            } else if (rec.ctime > info.timestamp) {
+                log.info(rec.uid, "删除了动态");
+                return;
             } else {
                 // 命中次数增加
                 dbHandler
@@ -180,6 +183,10 @@ class DynamicSubscriber extends Subscriber {
                             {
                                 k: "hit_count",
                                 v: "hit_count+1",
+                            },
+                            {
+                                k: "ctime",
+                                v: info.timestamp,
                             },
                             {
                                 k: this.flagCol,

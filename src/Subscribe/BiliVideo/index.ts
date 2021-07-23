@@ -58,6 +58,7 @@ class videoSubscriber extends Subscriber {
                                         item.created * 1000
                                     ).toLocaleDateString("zh-cn"),
                                     title: item.title, //string
+                                    timestamp: item.created,
                                 } as videoInfo);
                                 return;
                             }
@@ -99,6 +100,9 @@ class videoSubscriber extends Subscriber {
             if (rec.latest_av == info.av) {
                 log.debug(rec.uid, "最新视频没有变化");
                 return;
+            } else if (rec.ctime > info.timestamp) {
+                log.info(rec.uid, "删除了视频");
+                return;
             } else {
                 // 命中次数增加
                 dbHandler
@@ -108,6 +112,10 @@ class videoSubscriber extends Subscriber {
                             {
                                 k: "hit_count",
                                 v: "hit_count+1",
+                            },
+                            {
+                                k: "ctime",
+                                v: info.timestamp,
                             },
                             {
                                 k: this.flagCol,

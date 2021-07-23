@@ -98,6 +98,11 @@
                     "cName": "before_update",
                     "cDataType": "INTEGER",
                     "attributes": ["NOT NULL"]
+                },
+                {
+                    "cName": "ctime",
+                    "cDataType": "INTEGER",
+                    "attributes": ["default 0"]
                 }
             ]
         },
@@ -178,6 +183,11 @@
                     "cName": "before_update",
                     "cDataType": "INTEGER",
                     "attributes": ["NOT NULL"]
+                },
+                {
+                    "cName": "ctime",
+                    "cDataType": "INTEGER",
+                    "attributes": ["default 0"]
                 }
             ]
         },

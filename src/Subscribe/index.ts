@@ -27,18 +27,18 @@ abstract class Subscriber {
     protected async sampleRec(): Promise<Rec | null> {
         // 获取每个记录的命中次数
         const recs: Rec[] = await dbHandler.select(
-            [this.actionName],
+            [this.tableName],
             ["*"],
             [],
             true
         );
         if (recs.length == 0) {
-            log.warn(`${this.actionName}数据库里没有记录`);
+            log.warn(`${this.tableName}数据库里没有记录`);
             return null;
         }
         const total: number = (
             await dbHandler.select(
-                [this.actionName],
+                [this.tableName],
                 ["count(hit_count) as total"],
                 []
             )
@@ -61,7 +61,7 @@ abstract class Subscriber {
         log.debug(`将要添加${this.actionName}订阅`);
         log.debug("group:", groupId, ", uid:", uid, " ,name:", name);
         const chk = await dbHandler.select(
-            [this.actionName],
+            [this.tableName],
             ["*"],
             ["group_id=" + groupId, "uid=" + uid]
         );
@@ -75,7 +75,7 @@ abstract class Subscriber {
         }
         dbHandler
             .insertSingle(
-                this.actionName,
+                this.tableName,
                 [
                     "group_id",
                     "uid",
@@ -112,7 +112,7 @@ abstract class Subscriber {
         log.debug(`将要移除${this.actionName}订阅`);
         log.debug("group:", groupId, ", uid:", uid);
         dbHandler
-            .delete(this.actionName, ["`group_id`=" + groupId, "`uid`=" + uid])
+            .delete(this.tableName, ["`group_id`=" + groupId, "`uid`=" + uid])
             .then((res) => {
                 if ((<DBRes>res).changes > 0) {
                     //回复移除成功
@@ -150,7 +150,7 @@ abstract class Subscriber {
         log.debug(`将要移除订阅${this.actionName}`);
         log.debug("group:", groupId, ", name:", name);
         dbHandler
-            .delete(this.actionName, [
+            .delete(this.tableName, [
                 "`group_id` = " + groupId,
                 "`name` = '" + name + "'",
             ])

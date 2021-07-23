@@ -4,7 +4,7 @@ import log from "../../Logger";
 import { RequesterResponseType } from "../../Requester/interface";
 import QQMessage from "../../QQMessage";
 import { liveRec, liveInfo } from "./live.interface";
-import sampler from "../../Util/sampler";
+import Subscriber from "..";
 /**
  * 订阅B站的直播
  */
@@ -21,11 +21,15 @@ interface DBRes {
     lastInsertRowid: number;
     changes: number;
 }
-class liveSubscriber {
-    private static tableName = "bili_live";
+class liveSubscriber extends Subscriber {
     private static __instance: liveSubscriber;
-
-    private async getRoomInfo(uid: number) {
+    tableName = "bili_live";
+    actionName = "直播";
+    flagCol = "liveStatus";
+    constructor() {
+        super();
+    }
+    getLatestInfo(uid: number) {
         return new Promise<liveInfo>((res, rej) => {
             req.get({
                 url: "https://api.bilibili.com/x/space/acc/info",
@@ -62,42 +66,16 @@ class liveSubscriber {
                 });
         });
     }
-    private async sampleRec(): Promise<liveRec | null> {
-        // 获取每个记录的命中次数
-        const recs: liveRec[] = await dbHandler.select(
-            [liveSubscriber.tableName],
-            ["*"],
-            [],
-            true
-        );
-        if (recs.length == 0) {
-            log.warn("bili live数据库里没有记录");
-            return null;
-        }
-        const total: number = (
-            await dbHandler.select(
-                [liveSubscriber.tableName],
-                ["count(hit_count) as total"],
-                []
-            )
-        ).total;
-        return sampler.sampleWithDist(
-            recs,
-            recs.map((it: liveRec) => {
-                return it.hit_count / total;
-            })
-        );
-    }
 
     public run(): void {
         setInterval(async () => {
-            const rec = await this.sampleRec();
+            const rec = (await this.sampleRec()) as liveRec;
             if (rec == null) {
                 return;
             }
             let info: liveInfo;
             try {
-                info = await this.getRoomInfo(rec.uid);
+                info = await this.getLatestInfo(rec.uid);
             } catch (error) {
                 if (error) {
                     log.warn(error.errMessage ? error.errMessage : error);
@@ -118,23 +96,26 @@ class liveSubscriber {
                 // 命中次数增加
                 dbHandler
                     .update(
-                        liveSubscriber.tableName,
+                        this.tableName,
                         [
                             {
                                 k: "hit_count",
                                 v: "hit_count+1",
                             },
                             {
-                                k: "liveStatus",
+                                k: this.flagCol,
                                 v: info.liveStatus,
                             },
                         ],
-                        [`uid=${rec.uid}`, `liveStatus!=${info.liveStatus}`]
+                        [
+                            `uid=${rec.uid}`,
+                            `${this.flagCol}!=${info.liveStatus}`,
+                        ]
                     )
                     .then(async (res) => {
                         log.info(res);
                         const recs: liveRec[] = await dbHandler.select(
-                            [liveSubscriber.tableName],
+                            [this.tableName],
                             ["*"],
                             [
                                 `uid=${rec.uid}`,
@@ -151,7 +132,7 @@ class liveSubscriber {
                         });
                         dbHandler
                             .update(
-                                liveSubscriber.tableName,
+                                this.tableName,
                                 [
                                     {
                                         k: "before_update",
@@ -177,7 +158,7 @@ class liveSubscriber {
             } else if (info.liveStatus == 0) {
                 dbHandler
                     .update(
-                        liveSubscriber.tableName,
+                        this.tableName,
                         [
                             {
                                 k: "liveStatus",
@@ -189,7 +170,7 @@ class liveSubscriber {
                     .then(async (res) => {
                         log.info(res);
                         const recs: liveRec[] = await dbHandler.select(
-                            [liveSubscriber.tableName],
+                            [this.tableName],
                             ["*"],
                             [
                                 `uid=${rec.uid}`,
@@ -206,7 +187,7 @@ class liveSubscriber {
                         });
                         dbHandler
                             .update(
-                                liveSubscriber.tableName,
+                                this.tableName,
                                 [
                                     {
                                         k: "before_update",
@@ -232,7 +213,7 @@ class liveSubscriber {
             } else if (info.liveStatus == 2) {
                 dbHandler
                     .update(
-                        liveSubscriber.tableName,
+                        this.tableName,
                         [
                             {
                                 k: "liveStatus",
@@ -244,7 +225,7 @@ class liveSubscriber {
                     .then(async (res) => {
                         log.info(res);
                         const recs: liveRec[] = await dbHandler.select(
-                            [liveSubscriber.tableName],
+                            [this.tableName],
                             ["*"],
                             [
                                 `uid=${rec.uid}`,
@@ -261,7 +242,7 @@ class liveSubscriber {
                         });
                         dbHandler
                             .update(
-                                liveSubscriber.tableName,
+                                this.tableName,
                                 [
                                     {
                                         k: "before_update",
@@ -288,19 +269,23 @@ class liveSubscriber {
         }, 6000);
     }
 
-    public static async getInstance(): Promise<liveSubscriber> {
-        if (!this.__instance) {
-            this.__instance = new liveSubscriber();
-            QQMessage;
-            await dbHandler.init();
-        }
-        return this.__instance;
+    public static getInstance(): Promise<liveSubscriber> {
+        return new Promise((res) => {
+            if (!liveSubscriber.__instance) {
+                liveSubscriber.__instance = new liveSubscriber();
+                QQMessage;
+                dbHandler.init().then(() => {
+                    res(liveSubscriber.__instance);
+                });
+            }
+            res(liveSubscriber.__instance);
+        });
     }
     public async addSub(groupId: number, uid: number, name: string) {
         log.debug("将要添加直播订阅");
         log.debug("group:", groupId, ", uid:", uid, " ,name:", name);
         const chk = await dbHandler.select(
-            [liveSubscriber.tableName],
+            [this.tableName],
             ["bili_live_id"],
             ["group_id=" + groupId, "uid=" + uid]
         );
@@ -311,7 +296,7 @@ class liveSubscriber {
         }
         dbHandler
             .insertSingle(
-                liveSubscriber.tableName,
+                this.tableName,
                 [
                     "group_id",
                     "uid",
@@ -342,10 +327,7 @@ class liveSubscriber {
         log.debug("将要移除直播订阅");
         log.debug("group:", groupId, ", uid:", uid);
         dbHandler
-            .delete(liveSubscriber.tableName, [
-                "`group_id`=" + groupId,
-                "`uid`=" + uid,
-            ])
+            .delete(this.tableName, ["`group_id`=" + groupId, "`uid`=" + uid])
             .then((res) => {
                 if ((<DBRes>res).changes > 0) {
                     //回复移除成功
@@ -375,7 +357,7 @@ class liveSubscriber {
         log.debug("将要移除直播订阅");
         log.debug("group:", groupId, ", name:", name);
         dbHandler
-            .delete(liveSubscriber.tableName, [
+            .delete(this.tableName, [
                 "`group_id` = " + groupId,
                 "`name` = '" + name + "'",
             ])

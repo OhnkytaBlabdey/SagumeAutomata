@@ -81,7 +81,39 @@ class warpLogger {
         }
         return warpLogger.__warpLogger;
     }
-    public debug(obj: unknown, ...para: unknown[]): void {
+    protected static getCallerFileNameAndLine(): string {
+        function getException() {
+            try {
+                throw Error("");
+            } catch (err) {
+                return err;
+            }
+        }
+        const err = getException();
+        const stack = err.stack;
+        const stackArr = stack.split("\n");
+        let callerLogIndex = 0;
+        for (let i = 0; i < stackArr.length; i++) {
+            if (
+                stackArr[i].indexOf("warpLogger") > 0 &&
+                i + 1 < stackArr.length
+            ) {
+                callerLogIndex = i + 1;
+                break;
+            }
+        }
+        if (callerLogIndex !== 0) {
+            const callerStackLine = stackArr[callerLogIndex + 1];
+            // return callerStackLine;
+            return `[file:///${callerStackLine.substring(
+                callerStackLine.indexOf("(") + 1,
+                callerStackLine.lastIndexOf(")")
+            )}]`.replace(RegExp(`\\${path.sep}`, "g"), "/");
+        } else {
+            return "[-]";
+        }
+    }
+    public debug(obj: any, ...para: any[]): void {
         if (!this.__logger) {
             throw new Error("未初始化");
         }
@@ -91,7 +123,7 @@ class warpLogger {
             para.join(" ")
         );
     }
-    public info(obj: unknown, ...para: unknown[]): void {
+    public info(obj: any, ...para: any[]): void {
         if (!this.__logger) {
             throw new Error("未初始化");
         }
@@ -101,32 +133,35 @@ class warpLogger {
             para.join(" ")
         );
     }
-    public warn(obj: unknown, ...para: unknown[]): void {
+    public warn(obj: any, ...para: any[]): void {
         if (!this.__logger) {
             throw new Error("未初始化");
         }
         this.__logger.warn(
             util.format("[warn]<%s>", new Date().toLocaleString("zh-CN")),
+            warpLogger.getCallerFileNameAndLine(),
             obj,
             para.join(" ")
         );
     }
-    public error(obj: unknown, ...para: unknown[]): void {
+    public error(obj: any, ...para: any[]): void {
         if (!this.__logger) {
             throw new Error("未初始化");
         }
         this.__logger.error(
             util.format("[error]<%s>", new Date().toLocaleString("zh-CN")),
+            warpLogger.getCallerFileNameAndLine(),
             obj,
             para.join(" ")
         );
     }
-    public fatal(obj: unknown, ...para: unknown[]): void {
+    public fatal(obj: any, ...para: any[]): void {
         if (!this.__logger) {
             throw new Error("未初始化");
         }
         this.__logger.fatal(
             util.format("[fatal]<%s>", new Date().toLocaleString("zh-CN")),
+            warpLogger.getCallerFileNameAndLine(),
             obj,
             para.join(" ")
         );

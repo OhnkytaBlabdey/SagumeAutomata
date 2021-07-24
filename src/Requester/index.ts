@@ -1,11 +1,11 @@
-import axios, {AxiosRequestConfig, AxiosResponse, AxiosError} from "axios";
+import axios, { AxiosRequestConfig, AxiosResponse, AxiosError } from "axios";
 import axiosConf from "./axios.config";
 import {
     RequesterErrorType,
     RequesterGetArgs,
     RequesterPostArgs,
     RequesterResponseType,
-    RequesterStatusCode
+    RequesterStatusCode,
 } from "./interface";
 
 /**
@@ -31,18 +31,18 @@ class Requester {
     private __interceptResponse(): void {
         this.__service.interceptors.response.use(
             (res: AxiosResponse) => {
-                return Promise.resolve(({
+                return Promise.resolve({
                     data: res.data,
-                    status: RequesterStatusCode.DONE
-                }) as RequesterResponseType);
+                    status: RequesterStatusCode.DONE,
+                } as RequesterResponseType);
             },
             (err: AxiosError) => {
-                return Promise.reject(({
+                return Promise.reject({
                     errCode: err.code,
                     errMessage: err.message,
                     status: RequesterStatusCode.ERROR,
-                    detail: err
-                } as RequesterErrorType));
+                    detail: err,
+                } as RequesterErrorType);
             }
         );
     }
@@ -65,25 +65,31 @@ class Requester {
      * @param customConf: AxiosRequestConfig
      * @return Promise<RequesterResponseType | RequesterErrorType>
      */
-    public get(para: RequesterGetArgs, customConf: AxiosRequestConfig = {}): Promise<RequesterResponseType | RequesterErrorType> {
+    public get(
+        para: RequesterGetArgs,
+        customConf: AxiosRequestConfig = {}
+    ): Promise<RequesterResponseType> {
         if (Requester.__instance) {
-            return new Promise<RequesterResponseType | RequesterErrorType>((res, rej) => {
+            return new Promise<RequesterResponseType>((res, rej) => {
                 this.__service({
                     method: "GET",
                     url: para.url,
                     params: para.params,
-                    ...customConf
-                }).then((d: RequesterResponseType) => {
-                    res(d);
-                }, (e: RequesterErrorType) => {
-                    rej(e);
-                });
+                    ...customConf,
+                }).then(
+                    (d: RequesterResponseType) => {
+                        res(d);
+                    },
+                    (e: RequesterErrorType) => {
+                        rej(e);
+                    }
+                );
             });
         } else {
             return Promise.reject({
                 status: RequesterStatusCode.ERROR,
                 errCode: "-1",
-                errMessage: "未调用实例化函数"
+                errMessage: "未调用实例化函数",
             } as RequesterErrorType);
         }
     }
@@ -94,32 +100,38 @@ class Requester {
      * @param customConf: AxiosRequestConfig
      * @return PromiseRequesterResponseType | RequesterErrorType
      */
-    public post(para: RequesterPostArgs, customConf: AxiosRequestConfig = {}): Promise<RequesterResponseType | RequesterErrorType> {
+    public post(
+        para: RequesterPostArgs,
+        customConf: AxiosRequestConfig = {}
+    ): Promise<RequesterResponseType | RequesterErrorType> {
         if (Requester.__instance) {
             Object.assign(customConf, {
                 headers: {
-                    "content-type": para.contentType
+                    "content-type": para.contentType,
+                },
+            });
+            return new Promise<RequesterResponseType | RequesterErrorType>(
+                (res, rej) => {
+                    this.__service({
+                        method: "POST",
+                        url: para.url,
+                        data: para.data,
+                        ...customConf,
+                    }).then(
+                        (d: RequesterResponseType) => {
+                            res(d);
+                        },
+                        (e: RequesterErrorType) => {
+                            rej(e);
+                        }
+                    );
                 }
-            });
-            return new Promise<RequesterResponseType | RequesterErrorType>((res, rej) => {
-                this.__service({
-                    method: "POST",
-                    url: para.url,
-                    data: para.data,
-                    ...customConf
-                }).then(
-                    (d: RequesterResponseType) => {
-                        res(d);
-                    }, (e: RequesterErrorType) => {
-                        rej(e);
-                    }
-                );
-            });
+            );
         } else {
             return Promise.reject({
                 status: RequesterStatusCode.ERROR,
                 errCode: "-1",
-                errMessage: "未调用实例化函数"
+                errMessage: "未调用实例化函数",
             } as RequesterErrorType);
         }
     }

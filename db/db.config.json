@@ -17,6 +17,36 @@
             ]
         },
         {
+            "tName": "group_msg",
+            "columns": [
+                {
+                    "cName": "id",
+                    "cDataType": "INTEGER",
+                    "attributes": ["PRIMARY KEY", "AUTOINCREMENT"]
+                },
+                {
+                    "cName": "group_id",
+                    "cDataType": "INTEGER",
+                    "attributes": []
+                },
+                {
+                    "cName": "user_id",
+                    "cDataType": "INTEGER",
+                    "attributes": []
+                },
+                {
+                    "cName": "time",
+                    "cDataType": "INTEGER",
+                    "attributes": []
+                },
+                {
+                    "cName": "msg",
+                    "cDataType": "TEXT",
+                    "attributes": ["NOT NULL"]
+                }
+            ]
+        },
+        {
             "tName": "mankind",
             "columns": [
                 {
@@ -63,6 +93,101 @@
                     "cName": "latest_av",
                     "cDataType": "INTEGER",
                     "attributes": ["NOT NULL"]
+                },
+                {
+                    "cName": "before_update",
+                    "cDataType": "INTEGER",
+                    "attributes": ["NOT NULL"]
+                },
+                {
+                    "cName": "ctime",
+                    "cDataType": "INTEGER",
+                    "attributes": ["default 0"]
+                }
+            ]
+        },
+        {
+            "tName": "bili_live",
+            "columns": [
+                {
+                    "cName": "bili_live_id",
+                    "cDataType": "INTEGER",
+                    "attributes": ["PRIMARY KEY", "AUTOINCREMENT"]
+                },
+                {
+                    "cName": "group_id",
+                    "cDataType": "INTEGER",
+                    "attributes": ["NOT NULL"]
+                },
+                {
+                    "cName": "uid",
+                    "cDataType": "INTEGER",
+                    "attributes": ["NOT NULL"]
+                },
+                {
+                    "cName": "name",
+                    "cDataType": "TEXT",
+                    "attributes": ["NOT NULL"]
+                },
+                {
+                    "cName": "hit_count",
+                    "cDataType": "INTEGER",
+                    "attributes": ["NOT NULL"]
+                },
+                {
+                    "cName": "liveStatus",
+                    "cDataType": "INTEGER",
+                    "attributes": ["NOT NULL"]
+                },
+                {
+                    "cName": "before_update",
+                    "cDataType": "INTEGER",
+                    "attributes": ["NOT NULL"]
+                }
+            ]
+        },
+        {
+            "tName": "bili_dynamic",
+            "columns": [
+                {
+                    "cName": "bili_dynamic_id",
+                    "cDataType": "INTEGER",
+                    "attributes": ["PRIMARY KEY", "AUTOINCREMENT"]
+                },
+                {
+                    "cName": "group_id",
+                    "cDataType": "INTEGER",
+                    "attributes": ["NOT NULL"]
+                },
+                {
+                    "cName": "uid",
+                    "cDataType": "INTEGER",
+                    "attributes": ["NOT NULL"]
+                },
+                {
+                    "cName": "name",
+                    "cDataType": "TEXT",
+                    "attributes": ["NOT NULL"]
+                },
+                {
+                    "cName": "hit_count",
+                    "cDataType": "INTEGER",
+                    "attributes": ["NOT NULL"]
+                },
+                {
+                    "cName": "latest_dynamic_id",
+                    "cDataType": "INTEGER",
+                    "attributes": ["NOT NULL"]
+                },
+                {
+                    "cName": "before_update",
+                    "cDataType": "INTEGER",
+                    "attributes": ["NOT NULL"]
+                },
+                {
+                    "cName": "ctime",
+                    "cDataType": "INTEGER",
+                    "attributes": ["default 0"]
                 }
             ]
         },

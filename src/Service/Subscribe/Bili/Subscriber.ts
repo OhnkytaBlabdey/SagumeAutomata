@@ -1,8 +1,8 @@
-import dbHandler from "../DBHandler";
-import log from "../Logger";
-import QQMessage from "../QQMessage";
-import { Info, Rec } from "./subscriber.interface";
-import sampler from "../Util/sampler";
+import dbHandler from "../../../DBHandler";
+import log from "../../../Logger";
+import QQMessage from "../../../QQMessage";
+import {Info, Rec} from "./subscriber.interface";
+import sampler from "../../../Util/sampler";
 /**
  * 订阅个人
  */
@@ -18,12 +18,14 @@ export interface DBRes {
     lastInsertRowid: number;
     changes: number;
 }
+
 abstract class Subscriber {
     protected abstract tableName: string;
     protected abstract actionName: string; // 例如‘直播’
     protected abstract flagCol: string; // 例如‘liveStatus’
 
     abstract getLatestInfo(uid: number): Promise<Info>;
+
     protected async sampleRec(): Promise<Rec | null> {
         // 获取每个记录的命中次数
         const recs: Rec[] = await dbHandler.select(
@@ -153,6 +155,7 @@ abstract class Subscriber {
                 }
             });
     }
+
     public async removeSubByName(groupId: number, name: string): Promise<void> {
         log.debug(`将要移除订阅${this.actionName}`);
         log.debug("group:", groupId, ", name:", name);

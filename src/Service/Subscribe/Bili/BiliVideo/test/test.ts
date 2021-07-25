@@ -1,5 +1,5 @@
-import video from "../";
-import log from "../../../Logger";
+import video from "../index";
+import log from "../../../../../Logger";
 async function main() {
     const av = await video;
     // await av.removeSubByName(123456, "红科搬");

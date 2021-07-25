@@ -1,6 +1,6 @@
 import { messageEvent } from "../../QQMessage/event.interface";
 import { cmd } from "../cmd.interface";
-import video from "../../Subscribe/BiliVideo";
+import video from "../../Service/Subscribe/Bili/BiliVideo";
 
 const removeVideoSubscribeByUid: cmd = {
     pattern: /^取消视频订阅\s\d+/,

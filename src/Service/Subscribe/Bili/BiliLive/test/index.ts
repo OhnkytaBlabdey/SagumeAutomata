@@ -1,5 +1,5 @@
-import live from "../";
-import log from "../../../Logger";
+import live from "../index";
+import log from "../../../../../Logger";
 async function main() {
     const lv = await live;
 

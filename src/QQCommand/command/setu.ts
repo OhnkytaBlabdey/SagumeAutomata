@@ -1,7 +1,7 @@
 import { messageEvent } from "../../QQMessage/event.interface";
 import { cmd } from "../cmd.interface";
-import getSetu from "../../Setu";
-import { setuInfo } from "../../Setu/setu.interface";
+import getSetu from "../../Service/Setu";
+import { setuInfo } from "../../Service/Setu/setu.interface";
 import QQMessage from "../../QQMessage";
 
 const setu: cmd = {

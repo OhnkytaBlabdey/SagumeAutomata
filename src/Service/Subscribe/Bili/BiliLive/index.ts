@@ -1,10 +1,10 @@
-import dbHandler from "../../DBHandler";
-import req from "../../Requester";
-import log from "../../Logger";
-import { RequesterResponseType } from "../../Requester/interface";
-import QQMessage from "../../QQMessage";
+import dbHandler from "../../../../DBHandler";
+import req from "../../../../Requester";
+import log from "../../../../Logger";
+import { RequesterResponseType } from "../../../../Requester/interface";
+import QQMessage from "../../../../QQMessage";
 import { liveRec, liveInfo } from "./live.interface";
-import Subscriber from "..";
+import Subscriber from "../Subscriber";
 /**
  * 订阅B站的直播
  */
@@ -18,8 +18,8 @@ import Subscriber from "..";
  * 订阅直播
  */
 
-class liveSubscriber extends Subscriber {
-    private static __instance: liveSubscriber;
+class LiveSubscriber extends Subscriber {
+    private static __instance: LiveSubscriber;
     tableName = "bili_live";
     actionName = "直播";
     flagCol = "liveStatus";
@@ -27,6 +27,7 @@ class liveSubscriber extends Subscriber {
         super();
     }
     getLatestInfo(uid: number) {
+
         return new Promise<liveInfo>((res, rej) => {
             req.get({
                 url: "https://api.bilibili.com/x/space/acc/info",
@@ -120,8 +121,8 @@ class liveSubscriber extends Subscriber {
                             ],
                             true
                         );
-                        recs.forEach(async (live: liveRec) => {
-                            (await QQMessage).sendToGroup(
+                        recs.forEach((live: liveRec) => {
+                            QQMessage.sendToGroup(
                                 live.group_id,
                                 `${live.name} 的直播开始了\n${info.url}\n[CQ:image,file=${info.cover}]\n` +
                                     `直播间人气 ${info.online} 直播间标题【${info.title}】\n主播id${live.uid}`
@@ -175,8 +176,8 @@ class liveSubscriber extends Subscriber {
                             ],
                             true
                         );
-                        recs.forEach(async (live: liveRec) => {
-                            (await QQMessage).sendToGroup(
+                        recs.forEach((live: liveRec) => {
+                            QQMessage.sendToGroup(
                                 live.group_id,
                                 `${live.name} 的直播结束了\n${info.url}\n[CQ:image,file=${info.cover}]\n` +
                                     `直播间人气 ${info.online} 直播间标题【${info.title}】\n主播id${live.uid}`
@@ -230,8 +231,8 @@ class liveSubscriber extends Subscriber {
                             ],
                             true
                         );
-                        recs.forEach(async (live: liveRec) => {
-                            (await QQMessage).sendToGroup(
+                        recs.forEach((live: liveRec) => {
+                            QQMessage.sendToGroup(
                                 live.group_id,
                                 `${live.name} 的直播进入轮播\n${info.url}\n[CQ:image,file=${info.cover}]\n` +
                                     `直播间人气 ${info.online} 直播间标题【${info.title}】\n主播id${live.uid}`
@@ -266,17 +267,11 @@ class liveSubscriber extends Subscriber {
         }, 6000);
     }
 
-    public static getInstance(): Promise<liveSubscriber> {
-        return new Promise((res) => {
-            if (!liveSubscriber.__instance) {
-                liveSubscriber.__instance = new liveSubscriber();
-                QQMessage;
-                dbHandler.init().then(() => {
-                    res(liveSubscriber.__instance);
-                });
-            }
-            res(liveSubscriber.__instance);
-        });
+    public static getInstance(): LiveSubscriber {
+        if (!this.__instance) {
+            this.__instance = new LiveSubscriber();
+        }
+        return this.__instance;
     }
 
     public async test(): Promise<void> {
@@ -284,6 +279,6 @@ class liveSubscriber extends Subscriber {
     }
 }
 
-const subscriber = liveSubscriber.getInstance();
+const subscriber = LiveSubscriber.getInstance();
 
 export default subscriber;

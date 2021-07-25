@@ -12,7 +12,7 @@ import removeDynamicSubscribeByUid from "./command/dynamicRemoveByUid";
 import removeDynamicSubscribeByName from "./command/dynamicRemoveByName";
 import setu from "./command/setu";
 import help from "./command/help";
-class command {
+class Command {
     private cmds: Cmd[];
     constructor() {
         this.cmds = new Array<Cmd>();
@@ -50,4 +50,4 @@ class command {
     }
 }
 
-export default command;
+export default Command;

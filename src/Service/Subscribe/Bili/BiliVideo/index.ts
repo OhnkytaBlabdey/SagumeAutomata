@@ -1,11 +1,11 @@
-import dbHandler from "../../DBHandler";
-import req from "../../Requester";
-import log from "../../Logger";
-import { RequesterResponseType } from "../../Requester/interface";
-import QQMessage from "../../QQMessage";
+import dbHandler from "../../../../DBHandler";
+import req from "../../../../Requester";
+import log from "../../../../Logger";
+import { RequesterResponseType } from "../../../../Requester/interface";
+import QQMessage from "../../../../QQMessage";
 import { videoInfo, videoRec } from "./video.interface";
-import { DBText } from "../../Util/Text";
-import Subscriber from "..";
+import { DBText } from "../../../../Util/Text";
+import Subscriber from "../Subscriber";
 /**
  * 订阅B站的视频
  */
@@ -18,13 +18,20 @@ import Subscriber from "..";
 /**
  * 订阅视频
  */
-class videoSubscriber extends Subscriber {
-    private static __instance: videoSubscriber;
+class VideoSubscriber extends Subscriber {
+    private static __instance: VideoSubscriber;
     tableName = "bili_video";
     actionName = "视频";
     flagCol = "latest_av";
     constructor() {
         super();
+    }
+
+    public static getInstance(): VideoSubscriber {
+        if (!this.__instance) {
+            this.__instance = new VideoSubscriber();
+        }
+        return this.__instance;
     }
 
     getLatestInfo(uid: number) {
@@ -47,7 +54,6 @@ class videoSubscriber extends Subscriber {
                                 const item = data["list"]["vlist"][0];
                                 if (!item) {
                                     log.warn("获取最新视频失败");
-                                    return;
                                 }
                                 res({
                                     av: item.aid, //number
@@ -60,7 +66,6 @@ class videoSubscriber extends Subscriber {
                                     title: item.title, //string
                                     timestamp: item.created,
                                 } as videoInfo);
-                                return;
                             }
                         }
                     }
@@ -136,8 +141,8 @@ class videoSubscriber extends Subscriber {
                             [`uid=${rec.uid}`, `before_update!=${info.av}`],
                             true
                         );
-                        recs.forEach(async (av: videoRec) => {
-                            (await QQMessage).sendToGroup(
+                        recs.forEach((av: videoRec) => {
+                            QQMessage.sendToGroup(
                                 av.group_id,
                                 `${av.name} 更新了视频 ${info.title}\nb23.tv/av${av.latest_av}\n[CQ:image,file=${info.cover}]\n` +
                                     `发布日期 ${info.pubdate} 视频时长【${info.length}】\n` +
@@ -171,14 +176,6 @@ class videoSubscriber extends Subscriber {
             }
         }, 8000);
     }
-    public static async getInstance(): Promise<videoSubscriber> {
-        if (!this.__instance) {
-            this.__instance = new videoSubscriber();
-            QQMessage;
-            await dbHandler.init();
-        }
-        return this.__instance;
-    }
 
     public async test(): Promise<void> {
         // log.info("选中的是", JSON.stringify(await this.sampleRec()));
@@ -186,6 +183,6 @@ class videoSubscriber extends Subscriber {
     }
 }
 
-const subscriber = videoSubscriber.getInstance();
+const subscriber = VideoSubscriber.getInstance();
 
 export default subscriber;

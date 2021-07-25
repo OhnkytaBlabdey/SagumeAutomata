@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { exit } from "process";
-import dynamic from "..";
-import Logger from "../../../Logger";
-import qq from "../../../QQMessage";
+import dynamic from "../index";
+import Logger from "../../../../../Logger";
+import qq from "../../../../../QQMessage";
 
 try {
     qq;

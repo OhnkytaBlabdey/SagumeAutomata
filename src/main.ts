@@ -1,16 +1,24 @@
 import qq from "./QQMessage";
-import live from "./Subscribe/BiliLive";
-import video from "./Subscribe/BiliVideo";
-import dynamic from "./Subscribe/Dynamics";
+import live from "./Service/Subscribe/Bili/BiliLive";
+import video from "./Service/Subscribe/Bili/BiliVideo";
+import dynamic from "./Service/Subscribe/Bili/Dynamics";
+import dbHandler from "./DBHandler";
 
 async function main() {
-    await qq;
-    (await live).run();
-    (await video).run();
-    (await dynamic).run();
+    // wsc连接与数据库初始化为其他服务的前驱
+    await dbHandler.init();
+    await qq.wscConnect();
+
+    live.run();
+    video.run();
+    dynamic.run();
 }
-try {
-    main();
-} catch (error) {
-    console.warn(error);
-}
+
+main()
+    .then(() => {
+        console.log("初始化完成");
+    })
+    .catch((e) => {
+        console.error("发生错误");
+        console.error(e);
+    });

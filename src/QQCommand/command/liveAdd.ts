@@ -1,6 +1,6 @@
 import { messageEvent } from "../../QQMessage/event.interface";
 import { cmd } from "../cmd.interface";
-import live from "../../Subscribe/BiliLive";
+import live from "../../Service/Subscribe/Bili/BiliLive";
 
 const addLiveSubscribe: cmd = {
     pattern: /^直播订阅\s\d+\s\S+/,

@@ -1,9 +1,9 @@
-import log from "../Logger";
-import req from "../Requester";
+import log from "../../Logger";
+import req from "../../Requester";
 import {
     RequesterErrorType,
     RequesterResponseType,
-} from "../Requester/interface";
+} from "../../Requester/interface";
 import { setuInfo } from "./setu.interface";
 
 function getSetuUrl(keyword: string | null): Promise<setuInfo> {

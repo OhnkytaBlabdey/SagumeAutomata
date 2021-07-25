@@ -154,21 +154,16 @@ class QQMessage {
             this.e,
             "qwq"
         );
-        this.wsc.connect();
-        // TODO 等待初始化//等不了 这是同步方法
-        process.on("exit", () => {
-            this.wsc.close();
-        });
+
         this.qqid = conf.qq;
     }
-    public static async getInstance() {
+    public static getInstance() {
         this.instance || (this.instance = new QQMessage());
-        await new Promise<void>((res) => {
-            setTimeout(() => {
-                res();
-            }, 2000);
-        });
         return this.instance;
+    }
+
+    public wscConnect() {
+        return this.wsc.connect();
     }
 
     public sendToGroup(groupId: number, msg: string): void {

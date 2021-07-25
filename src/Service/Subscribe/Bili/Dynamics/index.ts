@@ -1,10 +1,10 @@
-import dbHandler from "../../DBHandler";
-import req from "../../Requester";
-import log from "../../Logger";
-import QQMessage from "../../QQMessage";
+import dbHandler from "../../../../DBHandler";
+import req from "../../../../Requester";
+import log from "../../../../Logger";
+import QQMessage from "../../../../QQMessage";
 import { dynamicInfo, dynamicRec } from "./dynamic.interface";
-import { RequesterResponseType } from "../../Requester/interface";
-import Subscriber from "..";
+import { RequesterResponseType } from "../../../../Requester/interface";
+import Subscriber from "../Subscriber";
 /**
  * 订阅B站的动态
  */
@@ -21,18 +21,19 @@ import Subscriber from "..";
  * 订阅动态
  */
 class DynamicSubscriber extends Subscriber {
+    private static __instance: DynamicSubscriber;
     tableName = "bili_dynamic";
     actionName = "动态";
     flagCol = "latest_dynamic_id";
-    private static __instance: DynamicSubscriber;
-    public static async getInstance(): Promise<DynamicSubscriber> {
+
+    public static getInstance(): DynamicSubscriber {
         if (!this.__instance) {
             this.__instance = new DynamicSubscriber();
-            QQMessage;
-            await dbHandler.init();
         }
         return this.__instance;
     }
+
+
     getLatestInfo(uid: number) {
         return new Promise<dynamicInfo>((res, rej) => {
             req.get({
@@ -210,8 +211,8 @@ class DynamicSubscriber extends Subscriber {
                             ],
                             true
                         );
-                        recs.forEach(async (dynamic: dynamicRec) => {
-                            (await QQMessage).sendToGroup(
+                        recs.forEach((dynamic: dynamicRec) => {
+                            QQMessage.sendToGroup(
                                 dynamic.group_id,
                                 `${dynamic.name}${this.parseDynamicCardtoString(
                                     info.card

@@ -1,5 +1,5 @@
-import setu from "..";
-import log from "../../Logger";
+import setu from "../index";
+import log from "../../../Logger";
 import { setuInfo } from "../setu.interface";
 // setu("%E6%99%BA%E4%BB%A3")
 // setu("智代")

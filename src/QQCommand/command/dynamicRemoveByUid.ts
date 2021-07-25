@@ -1,6 +1,6 @@
 import { messageEvent } from "../../QQMessage/event.interface";
 import { cmd } from "../cmd.interface";
-import dynamic from "../../Subscribe/Dynamics";
+import dynamic from "../../Service/Subscribe/Bili/Dynamics";
 
 const removeDynamicSubscribeByUid: cmd = {
     pattern: /^取消动态订阅\s\d+/,

@@ -33,7 +33,6 @@ class DynamicSubscriber extends Subscriber {
         return this.__instance;
     }
 
-
     getLatestInfo(uid: number) {
         return new Promise<dynamicInfo>((res, rej) => {
             req.get({
@@ -214,9 +213,9 @@ class DynamicSubscriber extends Subscriber {
                         recs.forEach((dynamic: dynamicRec) => {
                             QQMessage.sendToGroup(
                                 dynamic.group_id,
-                                `${dynamic.name}${this.parseDynamicCardtoString(
-                                    info.card
-                                )}`
+                                `$https://t.bilibili.com/{info.dynamic_id}\n
+                                ${dynamic.name}
+                                ${this.parseDynamicCardtoString(info.card)}`
                             );
                         });
                         dbHandler

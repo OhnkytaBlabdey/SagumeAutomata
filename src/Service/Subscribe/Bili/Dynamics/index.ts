@@ -54,7 +54,7 @@ class DynamicSubscriber extends Subscriber {
                     }
                     res({
                         // eslint-disable-next-line camelcase
-                        dynamic_id: cards[0].desc.dynamic_id,
+                        dynamic_id: BigInt(cards[0].desc.dynamic_id_str),
                         timestamp: cards[0].desc.timestamp,
                         card: cards[0].card,
                     } as dynamicInfo);
@@ -140,7 +140,7 @@ class DynamicSubscriber extends Subscriber {
                     }
                     return dynamicStr;
                 }
-                return `发布了动态 ${itm.content}`;
+                return `发布了动态 ${itm.content || "[无法解析的格式]"}`;
             }
         }
     }

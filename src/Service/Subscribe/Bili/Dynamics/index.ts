@@ -213,9 +213,9 @@ class DynamicSubscriber extends Subscriber {
                         recs.forEach((dynamic: dynamicRec) => {
                             QQMessage.sendToGroup(
                                 dynamic.group_id,
-                                `https://t.bilibili.com/${info.dynamic_id}\n
-                                ${dynamic.name}
-                                ${this.parseDynamicCardtoString(info.card)}`
+                                `https://t.bilibili.com/${info.dynamic_id}\n[${
+                                    dynamic.name
+                                }]${this.parseDynamicCardtoString(info.card)}`
                             );
                         });
                         dbHandler

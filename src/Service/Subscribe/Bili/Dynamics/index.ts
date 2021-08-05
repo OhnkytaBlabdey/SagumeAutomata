@@ -66,7 +66,10 @@ class DynamicSubscriber extends Subscriber {
                 });
         });
     }
-    private parseDynamicCardtoString(cardStr: string): string {
+    private parseDynamicCardtoString(
+        cardStr: string,
+        item: any = null
+    ): string {
         if (!cardStr) {
             log.warn(cardStr, "没有内容");
             return "解析失败";
@@ -97,11 +100,12 @@ class DynamicSubscriber extends Subscriber {
             const comment = card.item.content;
             // 投票详情在JSON.parse(card.origin_extension)中
             return `转发了动态 评论：${comment}\n 原动态：${this.parseDynamicCardtoString(
-                card.origin
+                card.origin,
+                card.item
             )}`;
         } else {
             // TODO 原创动态
-            const itm = card.item;
+            const itm = card.item || item;
             if (!itm) {
                 log.warn("无法解析");
                 return "无法解析的格式";

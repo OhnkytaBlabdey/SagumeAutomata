@@ -77,11 +77,16 @@ class KexueFMSubscriber {
 
     public run(): void {
         setInterval(async () => {
-            const rec = (await dbHandler.select(
-                [this.tableName],
-                ["*"],
-                ["order by `timestamp` asc limit 1"] //最旧的记录
-            )) as postRec;
+            const service = dbHandler.getService();
+            const stmt = service.prepare(
+                `select * from ${this.tableName} order by timestamp asc limit 1`
+            );
+            const rec: postRec = await stmt.get();
+            // const rec = (await dbHandler.select(
+            //     [this.tableName],
+            //     ["*"],
+            //     ["order by `timestamp` asc limit 1"] //最旧的记录
+            // )) as postRec;
             if (rec == null) {
                 log.warn(`没有${this.actionName}订阅记录`);
                 return;

@@ -165,8 +165,8 @@ class KexueFMSubscriber {
         dbHandler
             .insertSingle(
                 this.tableName,
-                ["group_id", this.flagCol, "before_update"],
-                [groupId, 0, 0]
+                ["group_id", this.flagCol],
+                [groupId, 0]
             )
             .then(async (res) => {
                 if (res) {

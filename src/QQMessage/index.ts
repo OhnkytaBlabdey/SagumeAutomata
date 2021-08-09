@@ -139,7 +139,7 @@ class QQMessage {
             conf = config;
         } else {
             log.warn("使用默认配置");
-            conf = conf = {
+            conf = {
                 cookie: "",
                 onebot_host: "",
                 onebot_port: 1,

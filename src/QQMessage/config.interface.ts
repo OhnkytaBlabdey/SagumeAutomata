@@ -5,5 +5,5 @@ export interface Config {
     onebot_port: number | string;
     onebot_pw: string | null;
     qq: number;
-    su: number | null;
+    su?: number | null;
 }

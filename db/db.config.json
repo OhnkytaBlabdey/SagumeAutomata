@@ -192,6 +192,31 @@
             ]
         },
         {
+            "tName": "kexuefm",
+            "columns": [
+                {
+                    "cName": "kexuefm_id",
+                    "cDataType": "INTEGER",
+                    "attributes": ["PRIMARY KEY", "AUTOINCREMENT"]
+                },
+                {
+                    "cName": "group_id",
+                    "cDataType": "INTEGER",
+                    "attributes": ["NOT NULL"]
+                },
+                {
+                    "cName": "post_id",
+                    "cDataType": "INTEGER",
+                    "attributes": ["NOT NULL"]
+                },
+                {
+                    "cName": "timestamp",
+                    "cDataType": "INTEGER",
+                    "attributes": ["default 0"]
+                }
+            ]
+        },
+        {
             "tName": "CounterStrike",
             "columns": [
                 {

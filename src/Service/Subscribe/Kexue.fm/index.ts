@@ -11,6 +11,14 @@ class KexueFMSubscriber {
     private tableName = "kexuefm";
     private actionName = "科学空间"; // 例如‘直播’
     private flagCol = "post_id"; // 例如‘liveStatus’
+    private static __instance: KexueFMSubscriber;
+
+    public static getInstance(): KexueFMSubscriber {
+        if (!this.__instance) {
+            this.__instance = new KexueFMSubscriber();
+        }
+        return this.__instance;
+    }
 
     private getLatestInfo(): Promise<postInfo> {
         // https://kexue.fm/feed
@@ -75,6 +83,7 @@ class KexueFMSubscriber {
                 ["order by `timestamp` asc limit 1"] //最旧的记录
             )) as postRec;
             if (rec == null) {
+                log.warn(`没有${this.actionName}订阅记录`);
                 return;
             }
             let info: postInfo;
@@ -149,7 +158,7 @@ class KexueFMSubscriber {
             log.error(`已经添加过${this.actionName}订阅了`);
             (await QQMessage).sendToGroup(
                 groupId,
-                `已经添加过${this.actionName}订阅了`
+                `此群已经添加过${this.actionName}订阅了`
             );
             return false;
         }
@@ -220,5 +229,5 @@ class KexueFMSubscriber {
             });
     }
 }
-
-export default KexueFMSubscriber;
+const KexueFM = KexueFMSubscriber.getInstance();
+export default KexueFM;

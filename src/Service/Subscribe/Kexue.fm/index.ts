@@ -77,11 +77,13 @@ class KexueFMSubscriber {
 
     public run(): void {
         setInterval(async () => {
-            const service = dbHandler.getService();
-            const stmt = service.prepare(
+            // const service = dbHandler.getService();
+            // const stmt = service.prepare(
+            //     `select * from ${this.tableName} order by timestamp asc limit 1`
+            // );
+            const rec: postRec = await dbHandler.run(
                 `select * from ${this.tableName} order by timestamp asc limit 1`
             );
-            const rec: postRec = await stmt.get();
             // const rec = (await dbHandler.select(
             //     [this.tableName],
             //     ["*"],

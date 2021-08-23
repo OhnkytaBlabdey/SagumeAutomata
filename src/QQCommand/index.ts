@@ -12,7 +12,7 @@ import removeDynamicSubscribeByUid from "./command/dynamicRemoveByUid";
 import removeDynamicSubscribeByName from "./command/dynamicRemoveByName";
 import addKexueFMSubscribe from "./command/kexuefmAdd";
 import removeKexueFMSubscribe from "./command/kexuefmRemove";
-import setu from "./command/setu";
+// import setu from "./command/setu";
 import help from "./command/help";
 class Command {
     private cmds: Cmd[];
@@ -30,7 +30,7 @@ class Command {
         this.cmds.push(addKexueFMSubscribe);
         this.cmds.push(removeKexueFMSubscribe);
         this.cmds.push(help);
-        this.cmds.push(setu);
+        // this.cmds.push(setu);
     }
     public async dispatchCommand(
         ev: messageEvent,

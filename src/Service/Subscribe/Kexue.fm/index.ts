@@ -126,7 +126,7 @@ class KexueFMSubscriber {
                 recs.forEach((rec: postRec) => {
                     QQMessage.sendToGroup(
                         rec.group_id,
-                        `${info.author} 更新了文章 ${info.title}\n${info.latest}\n` +
+                        `${info.author} 更新了文章 ${info.title}\nhttps://kexue.fm/archives/${info.latest}\n` +
                             `发布日期 ${info.pubdate} \n` +
                             `简介：${info.desc} ${
                                 info.desc.length > 200 ? " ..." : " "

@@ -10,7 +10,9 @@ import removeVideoSubscribeByUid from "./command/videoRemoveByUid";
 import addDynamicSubscribe from "./command/dynamicAdd";
 import removeDynamicSubscribeByUid from "./command/dynamicRemoveByUid";
 import removeDynamicSubscribeByName from "./command/dynamicRemoveByName";
-import setu from "./command/setu";
+import addKexueFMSubscribe from "./command/kexuefmAdd";
+import removeKexueFMSubscribe from "./command/kexuefmRemove";
+// import setu from "./command/setu";
 import help from "./command/help";
 class Command {
     private cmds: Cmd[];
@@ -25,8 +27,10 @@ class Command {
         this.cmds.push(addDynamicSubscribe);
         this.cmds.push(removeDynamicSubscribeByName);
         this.cmds.push(removeDynamicSubscribeByUid);
+        this.cmds.push(addKexueFMSubscribe);
+        this.cmds.push(removeKexueFMSubscribe);
         this.cmds.push(help);
-        this.cmds.push(setu);
+        // this.cmds.push(setu);
     }
     public async dispatchCommand(
         ev: messageEvent,

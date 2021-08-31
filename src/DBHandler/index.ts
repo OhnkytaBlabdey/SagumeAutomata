@@ -103,7 +103,7 @@ class DBHandler {
     }
 
     public run(query: string, value: Array<any> = []) {
-        return new Promise((res, rej) => {
+        return new Promise<any>((res, rej) => {
             try {
                 const info = this.__service.prepare(query).run(...value);
                 res(info);

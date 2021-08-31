@@ -33,7 +33,6 @@ class DynamicSubscriber extends Subscriber {
         return this.__instance;
     }
 
-
     getLatestInfo(uid: number) {
         return new Promise<dynamicInfo>((res, rej) => {
             req.get({
@@ -55,7 +54,7 @@ class DynamicSubscriber extends Subscriber {
                     }
                     res({
                         // eslint-disable-next-line camelcase
-                        dynamic_id: cards[0].desc.dynamic_id,
+                        dynamic_id: BigInt(cards[0].desc.dynamic_id_str),
                         timestamp: cards[0].desc.timestamp,
                         card: cards[0].card,
                     } as dynamicInfo);
@@ -67,7 +66,10 @@ class DynamicSubscriber extends Subscriber {
                 });
         });
     }
-    private parseDynamicCardtoString(cardStr: string): string {
+    private parseDynamicCardtoString(
+        cardStr: string,
+        item: any = null
+    ): string {
         if (!cardStr) {
             log.warn(cardStr, "没有内容");
             return "解析失败";
@@ -98,12 +100,20 @@ class DynamicSubscriber extends Subscriber {
             const comment = card.item.content;
             // 投票详情在JSON.parse(card.origin_extension)中
             return `转发了动态 评论：${comment}\n 原动态：${this.parseDynamicCardtoString(
-                card.origin
+                card.origin,
+                card.item
             )}`;
         } else {
             // TODO 原创动态
-            const itm = card.item;
+            const itm = card.item || item;
             if (!itm) {
+                //专栏头图
+                if (card.banner_url) {
+                    const title: string = card.title;
+                    const summary: string = card.summary;
+                    const pic: string = card.banner_url;
+                    return `发了专栏${title}\n简介：${summary}\n[CQ:image,file=${pic}]`;
+                }
                 log.warn("无法解析");
                 return "无法解析的格式";
             }
@@ -141,7 +151,7 @@ class DynamicSubscriber extends Subscriber {
                     }
                     return dynamicStr;
                 }
-                return `发布了动态 ${itm.content}`;
+                return `发布了动态 ${itm.content || "[无法解析的格式]"}`;
             }
         }
     }
@@ -214,9 +224,9 @@ class DynamicSubscriber extends Subscriber {
                         recs.forEach((dynamic: dynamicRec) => {
                             QQMessage.sendToGroup(
                                 dynamic.group_id,
-                                `${dynamic.name}${this.parseDynamicCardtoString(
-                                    info.card
-                                )}`
+                                `https://t.bilibili.com/${info.dynamic_id}\n[${
+                                    dynamic.name
+                                }]${this.parseDynamicCardtoString(info.card)}`
                             );
                         });
                         dbHandler

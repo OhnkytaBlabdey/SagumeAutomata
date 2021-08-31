@@ -6,6 +6,7 @@ import process from "process";
 class WebsocketHandler extends EventEmitter {
     private __port: number;
     private __host: string;
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     private __wsClient: Websocket;
     private __eventListener: EventEmitter;
@@ -30,15 +31,15 @@ class WebsocketHandler extends EventEmitter {
                 `ws://${this.__host}:${this.__port}`
             );
             this.__wsClient.on("open", () => {
-                logger.info("已建立连接");
+                logger.warn("ws已建立连接");
                 res(1);
             });
             this.__wsClient.on("error", (e) => {
-                logger.error("连接发生错误");
+                logger.error("ws连接发生错误");
                 rej(e);
             });
             this.__wsClient.on("message", (data) => {
-                logger.debug("接收到来自服务端消息");
+                // logger.debug("ws接收到来自服务端消息");
                 this.__eventListener.emit(this.__eventTarget, data);
             });
             process.on("exit", () => {

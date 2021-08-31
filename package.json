@@ -40,6 +40,7 @@
     },
     "dependencies": {
         "bunyan": "^1.8.15",
+        "htmlparser2": "^6.1.0",
         "random-js": "^2.1.0"
     },
     "optionalDependencies": {

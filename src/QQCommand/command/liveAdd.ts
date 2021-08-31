@@ -1,11 +1,12 @@
 import { messageEvent } from "../../QQMessage/event.interface";
 import { cmd } from "../cmd.interface";
 import live from "../../Service/Subscribe/Bili/BiliLive";
+import isAdmin from "../../Util/admin";
 
 const addLiveSubscribe: cmd = {
     pattern: /^直播订阅\s\d+\s\S+/,
     exec: async (ev: messageEvent) => {
-        if (ev.sender?.role !== "owner" && ev.sender?.role !== "admin") {
+        if (!isAdmin(ev)) {
             return;
         }
         const group_id = ev.group_id;

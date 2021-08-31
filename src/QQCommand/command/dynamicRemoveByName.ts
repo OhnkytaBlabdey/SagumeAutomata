@@ -1,11 +1,12 @@
 import { messageEvent } from "../../QQMessage/event.interface";
 import { cmd } from "../cmd.interface";
 import dynamic from "../../Service/Subscribe/Bili/Dynamics";
+import isAdmin from "../../Util/admin";
 
 const removeDynamicSubscribeByName: cmd = {
     pattern: /^取消直播订阅\s[^\d]+/,
     exec: async (ev: messageEvent) => {
-        if (ev.sender?.role !== "owner" && ev.sender?.role !== "admin") {
+        if (!isAdmin(ev)) {
             return;
         }
         const group_id = ev.group_id;

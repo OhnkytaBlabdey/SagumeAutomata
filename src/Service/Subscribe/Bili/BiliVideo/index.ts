@@ -50,8 +50,10 @@ class VideoSubscriber extends Subscriber {
                         // log.debug(jsondata);
                         if (jsondata.data) {
                             const data = jsondata.data;
-                            if (data["list"] && data["list"]["vlist"]) {
-                                const item = data["list"]["vlist"][0];
+                            // log.debug(data.list);
+                            // log.debug(data.list.vlist);
+                            if (data.list && data.list.vlist) {
+                                const item = data.list.vlist[0];
                                 if (!item) {
                                     log.warn("获取最新视频失败");
                                 }
@@ -66,10 +68,12 @@ class VideoSubscriber extends Subscriber {
                                     title: item.title, //string
                                     timestamp: item.created,
                                 } as videoInfo);
+                                return;
                             }
+                            log.warn(data, "格式错误");
                         }
                     }
-                    log.warn("视频返回格式错误");
+                    log.warn(result.data, "视频返回格式错误");
                 })
                 .catch((error) => {
                     if (error) {

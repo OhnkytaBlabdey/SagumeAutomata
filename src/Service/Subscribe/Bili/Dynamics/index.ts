@@ -107,6 +107,13 @@ class DynamicSubscriber extends Subscriber {
             // TODO 原创动态
             const itm = card.item || item;
             if (!itm) {
+                //专栏头图
+                if (card.banner_url) {
+                    const title: string = card.title;
+                    const summary: string = card.summary;
+                    const pic: string = card.banner_url;
+                    return `发了专栏${title}\n简介：${summary}\n[CQ:image,file=${pic}]`;
+                }
                 log.warn("无法解析");
                 return "无法解析的格式";
             }

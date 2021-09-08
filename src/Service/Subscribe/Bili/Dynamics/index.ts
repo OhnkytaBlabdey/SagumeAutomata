@@ -165,7 +165,7 @@ class DynamicSubscriber extends Subscriber {
             let info: dynamicInfo;
             try {
                 info = await this.getLatestInfo(rec.uid);
-            } catch (error) {
+            } catch (error: any) {
                 if (error) {
                     log.warn(error.errMessage ? error.errMessage : error);
                     return;

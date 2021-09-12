@@ -54,9 +54,10 @@ class LiveSubscriber extends Subscriber {
 							} as liveInfo);
 							return;
 						}
-						log.warn("直播间返回格式错误", jsondata);
+						log.warn("直播间返回格式错误", JSON.stringify(jsondata));
+						return;
 					}
-					log.warn("直播间响应错误", result);
+					log.warn("直播间响应错误", JSON.stringify(result));
 				})
 				.catch((error) => {
 					if (error) {

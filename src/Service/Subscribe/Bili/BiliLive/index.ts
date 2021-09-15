@@ -11,7 +11,7 @@ import Subscriber from "../Subscriber";
 
 /**
  *	あの鸟はまだ うまく飞べないけど
-    いつかは风を切って知る					____ 鳥の詩 《AIR》 OP
+	いつかは风を切って知る					____ 鳥の詩 《AIR》 OP
  */
 
 /**
@@ -53,8 +53,13 @@ class LiveSubscriber extends Subscriber {
                             } as liveInfo);
                             return;
                         }
+                        log.warn(
+                            "直播间返回格式错误",
+                            JSON.stringify(jsondata)
+                        );
+                        return;
                     }
-                    log.warn("直播间返回格式错误");
+                    log.warn("直播间响应错误", JSON.stringify(result));
                 })
                 .catch((error) => {
                     if (error) {

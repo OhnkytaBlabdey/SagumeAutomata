@@ -92,7 +92,7 @@ class VideoSubscriber extends Subscriber {
             let info: videoInfo;
             try {
                 info = await this.getLatestInfo(rec.uid);
-            } catch (error) {
+            } catch (error: any) {
                 if (error) {
                     log.warn(error.errMessage ? error.errMessage : error);
                     return;
@@ -145,6 +145,7 @@ class VideoSubscriber extends Subscriber {
                             [`uid=${rec.uid}`, `before_update!=${info.av}`],
                             true
                         );
+                        log.info("视频更新", info.title);
                         recs.forEach((av: videoRec) => {
                             QQMessage.sendToGroup(
                                 av.group_id,

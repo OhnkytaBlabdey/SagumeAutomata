@@ -120,6 +120,7 @@ class LiveSubscriber extends Subscriber {
                             ],
                             true
                         );
+                        log.info("开播", rec.name);
                         recs.forEach((live: liveRec) => {
                             QQMessage.sendToGroup(
                                 live.group_id,

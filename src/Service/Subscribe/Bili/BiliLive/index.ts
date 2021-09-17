@@ -129,8 +129,8 @@ class LiveSubscriber extends Subscriber {
                         recs.forEach((live: liveRec) => {
                             QQMessage.sendToGroup(
                                 live.group_id,
-                                `${live.name} 的直播开始了\n${info.url}\n[CQ:image,file=${info.cover}]\n` +
-                                    `直播间人气 ${info.online} 直播间标题【${info.title}】\n主播 https://space.bilibili.com/${live.uid}`
+                                `${live.name} 播了 \n${info.url}\n[CQ:image,file=${info.cover}]\n` +
+                                    `人气 ${info.online} 标题【${info.title}】\n https://space.bilibili.com/${live.uid}`
                             );
                         });
                         dbHandler
@@ -184,8 +184,8 @@ class LiveSubscriber extends Subscriber {
                         recs.forEach((live: liveRec) => {
                             QQMessage.sendToGroup(
                                 live.group_id,
-                                `${live.name} 的直播结束了\n${info.url}\n[CQ:image,file=${info.cover}]\n` +
-                                    `直播间人气 ${info.online} 直播间标题【${info.title}】\n主播 https://space.bilibili.com/${live.uid}`
+                                `${live.name} 下播了\n${info.url}\n[CQ:image,file=${info.cover}]\n` +
+                                    `人气 ${info.online} 标题【${info.title}】\n https://space.bilibili.com/${live.uid}`
                             );
                         });
                         dbHandler
@@ -239,8 +239,8 @@ class LiveSubscriber extends Subscriber {
                         recs.forEach((live: liveRec) => {
                             QQMessage.sendToGroup(
                                 live.group_id,
-                                `${live.name} 的直播进入轮播\n${info.url}\n[CQ:image,file=${info.cover}]\n` +
-                                    `直播间人气 ${info.online} 直播间标题【${info.title}】\n主播 https://space.bilibili.com/${live.uid}`
+                                `${live.name} 进入轮播\n${info.url}\n[CQ:image,file=${info.cover}]\n` +
+                                    `人气 ${info.online} 标题【${info.title}】\n https://space.bilibili.com/${live.uid}`
                             );
                         });
                         dbHandler

@@ -5,7 +5,7 @@ import config from "../../config/config.json";
 import { Config } from "./config.interface";
 import EventEmitter from "events";
 import { env } from "process";
-import { messageEvent, responseEvent } from "./event.interface";
+import { messageEvent, noticeEvent, responseEvent } from "./event.interface";
 import command from "../QQCommand";
 import dbm from "../DBHandler";
 
@@ -35,7 +35,7 @@ class QQMessage {
     constructor() {
         this.cmd = new command();
         this.e = new EventEmitter();
-        this.e.on("qwq", async (event) => {
+        this.e.on("qwq", async (event: any) => {
             event = JSON.parse(event);
             if ((<responseEvent>event).status) {
                 //api 响应结果
@@ -112,6 +112,23 @@ class QQMessage {
                                 log.warn(rej);
                             }
                         });
+                }
+            } else if (
+                (<noticeEvent>event).post_type === "notice" &&
+                (<noticeEvent>event).notice_type === "notify"
+            ) {
+                if ((<noticeEvent>event).sub_type === "poke") {
+                    //戳一戳
+                    if (
+                        (<noticeEvent>event).target_id === (<Config>config).qq
+                    ) {
+                        //被戳
+                        log.debug("被戳了", JSON.stringify(event));
+                        this.sendToGroupSync(
+                            (<noticeEvent>event).group_id,
+                            `[CQ:poke, qq=${(<noticeEvent>event).user_id}]`
+                        );
+                    }
                 }
             }
         });

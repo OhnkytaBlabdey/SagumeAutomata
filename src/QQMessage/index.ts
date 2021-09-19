@@ -126,7 +126,7 @@ class QQMessage {
                         log.debug("被戳了", JSON.stringify(event));
                         this.sendToGroupSync(
                             (<noticeEvent>event).group_id,
-                            `[CQ:poke, qq=${(<noticeEvent>event).user_id}]`
+                            `[CQ:poke,qq=${(<noticeEvent>event).user_id}]`
                         );
                     }
                 }

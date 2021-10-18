@@ -148,17 +148,17 @@ const solve24p = (nums: number[], target: number): string | null => {
     return res;
 };
 
-const patt = /(\d+),(\d+),(\d+),(\d+)[\u4e00-\u9af5a-zA-Z：:，\]]+(\d+)/;
+const patt = /(\d+),(\d+),(\d+),(\d+)&#93;[^\u00-\uff]+(\d+)/;
 const game24p: cmd = {
     pattern: patt,
     exec: async (ev: messageEvent) => {
         const groupId = ev.group_id;
         const params = patt.exec(ev.message);
         if (!params) {
-            Logger.warn("[24p]解析失败");
+            Logger.error("[24p]解析失败", ev.message);
             return;
         }
-        Logger.debug(JSON.stringify(params));
+        Logger.debug("[24p]", JSON.stringify(params));
         const nums = [
             parseInt(params[1]),
             parseInt(params[2]),

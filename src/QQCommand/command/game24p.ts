@@ -9,43 +9,69 @@ interface node24p {
     expr: string;
 }
 interface op {
-    apply: (op1: node24p, op2: node24p) => node24p;
+    apply: (op1: node24p | number, op2: node24p | number) => node24p;
 }
 const add: op = {
-    apply: (a: node24p, b: node24p): node24p => {
+    apply: (a: node24p | number, b: node24p | number): node24p => {
         return {
-            val: a.val + b.val,
-            expr: `${a.expr}+${b.expr}`,
+            val:
+                ((a as node24p).val || (a as number)) +
+                ((b as node24p).val || (b as number)),
+            expr: `${(a as node24p).expr || (a as number)}+${
+                (b as node24p).expr || (b as number)
+            }`,
         };
     },
 };
 const sub: op = {
-    apply: (a: node24p, b: node24p): node24p => {
+    apply: (a: node24p | number, b: node24p | number): node24p => {
         return {
-            val: a.val - b.val,
-            expr: `${a.expr}-${b.expr}`,
+            val:
+                ((a as node24p).val || (a as number)) -
+                ((b as node24p).val || (b as number)),
+            expr: `${(a as node24p).expr || (a as number)}-${
+                (b as node24p).expr || (b as number)
+            }`,
         };
     },
 };
 const mul: op = {
-    apply: (a: node24p, b: node24p): node24p => {
+    apply: (a: node24p | number, b: node24p | number): node24p => {
         return {
-            val: a.val * b.val,
-            expr: `(${a.expr})*(${b.expr})`,
+            val:
+                ((a as node24p).val || (a as number)) *
+                ((b as node24p).val || (b as number)),
+            expr:
+                ((a as node24p).expr
+                    ? `(${(a as node24p).expr})`
+                    : `${a as number}`) +
+                "*" +
+                ((b as node24p).expr
+                    ? `(${(b as node24p).expr})`
+                    : `${b as number}`),
         };
     },
 };
 const div: op = {
-    apply: (a: node24p, b: node24p): node24p => {
-        if (b.val === 0) {
+    apply: (a: node24p | number, b: node24p | number): node24p => {
+        if ((b as node24p).val === 0 || (b as number) === 0) {
             return {
                 val: NaN,
                 expr: "",
             };
         }
         return {
-            val: a.val / b.val,
-            expr: `(${a.expr})/(${b.expr})`,
+            val:
+                ((a as node24p).val || (a as number)) /
+                ((b as node24p).val || (b as number)),
+            expr:
+                ((a as node24p).expr
+                    ? `(${(a as node24p).expr})`
+                    : `${a as number}`) +
+                "/" +
+                ((b as node24p).expr
+                    ? `(${(b as node24p).expr})`
+                    : `${b as number}`),
         };
     },
 };
@@ -54,9 +80,7 @@ const generate = (SET: node24p[], oprand: number): node24p[] => {
     const result: node24p[] = [];
     (<node24p[]>SET).forEach((node) => {
         ops.forEach((operator) => {
-            result.push(
-                operator.apply(node, { val: oprand, expr: oprand.toString() })
-            );
+            result.push(operator.apply(node, oprand));
         });
     });
     return result;

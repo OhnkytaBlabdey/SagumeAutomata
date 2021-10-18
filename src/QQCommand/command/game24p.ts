@@ -3,7 +3,6 @@ import qq from "../../QQMessage";
 import { messageEvent } from "../../QQMessage/event.interface";
 import { cmd } from "../cmd.interface";
 
-const patt = /(\d+),(\d+),(\d+),(\d+)\S+/;
 interface node24p {
     val: number;
     expr: string;
@@ -85,7 +84,7 @@ const generate = (SET: node24p[], oprand: number): node24p[] => {
     });
     return result;
 };
-const solve24pOnePerm = (nums: number[]): string | null => {
+const solve24pOnePerm = (nums: number[], target: number): string | null => {
     const init = nums[0];
     const result = nums
         .slice(1, 4)
@@ -93,7 +92,7 @@ const solve24pOnePerm = (nums: number[]): string | null => {
             { val: init, expr: (init as number).toString() },
         ]);
     for (const node of result) {
-        if (node.val == 24.0) {
+        if (node.val == target) {
             return node.expr;
         }
     }
@@ -128,10 +127,10 @@ const perms = [
 const applyIndex = (index: number[], array: number[]): number[] => {
     return [array[index[0]], array[index[1]], array[index[2]], array[index[3]]];
 };
-const solve24p = (nums: number[]): string | null => {
+const solve24p = (nums: number[], target: number): string | null => {
     let res: string | null = null;
     perms.forEach((perm) => {
-        const tmp = solve24pOnePerm(applyIndex(perm, nums));
+        const tmp = solve24pOnePerm(applyIndex(perm, nums), target);
         if (tmp) {
             if (!res) res = tmp;
             if (res.length > tmp.length) {
@@ -142,6 +141,7 @@ const solve24p = (nums: number[]): string | null => {
     return res;
 };
 
+const patt = /(\d+),(\d+),(\d+),(\d+)[\u4e00-\u9af5a-zA-Z：:，\]]+(\d+)/;
 const game24p: cmd = {
     pattern: patt,
     exec: async (ev: messageEvent) => {
@@ -158,8 +158,9 @@ const game24p: cmd = {
             parseInt(params[3]),
             parseInt(params[4]),
         ];
-        Logger.info("[24p]", nums);
-        const solution = solve24p(nums);
+        const target = parseInt(params[5]);
+        Logger.info("[24p]", nums, target);
+        const solution = solve24p(nums, target);
         Logger.info(groupId, solution || "not found");
         qq.sendToGroup(groupId, solution as string);
     },

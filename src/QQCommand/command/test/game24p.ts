@@ -23,8 +23,9 @@ const test = (msg: string) => {
     });
 };
 const main = () => {
-    test("[1,2,3,4]abab啊a");
-    test("[11,2,11,2]abab啊a");
-    test("[11,11,11,0]abab啊a");
+    test("[1,2,3,4]abab啊a：24");
+    test("[11,2,11,2]abab啊a：24");
+    test("[10,8,1,10]，目标点数：22， 你有2次机会哦~[CQ:face,id=306]");
+    test("[11,11,11,0]abab啊a：33");
 };
 main();

@@ -1,4 +1,5 @@
 import qq from "./QQMessage";
+import { env } from "process";
 import live from "./Service/Subscribe/Bili/BiliLive";
 import video from "./Service/Subscribe/Bili/BiliVideo";
 import dynamic from "./Service/Subscribe/Bili/Dynamics";
@@ -10,10 +11,12 @@ async function main() {
     await dbHandler.init();
     await qq.wscConnect();
 
-    live.run();
-    video.run();
-    dynamic.run();
-    kexueFM.run();
+    if (!env.MUTE || env.MUTE !== "mute") {
+        live.run();
+        video.run();
+        dynamic.run();
+        kexueFM.run();
+    }
 }
 
 main()

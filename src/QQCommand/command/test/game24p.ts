@@ -5,7 +5,7 @@ const test = (msg: string) => {
     Logger.info(game24p.pattern.test(msg));
     game24p.exec({
         ClassType: "",
-        group_id: 1,
+        group_id: 114514,
         message: msg,
         message_id: 1,
         message_type: "",

@@ -14,7 +14,7 @@ const add: op = {
     apply: (a: node24p, b: node24p): node24p => {
         return {
             val: a.val + b.val,
-            expr: `(${a.expr})+(${b.expr})`,
+            expr: `${a.expr}+${b.expr}`,
         };
     },
 };
@@ -22,7 +22,7 @@ const sub: op = {
     apply: (a: node24p, b: node24p): node24p => {
         return {
             val: a.val - b.val,
-            expr: `(${a.expr})-(${b.expr})`,
+            expr: `${a.expr}-${b.expr}`,
         };
     },
 };
@@ -49,10 +49,7 @@ const div: op = {
     },
 };
 const ops = [add, sub, mul, div];
-const generate = (SET: node24p[] | number, oprand: number): node24p[] => {
-    if (!(SET as node24p[]).length) {
-        SET = [{ val: SET as number, expr: (SET as number).toString() }];
-    }
+const generate = (SET: node24p[], oprand: number): node24p[] => {
     const result: node24p[] = [];
     (<node24p[]>SET).forEach((node) => {
         ops.forEach((operator) => {
@@ -63,9 +60,63 @@ const generate = (SET: node24p[] | number, oprand: number): node24p[] => {
     });
     return result;
 };
-const solve24p = (nums: number[]): string => {
-    const result = nums.reduce(generate);
+const solve24pOnePerm = (nums: number[]): string | null => {
+    const init = nums[0];
+    const result = nums
+        .slice(1, 4)
+        .reduce(generate, <node24p[]>[
+            { val: init, expr: (init as number).toString() },
+        ]);
+    for (const node of result) {
+        if (node.val == 24.0) {
+            return node.expr;
+        }
+    }
+    return null;
 };
+const perms = [
+    [0, 1, 2, 3],
+    [0, 1, 3, 2],
+    [0, 3, 1, 2],
+    [0, 3, 2, 1],
+    [0, 2, 1, 3],
+    [0, 2, 3, 1],
+    [1, 0, 2, 3],
+    [1, 0, 3, 2],
+    [1, 3, 0, 2],
+    [1, 3, 2, 0],
+    [1, 2, 0, 3],
+    [1, 2, 3, 0],
+    [2, 1, 0, 3],
+    [2, 1, 3, 0],
+    [2, 3, 1, 0],
+    [2, 3, 0, 1],
+    [2, 0, 1, 3],
+    [2, 0, 3, 1],
+    [3, 1, 2, 0],
+    [3, 1, 0, 2],
+    [3, 0, 1, 2],
+    [3, 0, 2, 1],
+    [3, 2, 1, 0],
+    [3, 2, 0, 1],
+];
+const applyIndex = (index: number[], array: number[]): number[] => {
+    return [array[index[0]], array[index[1]], array[index[2]], array[index[3]]];
+};
+const solve24p = (nums: number[]): string | null => {
+    let res: string | null = null;
+    perms.forEach((perm) => {
+        const tmp = solve24pOnePerm(applyIndex(perm, nums));
+        if (tmp) {
+            if (!res) res = tmp;
+            else if (res.length > tmp.length) {
+                res = tmp;
+            }
+        }
+    });
+    return res;
+};
+
 const game24p: cmd = {
     pattern: patt,
     exec: async (ev: messageEvent) => {

@@ -11,7 +11,7 @@ import Subscriber from "../Subscriber";
 
 /**
  *	あの鸟はまだ うまく飞べないけど
-    いつかは风を切って知る					____ 鳥の詩 《AIR》 OP
+	いつかは风を切って知る					____ 鳥の詩 《AIR》 OP
  */
 
 /**
@@ -27,7 +27,6 @@ class LiveSubscriber extends Subscriber {
         super();
     }
     getLatestInfo(uid: number) {
-
         return new Promise<liveInfo>((res, rej) => {
             req.get({
                 url: "https://api.bilibili.com/x/space/acc/info",
@@ -54,8 +53,13 @@ class LiveSubscriber extends Subscriber {
                             } as liveInfo);
                             return;
                         }
+                        log.warn(
+                            "直播间返回格式错误",
+                            JSON.stringify(jsondata)
+                        );
+                        return;
                     }
-                    log.warn("直播间返回格式错误");
+                    log.warn("直播间响应错误", JSON.stringify(result));
                 })
                 .catch((error) => {
                     if (error) {
@@ -74,7 +78,7 @@ class LiveSubscriber extends Subscriber {
             let info: liveInfo;
             try {
                 info = await this.getLatestInfo(rec.uid);
-            } catch (error) {
+            } catch (error: any) {
                 if (error) {
                     log.warn(error.errMessage ? error.errMessage : error);
                     return;
@@ -121,11 +125,12 @@ class LiveSubscriber extends Subscriber {
                             ],
                             true
                         );
+                        log.info("开播", rec.name);
                         recs.forEach((live: liveRec) => {
                             QQMessage.sendToGroup(
                                 live.group_id,
-                                `${live.name} 的直播开始了\n${info.url}\n[CQ:image,file=${info.cover}]\n` +
-                                    `直播间人气 ${info.online} 直播间标题【${info.title}】\n主播id${live.uid}`
+                                `${live.name} 播了 \n${info.url}\n[CQ:image,file=${info.cover}]\n` +
+                                    `人气 ${info.online} 标题【${info.title}】\n https://space.bilibili.com/${live.uid}`
                             );
                         });
                         dbHandler
@@ -179,8 +184,8 @@ class LiveSubscriber extends Subscriber {
                         recs.forEach((live: liveRec) => {
                             QQMessage.sendToGroup(
                                 live.group_id,
-                                `${live.name} 的直播结束了\n${info.url}\n[CQ:image,file=${info.cover}]\n` +
-                                    `直播间人气 ${info.online} 直播间标题【${info.title}】\n主播id${live.uid}`
+                                `${live.name} 下播了\n${info.url}\n[CQ:image,file=${info.cover}]\n` +
+                                    `人气 ${info.online} 标题【${info.title}】\n https://space.bilibili.com/${live.uid}`
                             );
                         });
                         dbHandler
@@ -234,8 +239,8 @@ class LiveSubscriber extends Subscriber {
                         recs.forEach((live: liveRec) => {
                             QQMessage.sendToGroup(
                                 live.group_id,
-                                `${live.name} 的直播进入轮播\n${info.url}\n[CQ:image,file=${info.cover}]\n` +
-                                    `直播间人气 ${info.online} 直播间标题【${info.title}】\n主播id${live.uid}`
+                                `${live.name} 进入轮播\n${info.url}\n[CQ:image,file=${info.cover}]\n` +
+                                    `人气 ${info.online} 标题【${info.title}】\n https://space.bilibili.com/${live.uid}`
                             );
                         });
                         dbHandler

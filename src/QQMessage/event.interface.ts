@@ -17,6 +17,15 @@ export interface messageEvent {
     } | null;
 }
 
+export interface noticeEvent {
+    post_type: string;
+    notice_type: string;
+    group_id: number;
+    sub_type: string;
+    user_id: number;
+    target_id: number;
+}
+
 export interface responseEvent {
     status: string;
     retcode: number;

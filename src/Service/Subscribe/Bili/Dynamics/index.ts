@@ -108,10 +108,10 @@ class DynamicSubscriber extends Subscriber {
             const itm = card.item || item;
             if (!itm) {
                 //专栏头图
-                if (card.banner_url) {
+                if (card.banner_url || card.image_urls) {
                     const title: string = card.title;
                     const summary: string = card.summary;
-                    const pic: string = card.banner_url;
+                    const pic: string = card.banner_url || card.image_urls[0];
                     return `发了专栏${title}\n简介：${summary}\n[CQ:image,file=${pic}]`;
                 }
                 log.warn("无法解析");
@@ -165,7 +165,7 @@ class DynamicSubscriber extends Subscriber {
             let info: dynamicInfo;
             try {
                 info = await this.getLatestInfo(rec.uid);
-            } catch (error) {
+            } catch (error: any) {
                 if (error) {
                     log.warn(error.errMessage ? error.errMessage : error);
                     return;

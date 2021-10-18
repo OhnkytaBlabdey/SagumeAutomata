@@ -4,7 +4,7 @@ import dynamic from "../../Service/Subscribe/Bili/Dynamics";
 import isAdmin from "../../Util/admin";
 
 const removeDynamicSubscribeByName: cmd = {
-    pattern: /^取消直播订阅\s[^\d]+/,
+    pattern: /^取消动态订阅\s[^\d]+/,
     exec: async (ev: messageEvent) => {
         if (!isAdmin(ev)) {
             return;

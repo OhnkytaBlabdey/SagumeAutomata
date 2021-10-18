@@ -14,6 +14,7 @@ import addKexueFMSubscribe from "./command/kexuefmAdd";
 import removeKexueFMSubscribe from "./command/kexuefmRemove";
 // import setu from "./command/setu";
 import help from "./command/help";
+import game24p from "./command/game24p";
 class Command {
     private cmds: Cmd[];
     constructor() {
@@ -29,6 +30,7 @@ class Command {
         this.cmds.push(removeDynamicSubscribeByUid);
         this.cmds.push(addKexueFMSubscribe);
         this.cmds.push(removeKexueFMSubscribe);
+        this.cmds.push(game24p);
         this.cmds.push(help);
         // this.cmds.push(setu);
     }

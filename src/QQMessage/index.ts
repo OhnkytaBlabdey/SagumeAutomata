@@ -38,6 +38,10 @@ class QQMessage {
         this.e.on("qwq", async (event: any) => {
             event = JSON.parse(event);
             if ((<responseEvent>event).status) {
+                //heart beat
+                if ((<messageEvent>event).post_type === "meta_event") {
+                    return;
+                }
                 //api 响应结果
                 switch ((<responseEvent>event).retcode) {
                     case 1400:

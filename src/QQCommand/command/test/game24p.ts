@@ -1,18 +1,29 @@
+/* eslint-disable camelcase */
 import Logger from "../../../Logger";
+import game24p from "../game24p";
+const test = (msg: string) => {
+    Logger.info(game24p.pattern.test(msg));
+    game24p.exec({
+        ClassType: "",
+        group_id: 1,
+        message: msg,
+        message_id: 1,
+        message_type: "",
+        post_type: "",
+        raw_message: "",
+        sender: {
+            card: "",
+            nickname: "",
+            role: "",
+            user_id: 1,
+        },
+        sub_type: "",
+        time: 1,
+        user_id: 1,
+    });
+};
 const main = () => {
-    const params = /^\[(\d+),(\d+),(\d+),(\d+)\]\S+/.exec("[1,2,3,11]ababa啊");
-    Logger.info(/^\[(\d+),(\d+),(\d+),(\d+)\]\S+/.test("[1,2,3,11]abab啊a"));
-    if (!params) {
-        Logger.warn("解析失败");
-        return;
-    }
-    Logger.debug(JSON.stringify(params));
-    const nums = [
-        parseInt(params[1]),
-        parseInt(params[2]),
-        parseInt(params[3]),
-        parseInt(params[4]),
-    ];
-    Logger.info(nums);
+    test("[1,2,3,4]abab啊a");
+    test("[11,2,11,2]abab啊a");
 };
 main();

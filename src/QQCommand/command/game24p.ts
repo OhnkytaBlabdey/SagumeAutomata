@@ -77,7 +77,14 @@ const div: op = {
 const ops = [add, sub, mul, div];
 const generate = (SET: node24p[], oprand: number): node24p[] => {
     const result: node24p[] = [];
-    (<node24p[]>SET).forEach((node) => {
+    if (SET.length == 1) {
+        const v = SET[0].val;
+        ops.forEach((operator) => {
+            result.push(operator.apply(v, oprand));
+        });
+        return result;
+    }
+    SET.forEach((node) => {
         ops.forEach((operator) => {
             result.push(operator.apply(node, oprand));
         });
@@ -162,7 +169,10 @@ const game24p: cmd = {
         Logger.info("[24p]", nums, target);
         const solution = solve24p(nums, target);
         Logger.info(groupId, solution || "not found");
-        qq.sendToGroup(groupId, solution as string);
+        if (solution) qq.sendToGroup(groupId, solution as string);
+        else {
+            Logger.warn("[24p]", nums, target, "未找到解答");
+        }
     },
 };
 export default game24p;

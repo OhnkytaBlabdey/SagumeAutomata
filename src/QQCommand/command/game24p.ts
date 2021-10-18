@@ -110,7 +110,7 @@ const solve24p = (nums: number[]): string | null => {
         const tmp = solve24pOnePerm(applyIndex(perm, nums));
         if (tmp) {
             if (!res) res = tmp;
-            else if (res.length > tmp.length) {
+            if (res.length > tmp.length) {
                 res = tmp;
             }
         }

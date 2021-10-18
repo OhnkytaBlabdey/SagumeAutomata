@@ -95,10 +95,29 @@ const solve24pOnePerm = (nums: number[], target: number): string | null => {
     const init = nums[0];
     const result = nums
         .slice(1, 4)
-        .reduce(generate, <node24p[]>[
-            { val: init, expr: (init as number).toString() },
-        ]);
+        .reduce(generate, <node24p[]>[{ val: init, expr: init.toString() }]);
     for (const node of result) {
+        if (node.val == target) {
+            return node.expr;
+        }
+    }
+    const res1 = generate(
+        <node24p[]>[{ val: init, expr: init.toString() }],
+        nums[1]
+    );
+    const res2 = generate(
+        <node24p[]>[{ val: nums[2], expr: nums[2].toString() }],
+        nums[3]
+    );
+    const res: node24p[] = [];
+    res1.forEach((n1) => {
+        res2.forEach((n2) => {
+            ops.forEach((operator) => {
+                res.push(operator.apply(n1, n2));
+            });
+        });
+    });
+    for (const node of res) {
         if (node.val == target) {
             return node.expr;
         }

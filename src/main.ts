@@ -1,5 +1,4 @@
 import qq from "./QQMessage";
-import { env } from "process";
 import live from "./Service/Subscribe/Bili/BiliLive";
 import video from "./Service/Subscribe/Bili/BiliVideo";
 import dynamic from "./Service/Subscribe/Bili/Dynamics";

@@ -25,5 +25,6 @@ const test = (msg: string) => {
 const main = () => {
     test("[1,2,3,4]abab啊a");
     test("[11,2,11,2]abab啊a");
+    test("[11,11,11,0]abab啊a");
 };
 main();

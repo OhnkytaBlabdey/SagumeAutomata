@@ -24,7 +24,7 @@ import dbm from "../DBHandler";
  * 分发QQ接收的指令
  */
 class QQMessage {
-    private wsc: wsClient;
+    private wsc?: wsClient;
     private e: EventEmitter;
     private cmd: command;
     private db = dbm;
@@ -33,6 +33,12 @@ class QQMessage {
     private static instance: QQMessage;
 
     constructor() {
+        if (env.MUTE && env.MUTE === "mute") {
+            this.cmd = new command();
+            this.e = new EventEmitter();
+            this.qqid = 0;
+            return;
+        }
         this.cmd = new command();
         this.e = new EventEmitter();
         this.e.on("qwq", async (event: any) => {
@@ -184,12 +190,12 @@ class QQMessage {
     }
 
     public wscConnect() {
-        return this.wsc.connect();
+        return this.wsc?.connect();
     }
 
     public sendToGroup(groupId: number, msg: string): void {
         this.cnt++;
-        this.wsc.sendMessage(
+        this.wsc?.sendMessage(
             JSON.stringify({
                 action: "send_group_msg",
                 params: {
@@ -208,7 +214,7 @@ class QQMessage {
     public async sendToGroupSync(groupId: number, msg: string) {
         // TODO 过长的消息截断划分，不能截断带转义的部分
         // TODO 分成多段需要保证先后顺序//mirai提前进行了返回，并不能保证这个是同步发送的
-        this.wsc.sendMessage(
+        this.wsc?.sendMessage(
             JSON.stringify({
                 action: "send_group_msg",
                 params: {

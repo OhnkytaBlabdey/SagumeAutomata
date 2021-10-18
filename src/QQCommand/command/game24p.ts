@@ -1,4 +1,5 @@
 import Logger from "../../Logger";
+import qq from "../../QQMessage";
 import { messageEvent } from "../../QQMessage/event.interface";
 import { cmd } from "../cmd.interface";
 
@@ -134,7 +135,9 @@ const game24p: cmd = {
             parseInt(params[4]),
         ];
         Logger.info("[24p]", nums);
-        Logger.info(groupId, solve24p(nums));
+        const solution = solve24p(nums);
+        Logger.info(groupId, solution || "not found");
+        qq.sendToGroup(groupId, solution as string);
     },
 };
 export default game24p;

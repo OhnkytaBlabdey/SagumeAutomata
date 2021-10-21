@@ -217,6 +217,31 @@
             ]
         },
         {
+            "tName": "bair",
+            "columns": [
+                {
+                    "cName": "bair_id",
+                    "cDataType": "INTEGER",
+                    "attributes": ["PRIMARY KEY", "AUTOINCREMENT"]
+                },
+                {
+                    "cName": "group_id",
+                    "cDataType": "INTEGER",
+                    "attributes": ["NOT NULL"]
+                },
+                {
+                    "cName": "post_ts",
+                    "cDataType": "INTEGER",
+                    "attributes": ["NOT NULL"]
+                },
+                {
+                    "cName": "timestamp",
+                    "cDataType": "INTEGER",
+                    "attributes": ["default 0"]
+                }
+            ]
+        },
+        {
             "tName": "CounterStrike",
             "columns": [
                 {

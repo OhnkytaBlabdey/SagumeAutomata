@@ -7,24 +7,24 @@ import req from "../../../Requester";
 import { RequesterResponseType } from "../../../Requester/interface";
 import { parseFeed } from "htmlparser2";
 
-class KexueFMSubscriber {
-    private tableName = "kexuefm";
-    private actionName = "科学空间"; // 例如‘直播’
-    private flagCol = "post_id"; // 例如‘liveStatus’
-    private static __instance: KexueFMSubscriber;
+class BAIRSubscriber {
+    private tableName = "bair";
+    private actionName = "BAIR"; // 例如‘直播’
+    private flagCol = "post_ts"; // 例如‘liveStatus’
+    private static __instance: BAIRSubscriber;
 
-    public static getInstance(): KexueFMSubscriber {
+    public static getInstance(): BAIRSubscriber {
         if (!this.__instance) {
-            this.__instance = new KexueFMSubscriber();
+            this.__instance = new BAIRSubscriber();
         }
         return this.__instance;
     }
 
     private getLatestInfo(): Promise<postInfo> {
-        // https://kexue.fm/feed
+        // https://bair.berkeley.edu/blog/feed.xml
         return new Promise<postInfo>((res, rej) => {
             req.get({
-                url: "https://kexue.fm/feed",
+                url: "https://bair.berkeley.edu/blog/feed.xml",
                 params: {},
             })
                 //TODO 入队，交给request monitor 调度
@@ -46,9 +46,8 @@ class KexueFMSubscriber {
                                     return;
                                 }
                                 res({
-                                    author: "苏剑林",
                                     desc: item.description, //string
-                                    latest: parseInt(item.id.split("/")[4]), //number
+                                    latest: new Date(item.pubDate).getTime(), //number
                                     link: item.link, //string
                                     pubdate:
                                         item.pubDate.toLocaleDateString(
@@ -62,7 +61,7 @@ class KexueFMSubscriber {
                             log.warn(feed, "格式错误");
                         }
                     }
-                    log.warn(result.data, "科学空间订阅返回格式错误");
+                    log.warn(result.data, "BAIR订阅返回格式错误");
                 })
                 .catch((error) => {
                     if (error) {
@@ -77,18 +76,9 @@ class KexueFMSubscriber {
 
     public run(): void {
         setInterval(async () => {
-            // const service = dbHandler.getService();
-            // const stmt = service.prepare(
-            //     `select * from ${this.tableName} order by timestamp asc limit 1`
-            // );
             const rec: postRec = await dbHandler.run(
                 `select * from ${this.tableName} order by timestamp asc limit 1`
             );
-            // const rec = (await dbHandler.select(
-            //     [this.tableName],
-            //     ["*"],
-            //     ["order by `timestamp` asc limit 1"] //最旧的记录
-            // )) as postRec;
             if (rec == null) {
                 log.warn(`没有${this.actionName}订阅记录`);
                 return;
@@ -110,7 +100,7 @@ class KexueFMSubscriber {
                 return;
             }
 
-            if (rec.post_id == info.latest) {
+            if (rec.post_ts == info.latest) {
                 log.debug("最新文章没有变化");
                 return;
             } else if (rec.timestamp > info.timestamp) {
@@ -126,11 +116,12 @@ class KexueFMSubscriber {
                 recs.forEach((rec: postRec) => {
                     QQMessage.sendToGroup(
                         rec.group_id,
-                        `${info.author} 更新了文章 ${info.title}\nhttps://kexue.fm/archives/${info.latest}\n` +
-                            `发布日期 ${info.pubdate} \n` +
-                            `简介：${info.desc} ${
-                                info.desc.length > 200 ? " ..." : " "
-                            }`
+                        `BAIR更新了文章 ${info.title}\n${info.link}\n` +
+                            `发布日期 ${info.pubdate} \n`
+                        // TODO 渲染html
+                        //  + `简介：${info.desc} ${
+                        //     info.desc.length > 200 ? " ..." : " "
+                        // }`
                     );
                 });
                 dbHandler
@@ -150,7 +141,7 @@ class KexueFMSubscriber {
                         }
                     });
             }
-        }, 10000);
+        }, 120000);
     }
 
     public async addSub(groupId: number): Promise<boolean> {
@@ -236,5 +227,5 @@ class KexueFMSubscriber {
             });
     }
 }
-const KexueFM = KexueFMSubscriber.getInstance();
+const KexueFM = BAIRSubscriber.getInstance();
 export default KexueFM;

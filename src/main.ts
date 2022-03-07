@@ -4,6 +4,7 @@ import live from "./Service/Subscribe/Bili/BiliLive";
 import video from "./Service/Subscribe/Bili/BiliVideo";
 import dynamic from "./Service/Subscribe/Bili/Dynamics";
 import kexueFM from "./Service/Subscribe/Kexue.fm";
+import BAIR from "./Service/Subscribe/BAIR";
 
 async function main() {
     // wsc连接与数据库初始化为其他服务的前驱
@@ -14,6 +15,7 @@ async function main() {
     video.run();
     dynamic.run();
     kexueFM.run();
+    BAIR.run();
 }
 
 main()

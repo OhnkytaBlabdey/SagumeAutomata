@@ -10,10 +10,12 @@ import removeVideoSubscribeByUid from "./command/videoRemoveByUid";
 import addDynamicSubscribe from "./command/dynamicAdd";
 import removeDynamicSubscribeByUid from "./command/dynamicRemoveByUid";
 import removeDynamicSubscribeByName from "./command/dynamicRemoveByName";
-// import addKexueFMSubscribe from "./command/kexuefmAdd";
-// import removeKexueFMSubscribe from "./command/kexuefmRemove";
+import addKexueFMSubscribe from "./command/kexuefmAdd";
+import removeKexueFMSubscribe from "./command/kexuefmRemove";
 // import setu from "./command/setu";
 import help from "./command/help";
+import addBAIRSubscribe from "./command/BAIRAdd";
+import removeBAIRSubscribe from "./command/BAIRREmove";
 // import game24p from "./command/game24p";
 class Command {
     private cmds: Cmd[];
@@ -28,8 +30,10 @@ class Command {
         this.cmds.push(addDynamicSubscribe);
         this.cmds.push(removeDynamicSubscribeByName);
         this.cmds.push(removeDynamicSubscribeByUid);
-        // this.cmds.push(addKexueFMSubscribe);
-        // this.cmds.push(removeKexueFMSubscribe);
+        this.cmds.push(addKexueFMSubscribe);
+        this.cmds.push(removeKexueFMSubscribe);
+        this.cmds.push(addBAIRSubscribe);
+        this.cmds.push(removeBAIRSubscribe);
         // this.cmds.push(game24p);
         this.cmds.push(help);
         // this.cmds.push(setu);

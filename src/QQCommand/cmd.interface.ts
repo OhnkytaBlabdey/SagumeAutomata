@@ -4,7 +4,12 @@ export interface cmdHandler {
     (ev: messageEvent): void;
 }
 
-export interface cmd {
+export interface Cmd {
     pattern: RegExp;
+    cmdName: string;
+}
+
+export interface CmdRegisterArgs extends Cmd{
+    keyword: string;
     exec: cmdHandler;
 }

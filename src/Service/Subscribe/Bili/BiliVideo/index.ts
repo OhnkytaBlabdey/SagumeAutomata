@@ -114,28 +114,7 @@ class VideoSubscriber extends Subscriber {
                 return;
             } else {
                 // 命中次数增加
-                dbHandler
-                    .update(
-                        this.tableName,
-                        [
-                            {
-                                k: "hit_count",
-                                v: "hit_count+1",
-                            },
-                            {
-                                k: "ctime",
-                                v: info.timestamp,
-                            },
-                            {
-                                k: this.flagCol,
-                                v: info.av,
-                            },
-                        ],
-                        [
-                            `uid=${DBText(rec.uid.toString())}`,
-                            `${this.flagCol}!=${info.av}`,
-                        ]
-                    )
+                dbHandler.update(this.tableName, [{k: "hit_count", v: "hit_count+1",}, {k: "ctime", v: info.timestamp,}, {k: this.flagCol, v: info.av,},], [`uid=${DBText(rec.uid.toString())}`, `${this.flagCol}!=${info.av}`,])
                     .then(async (res) => {
                         log.info(res);
                         // log.info("通知更新");
@@ -156,17 +135,7 @@ class VideoSubscriber extends Subscriber {
                                     }`
                             );
                         });
-                        dbHandler
-                            .update(
-                                this.tableName,
-                                [
-                                    {
-                                        k: "before_update",
-                                        v: info.av,
-                                    },
-                                ],
-                                [`uid=${rec.uid}`, `before_update!=${info.av}`]
-                            )
+                        dbHandler.update(this.tableName, [{k: "before_update", v: info.av,},], [`uid=${rec.uid}`, `before_update!=${info.av}`])
                             .catch((e) => {
                                 if (e) {
                                     log.warn(e);

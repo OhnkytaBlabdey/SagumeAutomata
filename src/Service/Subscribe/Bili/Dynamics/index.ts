@@ -187,28 +187,7 @@ class DynamicSubscriber extends Subscriber {
                 return;
             } else {
                 // 命中次数增加
-                dbHandler
-                    .update(
-                        this.tableName,
-                        [
-                            {
-                                k: "hit_count",
-                                v: "hit_count+1",
-                            },
-                            {
-                                k: "ctime",
-                                v: info.timestamp,
-                            },
-                            {
-                                k: this.flagCol,
-                                v: info.dynamic_id,
-                            },
-                        ],
-                        [
-                            `uid=${rec.uid}`,
-                            `${this.flagCol}!=${info.dynamic_id}`,
-                        ]
-                    )
+                dbHandler.update(this.tableName, [{k: "hit_count", v: "hit_count+1",}, {k: "ctime", v: info.timestamp,}, {k: this.flagCol, v: info.dynamic_id,},], [`uid=${rec.uid}`, `${this.flagCol}!=${info.dynamic_id}`,])
                     .then(async (res) => {
                         log.info(res);
                         // log.info("通知更新");

@@ -1,7 +1,7 @@
 import Logger from "../../Logger";
 import qq from "../../QQMessage";
 import { messageEvent } from "../../QQMessage/event.interface";
-import { cmd } from "../cmd.interface";
+import { Cmd } from "../cmd.interface";
 
 interface node24p {
     val: number;
@@ -168,7 +168,7 @@ const solve24p = (nums: number[], target: number): string | null => {
 };
 
 const patt = /(\d+),(\d+),(\d+),(\d+)&#93;[^\u00-\uff]+(\d+)/;
-const game24p: cmd = {
+const game24p: Cmd = {
     pattern: patt,
     exec: async (ev: messageEvent) => {
         const groupId = ev.group_id;

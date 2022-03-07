@@ -1,5 +1,5 @@
 import { messageEvent } from "../../QQMessage/event.interface";
-import { cmd } from "../cmd.interface";
+import { Cmd } from "../cmd.interface";
 import config from "../../../config/config.json";
 import QQMessage from "../../QQMessage";
 import Logger from "../../Logger";
@@ -10,7 +10,7 @@ const logopath = `file:///${(
     path.sep +
     "ReadMe.assets/logo.jpg"
 ).replace(RegExp(`\\${path.sep}`, "g"), "/")}`;
-const help: cmd = {
+const help: Cmd = {
     pattern: new RegExp(`^\\[CQ:at,qq=${config.qq}\\] 帮助`),
     exec: async (ev: messageEvent) => {
         (await QQMessage).sendToGroup(

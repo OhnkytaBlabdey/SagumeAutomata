@@ -1,9 +1,9 @@
 import { messageEvent } from "../../QQMessage/event.interface";
-import { cmd } from "../cmd.interface";
+import { Cmd } from "../cmd.interface";
 import dynamic from "../../Service/Subscribe/Bili/Dynamics";
 import isAdmin from "../../Util/admin";
 
-const addDynamicSubscribe: cmd = {
+const addDynamicSubscribe: Cmd = {
     pattern: /^动态订阅\s\d+\s\S+/,
     exec: async (ev: messageEvent) => {
         if (!isAdmin(ev)) {

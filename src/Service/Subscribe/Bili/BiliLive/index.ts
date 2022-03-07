@@ -96,35 +96,10 @@ class LiveSubscriber extends Subscriber {
                 return;
             } else if (info.liveStatus == 1) {
                 // 命中次数增加
-                dbHandler
-                    .update(
-                        this.tableName,
-                        [
-                            {
-                                k: "hit_count",
-                                v: "hit_count+1",
-                            },
-                            {
-                                k: this.flagCol,
-                                v: info.liveStatus,
-                            },
-                        ],
-                        [
-                            `uid=${rec.uid}`,
-                            `${this.flagCol}!=${info.liveStatus}`,
-                        ]
-                    )
+                dbHandler.update(this.tableName, [{k: "hit_count", v: "hit_count+1",}, {k: this.flagCol, v: info.liveStatus,},], [`uid=${rec.uid}`, `${this.flagCol}!=${info.liveStatus}`,])
                     .then(async (res) => {
                         log.info(res);
-                        const recs: liveRec[] = await dbHandler.select(
-                            [this.tableName],
-                            ["*"],
-                            [
-                                `uid=${rec.uid}`,
-                                `before_update!=${info.liveStatus}`,
-                            ],
-                            true
-                        );
+                        const recs: liveRec[] = await dbHandler.select([this.tableName], ["*"], [`uid=${rec.uid}`, `before_update!=${info.liveStatus}`,], true);
                         log.info("开播", rec.name);
                         recs.forEach((live: liveRec) => {
                             QQMessage.sendToGroup(
@@ -134,19 +109,7 @@ class LiveSubscriber extends Subscriber {
                             );
                         });
                         dbHandler
-                            .update(
-                                this.tableName,
-                                [
-                                    {
-                                        k: "before_update",
-                                        v: info.liveStatus,
-                                    },
-                                ],
-                                [
-                                    `uid=${rec.uid}`,
-                                    `before_update!=${info.liveStatus}`,
-                                ]
-                            )
+                            .update(this.tableName, [{k: "before_update", v: info.liveStatus,},], [`uid=${rec.uid}`, `before_update!=${info.liveStatus}`,])
                             .catch((e) => {
                                 if (e) {
                                     log.warn(e);
@@ -159,28 +122,10 @@ class LiveSubscriber extends Subscriber {
                         }
                     });
             } else if (info.liveStatus == 0) {
-                dbHandler
-                    .update(
-                        this.tableName,
-                        [
-                            {
-                                k: "liveStatus",
-                                v: info.liveStatus,
-                            },
-                        ],
-                        [`uid=${rec.uid}`, `liveStatus!=${info.liveStatus}`]
-                    )
+                dbHandler.update(this.tableName, [{k: "liveStatus", v: info.liveStatus,},], [`uid=${rec.uid}`, `liveStatus!=${info.liveStatus}`])
                     .then(async (res) => {
                         log.info(res);
-                        const recs: liveRec[] = await dbHandler.select(
-                            [this.tableName],
-                            ["*"],
-                            [
-                                `uid=${rec.uid}`,
-                                `before_update!=${info.liveStatus}`,
-                            ],
-                            true
-                        );
+                        const recs: liveRec[] = await dbHandler.select([this.tableName], ["*"], [`uid=${rec.uid}`, `before_update!=${info.liveStatus}`,], true);
                         recs.forEach((live: liveRec) => {
                             QQMessage.sendToGroup(
                                 live.group_id,
@@ -189,19 +134,7 @@ class LiveSubscriber extends Subscriber {
                             );
                         });
                         dbHandler
-                            .update(
-                                this.tableName,
-                                [
-                                    {
-                                        k: "before_update",
-                                        v: info.liveStatus,
-                                    },
-                                ],
-                                [
-                                    `uid=${rec.uid}`,
-                                    `before_update!=${info.liveStatus}`,
-                                ]
-                            )
+                            .update(this.tableName, [{k: "before_update", v: info.liveStatus,},], [`uid=${rec.uid}`, `before_update!=${info.liveStatus}`,])
                             .catch((e) => {
                                 if (e) {
                                     log.warn(e);
@@ -214,28 +147,10 @@ class LiveSubscriber extends Subscriber {
                         }
                     });
             } else if (info.liveStatus == 2) {
-                dbHandler
-                    .update(
-                        this.tableName,
-                        [
-                            {
-                                k: "liveStatus",
-                                v: info.liveStatus,
-                            },
-                        ],
-                        [`uid=${rec.uid}`, `liveStatus!=${info.liveStatus}`]
-                    )
+                dbHandler.update(this.tableName, [{k: "liveStatus", v: info.liveStatus,},], [`uid=${rec.uid}`, `liveStatus!=${info.liveStatus}`])
                     .then(async (res) => {
                         log.info(res);
-                        const recs: liveRec[] = await dbHandler.select(
-                            [this.tableName],
-                            ["*"],
-                            [
-                                `uid=${rec.uid}`,
-                                `before_update!=${info.liveStatus}`,
-                            ],
-                            true
-                        );
+                        const recs: liveRec[] = await dbHandler.select([this.tableName], ["*"], [`uid=${rec.uid}`, `before_update!=${info.liveStatus}`,], true);
                         recs.forEach((live: liveRec) => {
                             QQMessage.sendToGroup(
                                 live.group_id,
@@ -244,19 +159,7 @@ class LiveSubscriber extends Subscriber {
                             );
                         });
                         dbHandler
-                            .update(
-                                this.tableName,
-                                [
-                                    {
-                                        k: "before_update",
-                                        v: info.liveStatus,
-                                    },
-                                ],
-                                [
-                                    `uid=${rec.uid}`,
-                                    `before_update!=${info.liveStatus}`,
-                                ]
-                            )
+                            .update(this.tableName, [{k: "before_update", v: info.liveStatus,},], [`uid=${rec.uid}`, `before_update!=${info.liveStatus}`,])
                             .catch((e) => {
                                 if (e) {
                                     log.warn(e);

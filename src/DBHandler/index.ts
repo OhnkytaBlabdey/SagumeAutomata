@@ -2,22 +2,19 @@ import Database from "better-sqlite3";
 import path from "path";
 import logger from "../Logger";
 import utils from "../Util";
-import { ReadDoneType, UtilBaseType } from "../Util/interface";
-import { DBConfig, DBTable, TableInfo, UpdatePairType } from "./interface";
+import {ReadDoneType, UtilBaseType} from "../Util/interface";
 import process from "process";
+import {DB} from "./interface";
 
-class DBHandler {
+export class DBHandler {
     private static __instance: DBHandler;
     private readonly __rootDir: string;
-    private __service: any;
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    private __dbConfig: DBConfig;
+    private __service!: Database.Database;
+    private __dbConfig!: DB.DBConfig;
     private __targetDir: string;
 
     constructor() {
         this.__rootDir = path.resolve(__dirname, "../../db");
-        this.__service = null;
         this.__targetDir = "";
         process.on("exit", () => {
             if (this.__service) this.__service.close();
@@ -29,12 +26,12 @@ class DBHandler {
         return this.__instance;
     }
 
-    public getService() {
+    public getService(): Database.Database {
         return this.__service;
     }
 
-    private async __getDBConfig(): Promise<DBConfig> {
-        const { data } = <ReadDoneType>(
+    private async __getDBConfig(): Promise<DB.DBConfig> {
+        const {data} = <ReadDoneType>(
             await utils.readFile(path.resolve(this.__rootDir, "db.config.json"))
         );
         try {
@@ -65,9 +62,9 @@ class DBHandler {
         });
     }
 
-    private __createTable(t: DBTable) {
+    private __createTable(t: DB.DBTable) {
         const args = t.columns.map(
-            (c) =>
+            (c: DB.DBColumn) =>
                 `${c.cName} ${c.cDataType} ${
                     c.attributes && c.attributes.join(" ")
                 }`
@@ -79,7 +76,7 @@ class DBHandler {
     }
 
     private __initTable() {
-        this.__dbConfig.tables.forEach((t) => {
+        this.__dbConfig.tables.forEach((t: DB.DBTable) => {
             this.__createTable(t);
         });
     }
@@ -89,7 +86,7 @@ class DBHandler {
             this.__connectDB();
         } catch (e) {
             logger.info(e);
-            const { status } = <UtilBaseType>(
+            const {status} = <UtilBaseType>(
                 await utils.checkExists(this.__targetDir)
             );
             if (!status) {
@@ -202,7 +199,7 @@ class DBHandler {
 
     public update(
         tableName: string,
-        newPair: Array<UpdatePairType>,
+        newPair: Array<DB.UpdatePairType>,
         condition: Array<string>
     ) {
         return new Promise(async (res, rej) => {
@@ -253,7 +250,7 @@ class DBHandler {
     public init() {
         return new Promise(async (res) => {
             logger.info(`初始化数据库，数据库根目录: ${this.__rootDir}`);
-            this.__dbConfig = <DBConfig>await this.__readConfig();
+            this.__dbConfig = <DB.DBConfig>await this.__readConfig();
             this.__targetDir = path.resolve(
                 this.__rootDir,
                 this.__dbConfig.DBTarget
@@ -263,13 +260,13 @@ class DBHandler {
         });
     }
 
-    public getTableName(): Promise<Array<TableInfo>> {
+    public getTableName(): Promise<Array<DB.TableInfo>> {
         return new Promise(async (res, rej) => {
             try {
                 const query =
                     "select name from sqlite_master where type='table' order by name";
                 const result = this.__service.prepare(query).all();
-                res(<Array<TableInfo>>result);
+                res(<Array<DB.TableInfo>>result);
             } catch (e) {
                 logger.error("获取数据库表名失败");
                 rej(e);
@@ -282,7 +279,7 @@ class DBHandler {
             try {
                 const tableInfo = await this.getTableName();
                 this.__dbConfig = await this.__getDBConfig();
-                this.__dbConfig.tables.forEach((t) => {
+                this.__dbConfig.tables.forEach((t: DB.DBTable) => {
                     if (
                         tableInfo.findIndex((temp) => temp.name === t.tName) >
                         -1

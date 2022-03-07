@@ -1,9 +1,9 @@
 import { messageEvent } from "../../QQMessage/event.interface";
-import { cmd } from "../cmd.interface";
+import { Cmd } from "../cmd.interface";
 import video from "../../Service/Subscribe/Bili/BiliVideo";
 import isAdmin from "../../Util/admin";
 
-const removeVideoSubscribeByUid: cmd = {
+const removeVideoSubscribeByUid: Cmd = {
     pattern: /^取消视频订阅\s\d+/,
     exec: async (ev: messageEvent) => {
         if (!isAdmin(ev)) {

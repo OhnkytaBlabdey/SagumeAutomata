@@ -1,9 +1,9 @@
 import { messageEvent } from "../../QQMessage/event.interface";
-import { cmd } from "../cmd.interface";
+import { Cmd } from "../cmd.interface";
 import KexueFMSubscriber from "../../Service/Subscribe/Kexue.fm";
 import isAdmin from "../../Util/admin";
 
-const addKexueFMSubscribe: cmd = {
+const addKexueFMSubscribe: Cmd = {
     pattern: /^订阅科学空间/,
     exec: async (ev: messageEvent) => {
         if (!isAdmin(ev)) {

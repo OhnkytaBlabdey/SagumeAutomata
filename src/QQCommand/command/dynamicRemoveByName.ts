@@ -1,9 +1,9 @@
 import { messageEvent } from "../../QQMessage/event.interface";
-import { cmd } from "../cmd.interface";
+import { Cmd } from "../cmd.interface";
 import dynamic from "../../Service/Subscribe/Bili/Dynamics";
 import isAdmin from "../../Util/admin";
 
-const removeDynamicSubscribeByName: cmd = {
+const removeDynamicSubscribeByName: Cmd = {
     pattern: /^取消动态订阅\s[^\d]+/,
     exec: async (ev: messageEvent) => {
         if (!isAdmin(ev)) {

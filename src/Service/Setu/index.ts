@@ -22,9 +22,9 @@ function getSetuUrl(keyword: string | null): Promise<setuInfo> {
                 // r18: 0, //都是成年人（ //企鹅觉得不行
             },
         })
-            .then((result: RequesterResponseType | RequesterErrorType) => {
-                if (result && (<RequesterResponseType>result).data) {
-                    const jsondata = (<RequesterResponseType>result).data;
+            .then((result: RequesterResponseType) => {
+                if (result && result.data) {
+                    const jsondata = (result).data;
                     log.debug(jsondata);
                     if (jsondata.data && jsondata.data[0]) {
                         const setuinfo = jsondata.data[0];

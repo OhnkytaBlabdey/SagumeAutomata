@@ -6,7 +6,7 @@ import { Config } from "./config.interface";
 import EventEmitter from "events";
 import { env } from "process";
 import { messageEvent, noticeEvent, responseEvent } from "./event.interface";
-import command from "../QQCommand";
+import {CommandDispatcher, cmdDispatcher} from "../QQCommand/index_new";
 import dbm from "../DBHandler";
 
 /**
@@ -26,7 +26,7 @@ import dbm from "../DBHandler";
 class QQMessage {
     private wsc?: wsClient;
     private e: EventEmitter;
-    private cmd: command;
+    private cmd: CommandDispatcher;
     private db = dbm;
     private cnt = 0;
     protected qqid: number;
@@ -34,12 +34,12 @@ class QQMessage {
 
     constructor() {
         if (env.MUTE && env.MUTE === "mute") {
-            this.cmd = new command();
+            this.cmd = cmdDispatcher;
             this.e = new EventEmitter();
             this.qqid = 0;
             return;
         }
-        this.cmd = new command();
+        this.cmd = cmdDispatcher;
         this.e = new EventEmitter();
         this.e.on("qwq", async (event: any) => {
             event = JSON.parse(event);
@@ -101,7 +101,7 @@ class QQMessage {
             ) {
                 // 响应命令
                 const ev = <messageEvent>event;
-                if (await this.cmd.dispatchCommand(ev, ev.message)) {
+                if (this.cmd.dispatchCommand(ev, ev.message)) {
                     // 处理命令
                 } else {
                     // 储存聊天

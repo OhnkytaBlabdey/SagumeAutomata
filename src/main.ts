@@ -1,8 +1,8 @@
 import qq from "./QQMessage";
+import dbHandler from "./DBHandler";
 import live from "./Service/Subscribe/Bili/BiliLive";
 import video from "./Service/Subscribe/Bili/BiliVideo";
 import dynamic from "./Service/Subscribe/Bili/Dynamics";
-import dbHandler from "./DBHandler";
 import kexueFM from "./Service/Subscribe/Kexue.fm";
 
 async function main() {

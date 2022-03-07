@@ -1,10 +1,10 @@
 import { messageEvent } from "../../QQMessage/event.interface";
-import { cmd } from "../cmd.interface";
+import { Cmd } from "../cmd.interface";
 import getSetu from "../../Service/Setu";
 import { setuInfo } from "../../Service/Setu/setu.interface";
 import QQMessage from "../../QQMessage";
 
-const setu: cmd = {
+const setu: Cmd = {
     pattern: /^\/色图(\s\S+)?/,
     exec: async (ev: messageEvent) => {
         const groupId = ev.group_id;

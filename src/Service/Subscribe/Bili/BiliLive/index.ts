@@ -48,7 +48,9 @@ class LiveSubscriber extends Subscriber {
                                 cover: data.cover,
                                 liveStatus: data.liveStatus,
                                 url: data.url,
-                                online: data.online,
+                                online:
+                                    data.online ||
+                                    data.live_room.watched_show.num,
                                 title: data.title,
                             } as liveInfo);
                             return;

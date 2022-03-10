@@ -1,9 +1,9 @@
 import { messageEvent } from "../../QQMessage/event.interface";
-import { Cmd } from "../cmd.interface";
-import video from "../../Service/Subscribe/Bili/BiliVideo";
+import { CmdType } from "../type";
+import video from "../../Plugins/BiliVideo";
 import isAdmin from "../../Util/admin";
 
-const removeVideoSubscribeByName: Cmd = {
+const removeVideoSubscribeByName: CmdType.Cmd = {
     pattern: /^取消视频订阅\s[^\d]+/,
     exec: async (ev: messageEvent) => {
         if (!isAdmin(ev)) {
@@ -11,8 +11,8 @@ const removeVideoSubscribeByName: Cmd = {
         }
         const group_id = ev.group_id;
         const params = ev.message.split(RegExp(/\s/), 2);
-        const av = await video;
-        av.removeSubByName(group_id, params[1]);
+        await video.removeSub(group_id, params[1], "name");
     },
+    cmdName: "removeVideoSubscribeByName"
 };
 export default removeVideoSubscribeByName;

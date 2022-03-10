@@ -1,9 +1,9 @@
 import { messageEvent } from "../../QQMessage/event.interface";
-import { Cmd } from "../cmd.interface";
-import dynamic from "../../Service/Subscribe/Bili/Dynamics";
+import { CmdType } from "../type";
+import dynamic from "../../Plugins/BiliDynamic";
 import isAdmin from "../../Util/admin";
 
-const addDynamicSubscribe: Cmd = {
+const addDynamicSubscribe: CmdType.Cmd = {
     pattern: /^动态订阅\s\d+\s\S+/,
     exec: async (ev: messageEvent) => {
         if (!isAdmin(ev)) {
@@ -13,8 +13,8 @@ const addDynamicSubscribe: Cmd = {
         const params = ev.message.split(RegExp(/\s/), 3);
         const idStr = params[1];
         const id = parseInt(idStr);
-        const subscriber = await dynamic;
-        subscriber.addSub(group_id, id, params[2]);
+        await dynamic.addSub(group_id, id, params[2]);
     },
+    cmdName: "addDynamicSubscribe"
 };
 export default addDynamicSubscribe;

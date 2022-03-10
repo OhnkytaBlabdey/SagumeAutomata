@@ -1,10 +1,10 @@
 import { messageEvent } from "../../QQMessage/event.interface";
-import { Cmd } from "../cmd.interface";
-import getSetu from "../../Service/Setu";
-import { setuInfo } from "../../Service/Setu/setu.interface";
+import { CmdType } from "../type";
+import getSetu from "../../Plugins/Setu";
+import { setuInfo } from "../../Plugins/Setu/type";
 import QQMessage from "../../QQMessage";
 
-const setu: Cmd = {
+const setu: CmdType.Cmd = {
     pattern: /^\/色图(\s\S+)?/,
     exec: async (ev: messageEvent) => {
         const groupId = ev.group_id;
@@ -12,14 +12,13 @@ const setu: Cmd = {
         const keyword = params.length > 1 ? params[1] : null;
         getSetu(keyword)
             .then(async (info: setuInfo) => {
-                (await QQMessage)
-                    .sendToGroupSync(
+                QQMessage.sendToGroupSync(
                         groupId,
                         `作者：${info.author}\t标题：${info.title}\n${info.url}\n[CQ:image,file=${info.url}]`
                     )
                     .catch(async (e) => {
                         if (e) {
-                            (await QQMessage).sendToGroup(
+                            QQMessage.sendToGroup(
                                 groupId,
                                 `作者：${info.author}\t标题：${info.title}\n${
                                     info.url
@@ -30,13 +29,14 @@ const setu: Cmd = {
             })
             .catch(async (e: Error) => {
                 if (e) {
-                    (await QQMessage).sendToGroup(
+                    QQMessage.sendToGroup(
                         groupId,
                         `获取${keyword}色图失败，原因${e.message}`
                     );
                 }
             });
     },
+    cmdName: "setu"
 };
 
 export default setu;

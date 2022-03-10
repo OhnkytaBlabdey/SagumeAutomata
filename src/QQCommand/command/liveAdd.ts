@@ -1,9 +1,9 @@
 import { messageEvent } from "../../QQMessage/event.interface";
-import { Cmd } from "../cmd.interface";
-import live from "../../Service/Subscribe/Bili/BiliLive";
+import { CmdType } from "../type";
+import live from "../../Plugins/BiliLive";
 import isAdmin from "../../Util/admin";
 
-const addLiveSubscribe: Cmd = {
+const addLiveSubscribe: CmdType.Cmd = {
     pattern: /^直播订阅\s\d+\s\S+/,
     exec: async (ev: messageEvent) => {
         if (!isAdmin(ev)) {
@@ -13,8 +13,8 @@ const addLiveSubscribe: Cmd = {
         const params = ev.message.split(RegExp(/\s/), 3);
         const idStr = params[1];
         const id = parseInt(idStr);
-        const sub = await live;
-        sub.addSub(group_id, id, params[2]);
+        await live.addSub(group_id, id, params[2]);
     },
+    cmdName: "addLiveSubscribe"
 };
 export default addLiveSubscribe;

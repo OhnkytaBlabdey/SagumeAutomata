@@ -1,9 +1,9 @@
 import { messageEvent } from "../../QQMessage/event.interface";
-import { Cmd } from "../cmd.interface";
-import KexueFMSubscriber from "../../Service/Subscribe/Kexue.fm";
+import { CmdType } from "../type";
+import KexueFMSubscriber from "../../Plugins/Kexue.fm";
 import isAdmin from "../../Util/admin";
 
-const addKexueFMSubscribe: Cmd = {
+const addKexueFMSubscribe: CmdType.Cmd = {
     pattern: /^订阅科学空间/,
     exec: async (ev: messageEvent) => {
         if (!isAdmin(ev)) {
@@ -11,7 +11,8 @@ const addKexueFMSubscribe: Cmd = {
         }
         const group_id = ev.group_id;
         const subscriber = await KexueFMSubscriber;
-        subscriber.addSub(group_id);
+        await subscriber.addSub(group_id);
     },
+    cmdName: "addKexueFMSubscribe"
 };
 export default addKexueFMSubscribe;

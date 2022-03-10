@@ -1,17 +1,18 @@
 import { messageEvent } from "../../QQMessage/event.interface";
-import { cmd } from "../cmd.interface";
-import BAIRSubscriber from "../../Service/Subscribe/BAIR";
+import BAIRSubscriber from "../../Plugins/BAIR";
 import isAdmin from "../../Util/admin";
+import {CmdType} from "../type";
 
-const addBAIRSubscribe: cmd = {
+const addBAIRSubscribe: CmdType.Cmd = {
     pattern: /^订阅BAIR/,
+    cmdName: "addBAIRSubscribe",
     exec: async (ev: messageEvent) => {
         if (!isAdmin(ev)) {
             return;
         }
         const group_id = ev.group_id;
         const subscriber = await BAIRSubscriber;
-        subscriber.addSub(group_id);
+        await subscriber.addSub(group_id);
     },
 };
 export default addBAIRSubscribe;

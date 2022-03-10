@@ -1,63 +1,44 @@
 import log from "../Logger";
-import { messageEvent } from "../QQMessage/event.interface";
-import { Cmd as Cmd } from "./cmd.interface";
-import addLiveSubscribe from "./command/liveAdd";
-import removeLiveSubscribeByName from "./command/liveRemoveByName";
-import removeLiveSubscribeByUid from "./command/liveRemoveByUid";
-import addVideoSubscribe from "./command/videoAdd";
-import removeVideoSubscribeByName from "./command/videoRemoveByName";
-import removeVideoSubscribeByUid from "./command/videoRemoveByUid";
-import addDynamicSubscribe from "./command/dynamicAdd";
-import removeDynamicSubscribeByUid from "./command/dynamicRemoveByUid";
-import removeDynamicSubscribeByName from "./command/dynamicRemoveByName";
-import addKexueFMSubscribe from "./command/kexuefmAdd";
-import removeKexueFMSubscribe from "./command/kexuefmRemove";
-// import setu from "./command/setu";
-import help from "./command/help";
-import addBAIRSubscribe from "./command/BAIRAdd";
-import removeBAIRSubscribe from "./command/BAIRREmove";
-// import game24p from "./command/game24p";
-class Command {
-    private cmds: Cmd[];
+import {messageEvent} from "../QQMessage/event.interface";
+import {CmdType} from "./type";
+import lodash from "lodash";
+
+/**
+ * Proselyte, the moment of Yuri's victory is upon us.
+ * The era of epsilon is at hand.
+ */
+
+export class CommandDispatcher {
+    private commands: Array<CmdType.Cmd>;
+
     constructor() {
-        this.cmds = new Array<Cmd>();
-        this.cmds.push(addVideoSubscribe);
-        this.cmds.push(removeVideoSubscribeByName);
-        this.cmds.push(removeVideoSubscribeByUid);
-        this.cmds.push(addLiveSubscribe);
-        this.cmds.push(removeLiveSubscribeByName);
-        this.cmds.push(removeLiveSubscribeByUid);
-        this.cmds.push(addDynamicSubscribe);
-        this.cmds.push(removeDynamicSubscribeByName);
-        this.cmds.push(removeDynamicSubscribeByUid);
-        this.cmds.push(addKexueFMSubscribe);
-        this.cmds.push(removeKexueFMSubscribe);
-        this.cmds.push(addBAIRSubscribe);
-        this.cmds.push(removeBAIRSubscribe);
-        // this.cmds.push(game24p);
-        this.cmds.push(help);
-        // this.cmds.push(setu);
+        this.commands = [];
     }
+
     public async dispatchCommand(
         ev: messageEvent,
         msg: string
     ): Promise<boolean> {
-        return new Promise((res, rej) => {
-            this.cmds.forEach((cmd: Cmd) => {
-                if (cmd.pattern.test(msg)) {
-                    try {
-                        cmd.exec(ev);
-                    } catch (e) {
-                        if (e) {
-                            log.error(e);
-                        }
-                    }
+        return new Promise(async (res, rej) => {
+            try {
+                const index = lodash.findIndex(this.commands, (i) => i.pattern.test(msg));
+                if(index > -1) {
+                    await this.commands[index].exec(ev);
                     res(true);
                 }
-            });
-            res(false);
+            } catch (e) {
+                rej(e);
+            } finally {
+                res(false);
+            }
         });
+    }
+
+    public async loadCommands() {
+
     }
 }
 
-export default Command;
+const cmdDispatcher = new CommandDispatcher();
+
+export default cmdDispatcher;

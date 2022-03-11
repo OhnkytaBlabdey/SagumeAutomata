@@ -6,7 +6,7 @@ SagumeAutomata 是一个 QQ 聊天机器人，现正处于开发阶段。
 
 主要功能是在群聊中被动地提供订阅服务，及时获取最新的动态。
 
-特点是利用了历史信息合理地检测更新，减轻了网络负担，也降低被反爬虫的风险。
+利用历史信息预测更新，不会频繁轮询占满带宽，适合网络不太好的服务器，也降低被反爬虫的风险。
 
 ## 功能
 
@@ -14,6 +14,7 @@ SagumeAutomata 是一个 QQ 聊天机器人，现正处于开发阶段。
 -   [x] `B站`视频订阅
 -   [x] `B站`动态订阅（图片、文字、专栏、视频、转发，不包含直播动态）
 -   [x] [`科学空间`](https://kexue.fm)博客订阅
+-   [x] [`BAIR`](https://bair.berkeley.edu/blog) Berkeley Artificial Intelligence Research 订阅
 -   [x] ~~`Lolicon` 色图~~
 -   [ ] `Saucenao` 以图搜图
 -   [ ] 每日掘金文章推送
@@ -21,13 +22,13 @@ SagumeAutomata 是一个 QQ 聊天机器人，现正处于开发阶段。
 
 ## 帮助
 
-[使用说明](./UserGuide.md)
+[Bot 使用说明](./UserGuide.md)
 
 ## 运行环境
 
 bot 的代码基于 NodeJS+Typescript 开发，需要 nodejs 运行支持。
 
-QQ 客户端依赖于 OneBot（原 CQHTTP）协议支持（例如基于 mirai 的实现[onebot-kotlin](https://github.com/yyuueexxiinngg/onebot-kotlin)）请确保有支持新版 OneBot 正向 websocket 协议的实现。
+QQ 客户端依赖于 OneBot（原 CQHTTP）协议支持（例如基于 mirai 的实现[onebot-kotlin](https://github.com/yyuueexxiinngg/onebot-kotlin)，或者 golang 实现[go-cqhttp](https://github.com/Mrs4s/go-cqhttp)）请确保有支持新版 OneBot 正向 websocket 协议的实现。
 部署运行参考[部署文档](./DeployDocument.md)。
 
 ## 贡献代码
@@ -35,6 +36,11 @@ QQ 客户端依赖于 OneBot（原 CQHTTP）协议支持（例如基于 mirai �
 开发规范等信息可以参考 [开发文档](./DevDocument.md)，相关函数 API 等信息参考 [API 文档](./APIDocument.md)。
 
 ## 更新日志
+
+### 0.1.2(dev)
+
+-   新增了 BAIR 的订阅功能
+-   ~~对戳一戳有反应，此功能需要 go-cqhttp 的支持~~
 
 ### 0.1.1(dev)
 

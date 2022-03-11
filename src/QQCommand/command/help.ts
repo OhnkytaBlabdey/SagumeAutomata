@@ -15,8 +15,8 @@ const help: cmd = {
     exec: async (ev: messageEvent) => {
         (await QQMessage).sendToGroup(
             ev.group_id,
-            // `[CQ:share,title=使用说明,content=bot支持以下功能,url=https://github.com/OhnkytaBlabdey/SagumeAutomata/blob/main/UserGuide.md,image=${logopath}]`
-            `[CQ:share,title=使用说明,content=bot支持以下功能,url=https://github.com/OhnkytaBlabdey/SagumeAutomata/blob/main/UserGuide.md,image=${"https://ftp.sihaimg.com/wp-content/uploads/2019/08/7307c2ad4579a2a1994f527490224542.jpg"}]` //TODO 发送本地图片
+            // `[CQ:share,title=使用说明,content=bot支持以下功能,url=https://hub.fastgit.org/OhnkytaBlabdey/SagumeAutomata/blob/main/UserGuide.md,image=${logopath}]`
+            `[CQ:share,title=使用说明,content=bot支持以下功能,url=https://hub.fastgit.org/OhnkytaBlabdey/SagumeAutomata/blob/main/UserGuide.md,image=${"https://ftp.sihaimg.com/wp-content/uploads/2019/08/7307c2ad4579a2a1994f527490224542.jpg"}]` //TODO 发送本地图片
         );
     },
 };

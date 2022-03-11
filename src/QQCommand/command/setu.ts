@@ -1,7 +1,7 @@
-import { messageEvent } from "../../QQMessage/event.interface";
-import { CmdType } from "../type";
-import getSetu from "../../Plugins/Setu";
-import { setuInfo } from "../../Plugins/Setu/type";
+import {messageEvent} from "../../QQMessage/event.interface";
+import {CmdType} from "../type";
+import setuPlugin from "../../Plugins/Setu";
+import {setuInfo} from "../../Plugins/Setu/type";
 import QQMessage from "../../QQMessage";
 
 const setu: CmdType.Cmd = {
@@ -10,13 +10,14 @@ const setu: CmdType.Cmd = {
         const groupId = ev.group_id;
         const params = ev.message.split(RegExp(/\s/), 2);
         const keyword = params.length > 1 ? params[1] : null;
-        getSetu(keyword)
-            .then(async (info: setuInfo) => {
-                QQMessage.sendToGroupSync(
+        setuPlugin.getSetuUrl(keyword)
+            .then(async (i: setuInfo | boolean) => {
+                if (i) {
+                    const info = i as setuInfo;
+                    QQMessage.sendToGroupSync(
                         groupId,
                         `作者：${info.author}\t标题：${info.title}\n${info.url}\n[CQ:image,file=${info.url}]`
-                    )
-                    .catch(async (e) => {
+                    ).catch(async (e) => {
                         if (e) {
                             QQMessage.sendToGroup(
                                 groupId,
@@ -26,6 +27,12 @@ const setu: CmdType.Cmd = {
                             );
                         }
                     });
+                } else {
+                    QQMessage.sendToGroup(
+                        groupId,
+                        `插件未开启`
+                    );
+                }
             })
             .catch(async (e: Error) => {
                 if (e) {

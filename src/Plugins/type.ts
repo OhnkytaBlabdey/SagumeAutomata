@@ -1,4 +1,4 @@
-namespace BiliSubscriberType {
+export namespace BiliSubscriberType {
     export interface Info {
         latest?: number;
         timestamp: number;
@@ -13,7 +13,7 @@ namespace BiliSubscriberType {
     export type removeBy = "name" | "uid";
 }
 
-namespace PaperSubscriberType {
+export namespace PaperSubscriberType {
     export interface Rec {
         group_id: number;
         timestamp: number | bigint;
@@ -28,3 +28,5 @@ namespace PaperSubscriberType {
         title: string;
     }
 }
+
+

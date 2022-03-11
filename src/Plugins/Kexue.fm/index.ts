@@ -2,6 +2,7 @@ import req from "../../Requester";
 import PaperSubscriber from "../PaperSubscriber";
 import { parseFeed } from "htmlparser2";
 import log from "../../Logger";
+import {KexueType} from "./type";
 
 class KexueFmSubscriber extends PaperSubscriber{
     tableName = "kexuefm";

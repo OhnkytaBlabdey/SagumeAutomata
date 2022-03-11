@@ -15,4 +15,5 @@ const removeDynamicSubscribeByName: CmdType.Cmd = {
     },
     cmdName: "removeDynamicSubscribeByName"
 };
+
 export default removeDynamicSubscribeByName;

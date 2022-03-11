@@ -1,4 +1,6 @@
-namespace BiliLiveType {
+import {BiliSubscriberType} from "../type";
+
+export namespace BiliLiveType {
     export interface liveRec extends BiliSubscriberType.Rec {
         before_update: number;
         group_id: number;

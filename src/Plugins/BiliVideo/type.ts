@@ -1,4 +1,6 @@
-namespace BiliVideoType {
+import {BiliSubscriberType} from "../type";
+
+export namespace BiliVideoType {
     export interface videoRec extends BiliSubscriberType.Rec {
         group_id: number;
         uid: number;

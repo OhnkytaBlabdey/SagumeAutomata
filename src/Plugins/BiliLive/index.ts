@@ -3,6 +3,7 @@ import req from "../../Requester";
 import log from "../../Logger";
 import dbHandler from "../../DBHandler";
 import qq from "../../QQMessage";
+import {BiliLiveType} from "./type";
 
 class BiliLiveSubscriber extends BiliSubscriber {
     tableName = "bili_live";

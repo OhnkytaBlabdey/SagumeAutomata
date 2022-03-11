@@ -11,8 +11,7 @@ const removeBAIRSubscribe: CmdType.Cmd = {
             return;
         }
         const group_id = ev.group_id;
-        const subscriber = await BAIRSubscriber;
-        await subscriber.removeSub(group_id);
+        await BAIRSubscriber.removeSub(group_id);
     },
 };
 export default removeBAIRSubscribe;

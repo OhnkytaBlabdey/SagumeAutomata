@@ -3,6 +3,7 @@ import req from "../../Requester";
 import log from "../../Logger";
 import DBHandler from "../../DBHandler";
 import qq from "../../QQMessage";
+import {BiliVideoType} from "./type";
 
 class VideoSubscriber extends BiliSubscriber {
     tableName = "bili_video";

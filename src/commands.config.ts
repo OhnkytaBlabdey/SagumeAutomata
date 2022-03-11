@@ -1,35 +1,4 @@
-{
-    "onebot_port": "onebot正向ws端口",
-    "onebot_host": "onebot服务所在的主机IP/域名",
-    "onebot_pw": "访问口令，目前还没完成该功能",
-    "cookie": "访问网站需要用",
-    "qq": 123456,
-    "plugins": [
-        {
-            "name": "BAIR",
-            "on": true
-        },
-        {
-            "name": "BiliDynamic",
-            "on": true
-        },
-        {
-            "name": "BiliLive",
-            "on": true
-        },
-        {
-            "name": "BiliVideo",
-            "on": true
-        },
-        {
-            "name": "Kexue.fm",
-            "on": true
-        },
-        {
-            "name": "Setu",
-            "on": false
-        }
-    ],
+export default {
     "commands": [
         {
             "name": "BAIRAdd",

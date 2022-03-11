@@ -2,6 +2,8 @@ import db from "../DBManager";
 import {messageEvent} from "../QQMessage/event.interface";
 import log from "../Logger";
 import {RunResult} from "better-sqlite3";
+import {BiliSubscriberType, PaperSubscriberType} from "../Plugins/type";
+
 
 export default class DBHandler {
     static saveChatMessage(ev: messageEvent) {
@@ -219,7 +221,7 @@ export default class DBHandler {
             ).then(data => {
                 res(data);
             }).catch(e => {
-                rej(e);
+                rej(e.message ? e.message : e);
             });
         });
     }

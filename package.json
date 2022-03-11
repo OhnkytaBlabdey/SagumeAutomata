@@ -4,8 +4,8 @@
     "description": "A QQ bot project",
     "main": "main.js",
     "scripts": {
-        "init-db": "nodemon -e ts --exec ts-node src/DBManager/test/init.ts",
-        "update-db": "nodemon -e ts --exec ts-node src/DBManager/test/update.ts",
+        "init-db": "npx ts-node src/DBManager/test/init.ts",
+        "update-db": "npx ts-node src/DBManager/test/update.ts",
         "tsc": "tsc --watch --allowJs --removeComments",
         "start": "cross-env NODE_ENV=production nodemon -e ts --exec ts-node src/main.ts |cross-env ./node_modules/.bin/bunyan"
     },
@@ -22,7 +22,7 @@
     "homepage": "https://github.com/OhnkytaBlabdey/SagumeAutomata#readme",
     "devDependencies": {
         "@types/axios": "^0.14.0",
-        "@types/better-sqlite3": "^5.4.1",
+        "@types/better-sqlite3": "^7.5.0",
         "@types/bunyan": "^1.8.6",
         "@types/lodash": "^4.14.179",
         "@types/node": "^15.0.2",
@@ -33,7 +33,7 @@
         "@typescript-eslint/parser": "^4.23.0"
     },
     "dependencies": {
-        "better-sqlite3": "^7.4.0",
+        "better-sqlite3": "^7.5.0",
         "bunyan": "^1.8.15",
         "cross-env": "^7.0.3",
         "eslint": "^7.26.0",

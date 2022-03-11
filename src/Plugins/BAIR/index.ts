@@ -2,6 +2,7 @@ import PaperSubscriber from "../PaperSubscriber";
 import req from "../../Requester";
 import log from "../../Logger";
 import { parseFeed } from "htmlparser2";
+import {BAIRType} from "./type";
 
 class BAIRSubscriber extends PaperSubscriber {
     tableName = "bair";

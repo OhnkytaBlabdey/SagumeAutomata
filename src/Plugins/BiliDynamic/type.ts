@@ -1,4 +1,6 @@
-namespace BiliDynamicType {
+import {BiliSubscriberType} from "../type";
+
+export namespace BiliDynamicType {
     export interface dynamicInfo extends BiliSubscriberType.Info {
         card: string; // a json
         dynamic_id: bigint; // desc.dynamic_id

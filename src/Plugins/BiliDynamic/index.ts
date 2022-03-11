@@ -3,6 +3,7 @@ import BiliSubscriber from "../BiliSubscriber";
 import log from "../../Logger";
 import DBHandler from "../../DBHandler";
 import qq from "../../QQMessage";
+import {BiliDynamicType} from "./type";
 
 class BiliDynamicSubscriber extends BiliSubscriber {
     tableName = "bili_dynamic";

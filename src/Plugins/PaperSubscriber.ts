@@ -2,6 +2,7 @@ import Subscriber from "./Subscriber";
 import log from "../Logger";
 import dbHandler from "../DBHandler";
 import qq from "../QQMessage";
+import {PaperSubscriberType} from "./type";
 
 abstract class PaperSubscriber extends Subscriber {
     abstract __generateMsg(info: any): string;

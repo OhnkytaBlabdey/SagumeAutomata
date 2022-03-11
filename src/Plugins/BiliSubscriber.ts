@@ -3,6 +3,7 @@ import qq from "../QQMessage";
 import sampler from "../Util/sampler";
 import dbHandler from "../DBHandler";
 import Subscriber from "./Subscriber";
+import {BiliSubscriberType} from "./type";
 
 abstract class BiliSubscriber extends Subscriber {
     protected abstract interval: NodeJS.Timeout | undefined;

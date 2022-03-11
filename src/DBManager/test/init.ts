@@ -1,3 +1,3 @@
 import dbHandler from "../index";
 
-console.log(dbHandler);
+dbHandler.init();

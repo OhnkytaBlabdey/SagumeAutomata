@@ -11,8 +11,7 @@ const addBAIRSubscribe: CmdType.Cmd = {
             return;
         }
         const group_id = ev.group_id;
-        const subscriber = await BAIRSubscriber;
-        await subscriber.addSub(group_id);
+        await BAIRSubscriber.addSub(group_id);
     },
 };
 export default addBAIRSubscribe;

@@ -24,7 +24,7 @@ class PluginLoader {
             if (config && config.hasOwnProperty("name") && config.hasOwnProperty("on")) {
                 if (config.on) {
                     const plugin = (await import(`../Plugins/${config.name}`)).default;
-                    console.log(`开启插件: ${config.name}`);
+                    log.info(`开启插件: ${config.name}`);
                     plugin.run();
                     this.plugins.push(plugin);
                 } else {

@@ -9,6 +9,12 @@ class BAIRSubscriber extends PaperSubscriber {
     actionName = "BAIR";
     flagCol = "post_ts";
     interval: NodeJS.Timeout | undefined;
+    constructor() {
+        super();
+        this.addSub = this.addSub.bind(this);
+        this.removeSub = this.removeSub.bind(this);
+        this.intervalHandler = this.intervalHandler.bind(this);
+    }
 
     __checkIfValid(rec: BAIRType.PostRec, info: BAIRType.PostInfo): boolean {
         return rec.post_ts == info.latest;

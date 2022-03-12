@@ -14,20 +14,23 @@ class BiliLiveSubscriber extends BiliSubscriber {
 
     constructor() {
         super();
+        this.addSub = this.addSub.bind(this);
+        this.removeSub = this.removeSub.bind(this);
+        this.sampleRec = this.sampleRec.bind(this);
     }
 
-    async getLatestInfo(...a: any): Promise<BiliLiveType.liveInfo | undefined> {
+    async getLatestInfo(uid: number): Promise<BiliLiveType.liveInfo | undefined> {
         try {
             const {data} = await req.get({
                 url: "https://api.bilibili.com/x/space/acc/info",
                 params: {
-                    mid: a,
+                    mid: uid,
                 },
             });
             if (data && data.data) {
                 const jsonData = data.data;
-                if (jsonData.data) {
-                    const data = jsonData.data.live_room;
+                if (jsonData) {
+                    const data = jsonData.live_room;
                     if (!data) {
                         log.warn("获取直播间状态失败");
                     }
@@ -85,7 +88,7 @@ class BiliLiveSubscriber extends BiliSubscriber {
                     if (info.liveStatus == 1) {
                         try {
                             // 命中次数增加
-                            const data = await dbHandler.updateSubscriberHitCount(this.tableName, this.flagCol, info.timestamp ? info.timestamp : -1, info.liveStatus, rec.uid);
+                            const data = await dbHandler.updateBiliSubscriberHitCount(this.tableName, this.flagCol, info.timestamp ? info.timestamp : -1, info.liveStatus, rec.uid, true);
                             log.info(data);
                         } catch (e) {
                             log.error(e);

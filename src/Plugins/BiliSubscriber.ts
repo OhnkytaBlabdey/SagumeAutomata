@@ -34,7 +34,7 @@ abstract class BiliSubscriber extends Subscriber {
     public async addSub(groupId: number, uid: number, name: string) {
         log.debug(`将要添加${this.actionName}订阅`);
         log.debug("group:", groupId, ", uid:", uid, " ,name:", name);
-        const chk = dbHandler.selectBiliSubscribeGroupId(this.tableName, groupId, uid);
+        const chk = await dbHandler.selectBiliSubscribeGroupId(this.tableName, groupId, uid);
         if (chk) {
             let logInfo = `已经添加过该${this.actionName}订阅了`;
             log.error(logInfo);

@@ -107,7 +107,7 @@ export default class DBHandler {
 
     static removeBiliSub(tName: string, groupId: number, attribute: number | string, by: BiliSubscriberType.removeBy): Promise<RunResult> {
         return new Promise((res, rej) => {
-            const condition = by === "name" ? ["`group_id`=" + groupId, "`uid`=" + attribute] : ["`group_id` = " + groupId, "`name` = '" + attribute + "'"];
+            const condition = by === "uid" ? ["`group_id`=" + groupId, "`uid`=" + attribute] : ["`group_id` = " + groupId, "`name` = '" + attribute + "'"];
             db.delete(tName, condition).then((data) => {
                 res(data);
             }).catch(e => {
@@ -126,9 +126,18 @@ export default class DBHandler {
         });
     }
 
-    static updateSubscriberHitCount(tName: string, flagCol: string, timestamp: number, attribute: number | bigint, uid: number) {
+    static updateBiliSubscriberHitCount(tName: string, flagCol: string, timestamp: number, attribute: number | bigint, uid: number, live: boolean = false) {
         return new Promise((res, rej) => {
-            db.update(tName, [
+            const pairs = live ? [
+                {
+                    k: "hit_count",
+                    v: "hit_count+1",
+                },
+                {
+                    k: flagCol,
+                    v: attribute,
+                },
+            ] : [
                 {
                     k: "hit_count",
                     v: "hit_count+1",
@@ -141,7 +150,8 @@ export default class DBHandler {
                     k: flagCol,
                     v: attribute,
                 },
-            ], [
+            ];
+            db.update(tName, pairs, [
                 `uid=${uid}`,
                 `${flagCol}!=${attribute}`,
             ]).then(data => {
@@ -244,15 +254,15 @@ export default class DBHandler {
     static updatePaperSubscribeInfo(tName: string, flagCol: string, latest: number) {
         return new Promise((res, rej) => {
             db.update(
-                    tName,
-                    [
-                        {
-                            k: `${flagCol}`,
-                            v: latest,
-                        },
-                    ],
-                    [`${flagCol}!=${latest}`]
-                )
+                tName,
+                [
+                    {
+                        k: `${flagCol}`,
+                        v: latest,
+                    },
+                ],
+                [`${flagCol}!=${latest}`]
+            )
                 .catch((e) => {
                     if (e) {
                         log.warn(e);

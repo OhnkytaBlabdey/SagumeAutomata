@@ -31,7 +31,7 @@ class WebsocketHandler extends EventEmitter {
                 `ws://${this.__host}:${this.__port}`
             );
             this.__wsClient.on("open", () => {
-                logger.warn("ws已建立连接");
+                logger.info("ws已建立连接");
                 res(1);
             });
             this.__wsClient.on("error", (e) => {

@@ -9,6 +9,12 @@ class KexueFmSubscriber extends PaperSubscriber{
     actionName = "科学空间"; // 例如‘直播’
     flagCol = "post_id";
     interval: NodeJS.Timeout | undefined;
+    constructor() {
+        super();
+        this.addSub = this.addSub.bind(this);
+        this.removeSub = this.removeSub.bind(this);
+        this.intervalHandler = this.intervalHandler.bind(this);
+    }
 
     __checkIfValid(rec: KexueType.PostRec, info: KexueType.PostInfo): boolean {
         return rec.post_id == info.latest;
@@ -66,7 +72,7 @@ class KexueFmSubscriber extends PaperSubscriber{
     }
 
     run(): void {
-        this.interval = setInterval(this.intervalHandler, 10000);
+        this.interval = setInterval(this.intervalHandler.bind(this), 10000);
     }
 }
 

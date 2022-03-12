@@ -21,7 +21,8 @@ const defaultConfig = {
     onebot_host: "",
     onebot_port: 1,
     onebot_pw: "",
-    qq: 1,
+    "qq": 1,
+    "qq_owner": 1145141919810
 };
 
 const handleEvent = (event: responseEvent, e: EventEmitter) => {
@@ -71,16 +72,16 @@ class QQMessage {
                     handleEvent(event, this.e);
                 } else if (event.post_type === "message" && (<messageEvent>event).message_type === "group") {
                     const ev = <messageEvent>event;
-                    const flag = this.cmd.dispatchCommand(ev, ev.message);
+                    const flag = await this.cmd.dispatchCommand(ev, ev.message);
                     if (!flag) {
-                        DBHandler.saveChatMessage(ev);
+                        await DBHandler.saveChatMessage(ev);
                     }
                 } else if (event.post_type === "notice" && (<noticeEvent>event).notice_type === "notify") {
                     const ev = <noticeEvent>event;
                     if (ev.sub_type === "poke") {
                         // 戳一戳
                         if (ev.target_id === (<Config>config).qq) {
-                            log.debug("被戳了", e);
+                            log.info("被戳了", e);
                             this.sendToGroupSync(
                                 (<noticeEvent>event).group_id,
                                 `[CQ:poke,qq=${(<noticeEvent>event).user_id}]`

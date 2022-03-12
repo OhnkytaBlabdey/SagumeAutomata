@@ -43,7 +43,6 @@ export class CommandDispatcher {
     }
 
     public async loadCommand() {
-        console.log(config.commands);
         const len = config.commands.length;
         const confGen = iteConfig(config.commands);
         for (let i = 0; i < len; i++) {

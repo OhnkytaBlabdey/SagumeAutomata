@@ -10,22 +10,28 @@ class BiliDynamicSubscriber extends BiliSubscriber {
     actionName = "动态";
     flagCol = "latest_dynamic_id";
     interval: NodeJS.Timeout | undefined;
+    constructor() {
+        super();
+        this.addSub = this.addSub.bind(this);
+        this.removeSub = this.removeSub.bind(this);
+        this.sampleRec = this.sampleRec.bind(this);
+    }
 
-    async getLatestInfo(...a: any): Promise<BiliDynamicType.dynamicInfo | undefined> {
+    async getLatestInfo(uid: number): Promise<BiliDynamicType.dynamicInfo | undefined> {
         try {
             const {"data": result} = await req.get({
                 url: "https://api.vc.bilibili.com/dynamic_svr/v1/dynamic_svr/space_history",
                 params: {
-                    host_uid: a,
+                    host_uid: uid,
                 },
             });
-            if (!(result && result.data && result.data.data)) {
-                log.warn(`获取${a}动态失败`);
+            if (!(result && result.data)) {
+                log.warn(`获取${uid}动态失败`);
                 throw new Error("没有响应值");
             }
-            const cards = result.data.data.cards;
+            const cards = result.data.cards;
             if (!(cards && cards[0])) {
-                log.warn(`获取${a}的动态没有数据`);
+                log.warn(`获取${uid}的动态没有数据`);
                 throw new Error("没有获取到数据");
             }
             return {
@@ -159,7 +165,7 @@ class BiliDynamicSubscriber extends BiliSubscriber {
                 return;
             } else {
                 try {
-                    const data = await DBHandler.updateSubscriberHitCount(this.tableName, this.flagCol, info.timestamp, info.dynamic_id, rec.uid);
+                    const data = await DBHandler.updateBiliSubscriberHitCount(this.tableName, this.flagCol, info.timestamp, info.dynamic_id, rec.uid);
                     log.info(data);
                     const recs = await DBHandler.getBiliRec<BiliDynamicType.dynamicRec>(this.tableName, rec.uid, info.dynamic_id);
                     recs.forEach((dynamic) => {

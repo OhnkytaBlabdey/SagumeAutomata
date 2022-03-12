@@ -14,17 +14,17 @@ class VideoSubscriber extends BiliSubscriber {
         super();
     }
 
-    async getLatestInfo(...a: any): Promise<BiliVideoType.videoInfo | undefined> {
+    async getLatestInfo(uid: number): Promise<BiliVideoType.videoInfo | undefined> {
         try {
             let {"data": result} = await req.get({
                 url: "https://api.bilibili.com/x/space/arc/search",
                 params: {
-                    mid: a,
+                    mid: uid,
                     ps: 1,
                 },
             });
             if (result && result.data) {
-                const jsonData = result.data;
+                const jsonData = result;
                 if (jsonData.data) {
                     const data = jsonData.data;
                     if (data.list && data.list.vlist) {
@@ -79,7 +79,7 @@ class VideoSubscriber extends BiliSubscriber {
                 return;
             } else {
                 try {
-                    const data = await DBHandler.updateSubscriberHitCount(this.tableName, this.flagCol, info.timestamp, info.av, rec.uid);
+                    const data = await DBHandler.updateBiliSubscriberHitCount(this.tableName, this.flagCol, info.timestamp, info.av, rec.uid);
                     log.info(data);
                     const recs = await DBHandler.getBiliRec<BiliVideoType.videoRec>(this.tableName, rec.uid, info.av);
                     log.info("视频更新", info.title);

@@ -37,6 +37,12 @@ QQ 客户端依赖于 OneBot（原 CQHTTP）协议支持（例如基于 mirai �
 
 ## 更新日志
 
+### 0.2.0(dev)
+
+-   插件开启状态可配置化(插件的 `name` 属性需与对应的目录名一致) [插件配置](./src/plugins.config.ts)
+-   命令开启状态可配置化(命令的 `name`属性需与对应的 `.ts`文件一致  ) [命令配置](./src/commands.config.ts)
+-   优化底层代码
+
 ### 0.1.2(dev)
 
 -   新增了 BAIR 的订阅功能

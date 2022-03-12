@@ -106,7 +106,6 @@ abstract class PaperSubscriber extends Subscriber {
             log.error("没有捕获到异常");
             return;
         }
-
         if (!info) {
             log.info("获取最新文章失败");
             return;

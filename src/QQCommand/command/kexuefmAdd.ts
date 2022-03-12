@@ -10,8 +10,7 @@ const addKexueFMSubscribe: CmdType.Cmd = {
             return;
         }
         const group_id = ev.group_id;
-        const subscriber = await KexueFMSubscriber;
-        await subscriber.addSub(group_id);
+        await KexueFMSubscriber.addSub(group_id);
     },
     cmdName: "addKexueFMSubscribe"
 };

@@ -34,12 +34,10 @@ class KexueFmSubscriber extends PaperSubscriber{
                 url: "https://kexue.fm/feed",
                 params: {},
             });
-            if (result && result.data) {
-                const xmlStr = result.data;
-                const feed = parseFeed(xmlStr);
+            if (result) {
+                const feed = parseFeed(result);
                 if (feed) {
                     const items = feed.items;
-
                     if (items && items?.length > 0) {
                         const item = items[0];
                         if (!item) {

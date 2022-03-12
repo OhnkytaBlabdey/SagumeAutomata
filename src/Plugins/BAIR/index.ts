@@ -31,9 +31,8 @@ class BAIRSubscriber extends PaperSubscriber {
                 url: "https://bair.berkeley.edu/blog/feed.xml",
                 params: {},
             });
-            if (result && result.data) {
-                const xmlStr = result.data;
-                const feed = parseFeed(xmlStr);
+            if (result) {
+                const feed = parseFeed(result);
                 if (feed) {
                     const items = feed.items;
 
@@ -66,7 +65,7 @@ class BAIRSubscriber extends PaperSubscriber {
     }
 
     run(): void {
-        this.interval = setInterval(this.intervalHandler, 120000);
+        this.interval = setInterval(this.intervalHandler, 10000);
     }
 }
 

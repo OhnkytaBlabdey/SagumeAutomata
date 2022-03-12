@@ -1,7 +1,7 @@
 import Logger from "../../Logger";
 import qq from "../../QQMessage";
 import { messageEvent } from "../../QQMessage/event.interface";
-import { cmd } from "../cmd.interface";
+import { CmdType } from "../type";
 
 interface node24p {
     val: number;
@@ -168,7 +168,7 @@ const solve24p = (nums: number[], target: number): string | null => {
 };
 
 const patt = /(\d+),(\d+),(\d+),(\d+)&#93;[^\u00-\uff]+(\d+)/;
-const game24p: cmd = {
+const game24p: CmdType.Cmd = {
     pattern: patt,
     exec: async (ev: messageEvent) => {
         const groupId = ev.group_id;
@@ -193,5 +193,6 @@ const game24p: cmd = {
             Logger.warn("[24p]", nums, target, "未找到解答");
         }
     },
+    cmdName: "game24p"
 };
 export default game24p;

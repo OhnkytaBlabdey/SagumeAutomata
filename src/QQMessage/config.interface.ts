@@ -6,4 +6,5 @@ export interface Config {
     onebot_pw: string | null;
     qq: number;
     su?: number | null;
+    qq_owner: number;
 }

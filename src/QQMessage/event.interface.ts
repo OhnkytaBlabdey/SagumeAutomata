@@ -1,14 +1,10 @@
-export interface messageEvent {
+export interface messageEvent extends responseEvent{
     ClassType: string;
-    group_id: number;
     message_id: number;
     message_type: string;
     message: string;
-    post_type: string;
     raw_message: string;
-    sub_type: string;
     time: number;
-    user_id: number;
     sender: {
         user_id: number;
         nickname: string;
@@ -17,12 +13,8 @@ export interface messageEvent {
     } | null;
 }
 
-export interface noticeEvent {
-    post_type: string;
+export interface noticeEvent extends responseEvent{
     notice_type: string;
-    group_id: number;
-    sub_type: string;
-    user_id: number;
     target_id: number;
 }
 
@@ -33,4 +25,9 @@ export interface responseEvent {
         ClassType: string;
     };
     echo: null | number;
+    post_type: "notice" | "message" | "meta_event";
+    group_id: number;
+    user_id: number;
+    sub_type: string;
 }
+

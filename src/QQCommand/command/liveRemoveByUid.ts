@@ -1,9 +1,9 @@
 import { messageEvent } from "../../QQMessage/event.interface";
-import { cmd } from "../cmd.interface";
-import live from "../../Service/Subscribe/Bili/BiliLive";
+import { CmdType } from "../type";
+import live from "../../Plugins/BiliLive";
 import isAdmin from "../../Util/admin";
 
-const removeLiveSubscribeByUid: cmd = {
+const removeLiveSubscribeByUid: CmdType.Cmd = {
     pattern: /^取消直播订阅\s\d+/,
     exec: async (ev: messageEvent) => {
         if (!isAdmin(ev)) {
@@ -13,8 +13,8 @@ const removeLiveSubscribeByUid: cmd = {
         const params = ev.message.split(RegExp(/\s/), 2);
         const idStr = params[1];
         const id = parseInt(idStr);
-        const sub = await live;
-        sub.removeSubByUid(group_id, id);
+        await live.removeSub(group_id, id, "uid");
     },
+    cmdName: "removeLiveSubscribeByUid"
 };
 export default removeLiveSubscribeByUid;

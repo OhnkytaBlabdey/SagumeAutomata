@@ -1,304 +1,273 @@
-import Database from "better-sqlite3";
-import path from "path";
-import logger from "../Logger";
-import utils from "../Util";
-import { ReadDoneType, UtilBaseType } from "../Util/interface";
-import { DBConfig, DBTable, TableInfo, UpdatePairType } from "./interface";
-import process from "process";
+import db from "../DBManager";
+import {messageEvent} from "../QQMessage/event.interface";
+import log from "../Logger";
+import {RunResult} from "better-sqlite3";
+import {BiliSubscriberType, PaperSubscriberType} from "../Plugins/type";
 
-class DBHandler {
-    private static __instance: DBHandler;
-    private readonly __rootDir: string;
-    private __service: any;
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    private __dbConfig: DBConfig;
-    private __targetDir: string;
 
-    constructor() {
-        this.__rootDir = path.resolve(__dirname, "../../db");
-        this.__service = null;
-        this.__targetDir = "";
-        process.on("exit", () => {
-            if (this.__service) this.__service.close();
-        });
-    }
-
-    public static getInstance(): DBHandler {
-        this.__instance || (this.__instance = new DBHandler());
-        return this.__instance;
-    }
-
-    public getService() {
-        return this.__service;
-    }
-
-    private async __getDBConfig(): Promise<DBConfig> {
-        const { data } = <ReadDoneType>(
-            await utils.readFile(path.resolve(this.__rootDir, "db.config.json"))
-        );
-        try {
-            return JSON.parse(data);
-        } catch (e) {
-            logger.error("配置文件解析失败");
-            throw e;
-        }
-    }
-
-    private async __readConfig() {
-        logger.info("读取数据库配置文件");
-        try {
-            return await this.__getDBConfig();
-        } catch (e) {
-            logger.error("读取配置文件失败");
-            throw e;
-        }
-    }
-
-    private __connectDB() {
-        logger.info("连接数据库...");
-        this.__service = new Database(this.__targetDir, {
-            verbose: (message) => {
-                logger.debug(message);
-            },
-            fileMustExist: true,
-        });
-    }
-
-    private __createTable(t: DBTable) {
-        const args = t.columns.map(
-            (c) =>
-                `${c.cName} ${c.cDataType} ${
-                    c.attributes && c.attributes.join(" ")
-                }`
-        );
-        const info = this.__service
-            .prepare(`create table ${t.tName} (${args})`)
-            .run().changes;
-        logger.info(`changes: ${info}`);
-    }
-
-    private __initTable() {
-        this.__dbConfig.tables.forEach((t) => {
-            this.__createTable(t);
-        });
-    }
-
-    private async __initDB() {
-        try {
-            this.__connectDB();
-        } catch (e) {
-            logger.info(e);
-            const { status } = <UtilBaseType>(
-                await utils.checkExists(this.__targetDir)
-            );
-            if (!status) {
-                logger.warn("数据库文件不存在，将要创建数据库文件");
-                await utils.writeFile(this.__targetDir, "");
-                this.__connectDB();
-                this.__initTable();
+export default class DBHandler {
+    static saveChatMessage(ev: messageEvent) {
+        return db.insertSingle(
+            "group_msg",
+            ["group_id", "user_id", "msg", "time"],
+            [ev.group_id, ev.user_id, ev.message, ev.time]
+        ).then((res) => {
+            if (res) {
+                log.debug("写入消息记录", ev.message_id);
             }
-        }
-        logger.info("数据库初始化完成");
-    }
-
-    public run(query: string, value: Array<any> = []) {
-        return new Promise<any>((res, rej) => {
-            try {
-                const info = this.__service.prepare(query).run(...value);
-                res(info);
-            } catch (e) {
-                logger.error("执行run失败");
-                rej(e);
+        }).catch((rej) => {
+            if (rej) {
+                log.warn("消息记录写入失败");
+                log.warn(rej);
             }
         });
     }
 
-    public getSingle(query: string, value: Array<any> = []) {
+    /**
+     * 获取每个记录的命中次数
+     * @param tName
+     */
+    static selectHitCount(tName: string): Promise<Array<BiliSubscriberType.Rec>> {
         return new Promise((res, rej) => {
-            try {
-                res(this.__service.prepare(query).get(...value));
-            } catch (e) {
-                logger.error("执行get失败");
+            db.select<BiliSubscriberType.Rec>(
+                [tName],
+                ["*"],
+                [],
+                true
+            ).then((data) => {
+                res(data as Array<BiliSubscriberType.Rec>);
+            }).catch(e => {
                 rej(e);
-            }
+            });
         });
     }
 
-    public getMulti(query: string, value: Array<any> = []) {
+    static selectBiliSubscribeGroupId(tName: string, groupId: number, uid: number) {
         return new Promise((res, rej) => {
-            try {
-                res(this.__service.prepare(query).all(...value));
-            } catch (e) {
-                logger.error("执行all失败");
+            db.select(
+                [tName],
+                ["*"],
+                ["group_id=" + groupId, "uid=" + uid]
+            ).then(data => {
+                res(data);
+            }).catch(e => {
                 rej(e);
-            }
+            });
         });
     }
 
-    public insertSingle(
-        tableName: string,
-        columns: Array<string>,
-        values: Array<any>
-    ) {
-        return new Promise(async (res, rej) => {
-            try {
-                const vQuery = new Array(values.length).fill("?").join(",");
-                const cQuery = columns.length ? `(${columns.join(",")})` : "";
-                await this.run(
-                    `insert into ${tableName} ${cQuery} values (${vQuery})`,
-                    values
-                );
-                // logger.debug("插入成功");
-                res(1);
-            } catch (e) {
-                logger.error("插入失败");
+    static selectPaperSubscribeGroupId(tName: string, groupId: number) {
+        return new Promise((res, rej) => {
+            db.select(
+                [tName],
+                ["*"],
+                ["group_id=" + groupId]
+            ).then(data => {
+                res(data);
+            }).catch(e => {
                 rej(e);
-            }
+            });
         });
     }
 
-    public insertMulti(
-        tableName: string,
-        columns: Array<string>,
-        values: Array<Array<any>>
-    ) {
-        return new Promise(async (res, rej) => {
-            try {
-                const vQuery = new Array(values[0].length).fill("?").join(",");
-                const cQuery = columns.length ? `(${columns.join(",")})` : "";
-                const stmt = this.__service.prepare(
-                    `insert into ${tableName} ${cQuery} values (${vQuery})`
-                );
-                const handler = this.__service.transaction(
-                    (q: Array<Array<any>>) => {
-                        for (const i of q) stmt.run(...i);
-                    }
-                );
-                handler(values);
-                res(1);
-            } catch (e) {
-                logger.error("执行插入失败");
+    static addBiliSubscribe(tName: string, flagCol: string, groupId: number, uid: number, name: string) {
+        return new Promise((res, rej) => {
+            db.insertSingle(
+                tName,
+                [
+                    "group_id",
+                    "uid",
+                    "name",
+                    "hit_count",
+                    flagCol,
+                    "before_update",
+                ],
+                [groupId, uid, name, 1, 0, 0]
+            ).then(data => {
+                res(data);
+            }).catch(e => {
                 rej(e);
-            }
+            });
         });
     }
 
-    public delete(tableName: string, condition: Array<string>) {
-        return new Promise(async (res, rej) => {
-            try {
-                const cQuery = condition.join(" and ");
-                const info = await this.run(
-                    `delete from ${tableName} where ${cQuery}`
-                );
-                // logger.info("删除成功");
-                res(info);
-            } catch (e) {
-                logger.error("删除失败");
+    static addPaperSubscribe(tName: string, flagCol: string, groupId: number) {
+        return new Promise((res, rej) => {
+            db.insertSingle(
+                tName,
+                ["group_id", flagCol],
+                [groupId, 0]
+            ).then(data => {
+                res(data);
+            }).catch(e => {
                 rej(e);
-            }
+            });
         });
     }
 
-    public update(
-        tableName: string,
-        newPair: Array<UpdatePairType>,
-        condition: Array<string>
-    ) {
-        return new Promise(async (res, rej) => {
-            try {
-                const nPQuery = newPair.map((i) => `${i.k}=${i.v}`).join(",");
-                const cQuery = condition.join(" and ");
-                const info = await this.run(
-                    `update ${tableName} set ${nPQuery} where ${cQuery}`
-                );
-                // logger.info("更新成功");
-                res(info);
-            } catch (e) {
-                logger.error("更新失败");
+    static removeBiliSub(tName: string, groupId: number, attribute: number | string, by: BiliSubscriberType.removeBy): Promise<RunResult> {
+        return new Promise((res, rej) => {
+            const condition = by === "uid" ? ["`group_id`=" + groupId, "`uid`=" + attribute] : ["`group_id` = " + groupId, "`name` = '" + attribute + "'"];
+            db.delete(tName, condition).then((data) => {
+                res(data);
+            }).catch(e => {
                 rej(e);
-            }
+            });
         });
     }
 
-    public select(
-        tableName: Array<string>,
-        columns: Array<string>,
-        condition: Array<string>,
-        all = false
-    ) {
-        return new Promise<any>((res, rej) => {
-            try {
-                const columnQuery = columns.join(",");
-                const conditionQuery = condition.length
-                    ? `where ${condition.join(" and ")}`
-                    : "";
-                const stmt = this.__service.prepare(
-                    `select ${columnQuery} from ${tableName.join(
-                        ","
-                    )} ${conditionQuery}`
-                );
-                if (all) {
-                    res(stmt.all());
-                } else {
-                    res(stmt.get());
-                }
-            } catch (e) {
-                logger.error("查找失败");
+    static removePaperSub(tName: string, groupId: number): Promise<RunResult> {
+        return new Promise((res, rej) => {
+            db.delete(tName, ["`group_id`=" + groupId]).then((data) => {
+                res(data);
+            }).catch(e => {
                 rej(e);
-            }
+            });
         });
     }
 
-    public init() {
-        return new Promise(async (res) => {
-            logger.info(`初始化数据库，数据库根目录: ${this.__rootDir}`);
-            this.__dbConfig = <DBConfig>await this.__readConfig();
-            this.__targetDir = path.resolve(
-                this.__rootDir,
-                this.__dbConfig.DBTarget
-            );
-            await this.__initDB();
-            res(1);
-        });
-    }
-
-    public getTableName(): Promise<Array<TableInfo>> {
-        return new Promise(async (res, rej) => {
-            try {
-                const query =
-                    "select name from sqlite_master where type='table' order by name";
-                const result = this.__service.prepare(query).all();
-                res(<Array<TableInfo>>result);
-            } catch (e) {
-                logger.error("获取数据库表名失败");
+    static updateBiliSubscriberHitCount(tName: string, flagCol: string, timestamp: number, attribute: number | bigint, uid: number, live: boolean = false) {
+        return new Promise((res, rej) => {
+            const pairs = live ? [
+                {
+                    k: "hit_count",
+                    v: "hit_count+1",
+                },
+                {
+                    k: flagCol,
+                    v: attribute,
+                },
+            ] : [
+                {
+                    k: "hit_count",
+                    v: "hit_count+1",
+                },
+                {
+                    k: "ctime",
+                    v: timestamp
+                },
+                {
+                    k: flagCol,
+                    v: attribute,
+                },
+            ];
+            db.update(tName, pairs, [
+                `uid=${uid}`,
+                `${flagCol}!=${attribute}`,
+            ]).then(data => {
+                res(data);
+            }).catch(e => {
                 rej(e);
-            }
+            });
         });
     }
 
-    public updateTable() {
-        return new Promise(async (res, rej) => {
-            try {
-                const tableInfo = await this.getTableName();
-                this.__dbConfig = await this.__getDBConfig();
-                this.__dbConfig.tables.forEach((t) => {
-                    if (
-                        tableInfo.findIndex((temp) => temp.name === t.tName) >
-                        -1
-                    ) {
-                        logger.warn(`表${t.tName}已存在`);
-                    } else {
-                        this.__createTable(t);
+    static getBiliRec<T extends BiliSubscriberType.Rec>(tN: string, uid: number, attribute: number | bigint): Promise<Array<T>> {
+        return new Promise((res, rej) => {
+            db.select<T>(
+                [tN],
+                ["*"],
+                [
+                    `uid=${uid}`,
+                    `before_update!=${attribute}`,
+                ],
+                true
+            ).then(data => {
+                res(data as Array<T>);
+            }).catch(e => {
+                rej(e);
+            });
+        });
+    }
+
+    static updateSubscribeStatus(tN: string, uid: number, attribute: number | bigint) {
+        return new Promise((res, rej) => {
+            db.update(
+                tN,
+                [
+                    {
+                        k: "before_update",
+                        v: attribute,
+                    },
+                ],
+                [
+                    `uid=${uid}`,
+                    `before_update!=${attribute}`,
+                ]
+            ).then(data => {
+                res(data);
+            }).catch((e) => {
+                rej(e);
+            });
+        });
+    }
+
+    static updateBiliLiveStatus(tN: string, uid: number, liveStatus: number) {
+        return new Promise((res, rej) => {
+            db.update(
+                tN,
+                [
+                    {
+                        k: "liveStatus",
+                        v: liveStatus,
+                    },
+                ],
+                [
+                    `uid=${uid}`,
+                    `liveStatus!=${liveStatus}`,
+                ]
+            ).then(data => {
+                res(data);
+            }).catch((e) => {
+                rej(e);
+            });
+        });
+    }
+
+    static getPaperSubscribeTempInfo(tName: string) {
+        return new Promise((res, rej) => {
+            db.run(
+                `select * from ${tName} order by timestamp asc limit 1`
+            ).then(data => {
+                res(data);
+            }).catch(e => {
+                rej(e.message ? e.message : e);
+            });
+        });
+    }
+
+    static getPaperSubscribeGroups<T extends PaperSubscriberType.Rec>(tName: string, flagCol: string, latest: string): Promise<Array<T>> {
+        return new Promise((res, rej) => {
+            db.select<T>(
+                [tName],
+                ["*"],
+                [`${flagCol}!=${latest}`],
+                true
+            ).then(data => {
+                res(data as Array<T>);
+            }).catch(e => {
+                rej(e);
+            });
+        });
+    }
+
+    static updatePaperSubscribeInfo(tName: string, flagCol: string, latest: number) {
+        return new Promise((res, rej) => {
+            db.update(
+                tName,
+                [
+                    {
+                        k: `${flagCol}`,
+                        v: latest,
+                    },
+                ],
+                [`${flagCol}!=${latest}`]
+            )
+                .catch((e) => {
+                    if (e) {
+                        log.warn(e);
                     }
                 });
-            } catch (e) {
-                rej(e);
-            }
         });
     }
 }
-
-const dbHandler = DBHandler.getInstance();
-
-export default dbHandler;

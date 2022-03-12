@@ -1,9 +1,9 @@
 import { messageEvent } from "../../QQMessage/event.interface";
-import { cmd } from "../cmd.interface";
-import dynamic from "../../Service/Subscribe/Bili/Dynamics";
+import { CmdType } from "../type";
+import dynamic from "../../Plugins/BiliDynamic";
 import isAdmin from "../../Util/admin";
 
-const removeDynamicSubscribeByName: cmd = {
+const removeDynamicSubscribeByName: CmdType.Cmd = {
     pattern: /^取消动态订阅\s[^\d]+/,
     exec: async (ev: messageEvent) => {
         if (!isAdmin(ev)) {
@@ -11,8 +11,9 @@ const removeDynamicSubscribeByName: cmd = {
         }
         const group_id = ev.group_id;
         const params = ev.message.split(RegExp(/\s/), 2);
-        const subscriber = await dynamic;
-        subscriber.removeSubByName(group_id, params[1]);
+        await dynamic.removeSub(group_id, params[1], "name");
     },
+    cmdName: "removeDynamicSubscribeByName"
 };
+
 export default removeDynamicSubscribeByName;

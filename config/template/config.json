@@ -4,5 +4,6 @@
     "onebot_pw": "访问口令，目前还没完成该功能",
     "cookie": "访问网站需要用",
     "qq": 123456,
-    "qq_owner": 1145141919810
+    "qq_owner": 1145141919810,
+    "saucenao_api_key": "调用saucenao接口需要的key"
 }

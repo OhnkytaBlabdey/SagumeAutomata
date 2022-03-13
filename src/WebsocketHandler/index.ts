@@ -11,24 +11,27 @@ class WebsocketHandler extends EventEmitter {
     private __wsClient: Websocket;
     private __eventListener: EventEmitter;
     private __eventTarget: string;
+    private __access_token: string;
 
     constructor(
         host: string,
         port: number,
         eventListener: EventEmitter,
-        eventTarget: string
+        eventTarget: string,
+        access_token: string
     ) {
         super();
         this.__port = port;
         this.__host = host;
         this.__eventListener = eventListener;
         this.__eventTarget = eventTarget;
+        this.__access_token = access_token;
     }
 
     connect() {
         return new Promise((res, rej) => {
             this.__wsClient = new Websocket(
-                `ws://${this.__host}:${this.__port}`
+                `ws://${this.__host}:${this.__port}?access_token=${this.__access_token}`
             );
             this.__wsClient.on("open", () => {
                 logger.info("ws已建立连接");

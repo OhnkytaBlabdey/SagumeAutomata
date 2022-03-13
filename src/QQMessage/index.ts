@@ -116,7 +116,8 @@ class QQMessage {
                 conf.onebot_host,
                 conf.onebot_port as number,
                 this.e,
-                "qwq"
+                "qwq",
+                conf.onebot_pw ? conf.onebot_pw : ""
             );
 
             this.qqid = conf.qq;

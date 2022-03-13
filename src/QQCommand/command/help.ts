@@ -8,7 +8,7 @@ import path from "path";
 const logopath = `file:///${(
     process.cwd() +
     path.sep +
-    "ReadMe.assets/logo.jpg"
+    "ReadMe.Assets/logo.jpg"
 ).replace(RegExp(`\\${path.sep}`, "g"), "/")}`;
 const help: CmdType.Cmd = {
     pattern: new RegExp(`^\\[CQ:at,qq=${config.qq}\\] 帮助`),

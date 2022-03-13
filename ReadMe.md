@@ -37,6 +37,11 @@ QQ 客户端依赖于 OneBot（原 CQHTTP）协议支持（例如基于 mirai �
 
 ## 更新日志
 
+### 0.2.1(dev)
+
+-   添加access_token功能，在配置文件中配置 `onebot_pw` 字段
+-   修复文件名错误
+
 ### 0.2.0(dev)
 
 -   插件开启状态可配置化(插件的 `name` 属性需与对应的目录名一致) [插件配置](./src/plugins.config.ts)

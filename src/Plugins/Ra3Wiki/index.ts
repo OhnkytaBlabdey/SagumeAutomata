@@ -24,8 +24,9 @@ class Ra3Wiki {
             qq.sendToGroup(group_id, info);
         } else {
             const possibleName = [];
+            const reg = new RegExp(unitName);
             for (let i in wikiData) {
-                if (new RegExp(i).test(unitName)) {
+                if (reg.test(i)) {
                     possibleName.push(i);
                 }
             }

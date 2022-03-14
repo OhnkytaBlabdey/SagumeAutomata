@@ -5,7 +5,7 @@ import {CmdType} from "../type";
 import log from "../../Logger";
 
 const removeGithubSubscribe: CmdType.Cmd = {
-    pattern: /^取消订阅Github Trending/,
+    pattern: /^取消订阅Github|取消订阅github/,
     cmdName: "removeGithubSubscribe",
     exec: async (ev: messageEvent) => {
         if (!isAdmin(ev)) {

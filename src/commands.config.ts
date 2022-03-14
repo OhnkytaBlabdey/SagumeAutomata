@@ -79,6 +79,10 @@ export default {
         {
             "name": "removeGithubSubscribe",
             "on": true
+        },
+        {
+            "name": "askForRa3Data",
+            "on": true
         }
     ]
 }

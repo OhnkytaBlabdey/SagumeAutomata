@@ -22,7 +22,7 @@ class JuejinDaily extends Subscriber {
     private __sortType: number = 200;
     public __info: JuejinType.Info = {};
 
-    private async __requestJuejinAPI(id: string): Promise<Array<string>> {
+    private async __requestJuejinAPI(id: string): Promise<string> {
         const {data} = await req.post<JuejinType.Response>(this.__url, JSON.stringify({
             cate_id: id,
             client_type: this.__clientType,
@@ -39,7 +39,7 @@ class JuejinDaily extends Subscriber {
         if (!data.err_no) {
             return data.data.map(((article, i) => (
                 `#${i}\n《${article.article_info.title}》\n${article.article_info.brief_content}...\n链接: https://juejin.cn/post/${article.article_id}\n标签: ${article.tags.map(t => `${t.tag_name}`).join("")}\n\n`
-            )));
+            ))).join("");
         } else {
             throw new Error(data.err_msg);
         }
@@ -97,7 +97,7 @@ class JuejinDaily extends Subscriber {
         const rec = await DBHandler.getJuejinSubscribeInfo(this.tableName, 0, groupId);
         if (!rec.length) {
             await DBHandler.addJuejinSubscribe(this.tableName, groupId, 0);
-            qq.sendToGroup(groupId, `该群订阅掘金成功`);
+            await qq.sendToGroupSync(groupId, `该群订阅掘金成功`);
             for (let i in this.__info) {
                 qq.sendToGroup(groupId, `${i}:\n${this.__info[i]}`);
             }
@@ -110,7 +110,7 @@ class JuejinDaily extends Subscriber {
         const rec = await DBHandler.getJuejinSubscribeInfo(this.tableName, 0, groupId);
         if (rec.length) {
             await DBHandler.deleteJuejinSubscribeInfo(this.tableName, groupId, 0);
-            qq.sendToGroup(groupId, `该群取消订阅掘金成功`);
+            await qq.sendToGroupSync(groupId, `该群取消订阅掘金成功`);
         } else {
             qq.sendToGroup(groupId, `该群未订阅掘金`);
         }

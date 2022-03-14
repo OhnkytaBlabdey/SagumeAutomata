@@ -90,6 +90,7 @@ class JuejinDaily extends Subscriber {
             log.warn(e);
             log.warn("请求安卓文章失败");
         }
+        log.info(this.__info);
     }
 
     async addSub(groupId: number) {

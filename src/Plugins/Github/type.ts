@@ -1,16 +1,16 @@
 export namespace GithubType {
     export interface Response {
-        code: number;
-        data: Array<TrendingInfo>
+        count: number;
+        msg: string;
+        items: Array<TrendingInfo>
     }
 
     export interface TrendingInfo {
-        description: string;
-        url: string;
-        id: string;
-        lang: string;
-        forkCount: number;
-        starCount: number;
+        repo_link: string;
+        desc: string;
+        repo: string;
+        stars: string;
+        forks: string;
     }
 
     export interface Info {

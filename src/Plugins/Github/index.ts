@@ -7,15 +7,16 @@ import Subscriber from "../Subscriber";
 import req from "../../Requester";
 import {GithubType} from "./type";
 
+function *ite() {
+
+}
+
 class GithubSubscriber extends Subscriber {
     protected actionName: string = "";
     protected flagCol: string = "";
     protected tableName: string = "JuejinDaily";
-    private __url: string = "https://e.juejin.cn/resources/github";
-    private __limit: number = 3;
-    private __category: string = "trending";
-    private __period: string = "day";
-    private __lang: Array<string> = ["javascript", "python", "java", "kotlin", "c++"];
+    private __url: string = "https://trendings.herokuapp.com/repo";
+    private __lang: Array<string> = ["javascript", "python", "java", "kotlin"];
     private __info: GithubType.Info = {};
 
     close(): void {
@@ -23,24 +24,19 @@ class GithubSubscriber extends Subscriber {
     }
 
     private async __requestGithubTrending(lang: string) {
-        let {data} = await req.post<GithubType.Response>(this.__url, JSON.stringify({
-            category: this.__category,
-            lang: lang,
-            limit: this.__limit,
-            offset: 0,
-            period: this.__period
-        }), {
-            headers: {
-                "content-type": "application/json"
+        let {data}: {data: GithubType.Response} = await req.get({
+            url: this.__url,
+            params: {
+                lang: lang
             }
         });
-        if (data.code === 200) {
+        if (data && data.msg === "suc") {
             return {
                 data,
                 lang
             }
         } else {
-            throw new Error("请求掘金Github的API时出现错误" + data.code);
+            throw new Error(data.msg);
         }
     }
 
@@ -48,9 +44,10 @@ class GithubSubscriber extends Subscriber {
         const task = this.__lang.map(l => this.__requestGithubTrending(l));
         const res = (await Promise.all(task)).map(res => {
             console.info(res);
+            res.data.items.splice(5, res.data.items.length - 1);
             return {
                 lang: res.lang,
-                info: res.data.data.map(repo => `${repo.id}\n${repo.description}\n链接: ${repo.url}\n语言: ${repo.lang}\nFork: ${repo.forkCount} Star: ${repo.starCount}\n`).join("\n")
+                info: res.data.items.map(repo => `仓库：${repo.repo}\n简介：${repo.desc}\n链接: ${repo.repo_link}\n语言: ${res.lang}\nFork: ${repo.forks} Star: ${repo.stars}\n`).join("-----------\n")
             }
         });
         for (let i of res) {

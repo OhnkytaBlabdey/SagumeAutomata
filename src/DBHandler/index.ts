@@ -314,6 +314,9 @@ export default class DBHandler {
                     group_id, type
                 ]
             )
+                .then(() => {
+                    res(1);
+                })
                 .catch((e) => {
                     if (e) {
                         log.warn(e);
@@ -331,6 +334,9 @@ export default class DBHandler {
                     `type=${type}`
                 ]
             )
+                .then(() => {
+                    res(1);
+                })
                 .catch((e) => {
                     if (e) {
                         log.warn(e);

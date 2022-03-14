@@ -16,9 +16,9 @@ SagumeAutomata 是一个 QQ 聊天机器人，现正处于开发阶段。
 -   [x] [`科学空间`](https://kexue.fm)博客订阅
 -   [x] [`BAIR`](https://bair.berkeley.edu/blog) Berkeley Artificial Intelligence Research 订阅
 -   [x] ~~`Lolicon` 色图~~
--   [ ] `Saucenao` 以图搜图
--   [ ] 每日掘金文章推送
--   [ ] 每日 Github 仓库推荐
+-   [ ] ~~`Saucenao` 以图搜图~~
+-   [x] 每日掘金文章推送
+-   [x] 每日 Github 仓库推荐
 
 ## 帮助
 
@@ -41,6 +41,8 @@ QQ 客户端依赖于 OneBot（原 CQHTTP）协议支持（例如基于 mirai �
 
 -   添加access_token功能，在配置文件中配置 `onebot_pw` 字段
 -   修复文件名错误
+-   添加新功能：每日掘金文章推送
+-   添加新功能：每日Github Trending推送
 
 ### 0.2.0(dev)
 

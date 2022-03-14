@@ -21,7 +21,7 @@ export namespace JuejinType {
     }
 
     export interface Info {
-        [index : string]: Array<string>
+        [index : string]: string;
     }
 
     export interface GroupInfo {

@@ -5,6 +5,7 @@ import randomUA from "user-agents";
 import log from "../../Logger";
 import DBHandler from "../../DBHandler";
 import qq from "../../QQMessage";
+import scheduler from "node-schedule";
 
 class JuejinDaily extends Subscriber {
     protected actionName: string = "";
@@ -18,11 +19,11 @@ class JuejinDaily extends Subscriber {
     private __androidId: string = "6809635626879549454";
     private __clientType: number = 6587;
     private __id_type: number = 2;
-    private __limit: number = 5;
+    private __limit: number = 3;
     private __sortType: number = 200;
     public __info: JuejinType.Info = {};
 
-    private async __requestJuejinAPI(id: string): Promise<Array<string>> {
+    private async __requestJuejinAPI(id: string): Promise<string> {
         const {data} = await req.post<JuejinType.Response>(this.__url, JSON.stringify({
             cate_id: id,
             client_type: this.__clientType,
@@ -38,8 +39,8 @@ class JuejinDaily extends Subscriber {
         });
         if (!data.err_no) {
             return data.data.map(((article, i) => (
-                `#${i}\n《${article.article_info.title}》\n${article.article_info.brief_content}...\n链接: https://juejin.cn/post/${article.article_id}\n标签: ${article.tags.map(t => `${t.tag_name}`).join("")}\n\n`
-            )));
+                `#${i}\n《${article.article_info.title}》\n${article.article_info.brief_content}...\n链接: https://juejin.cn/post/${article.article_id}\n标签: ${article.tags.map(t => `${t.tag_name}`).join("")}\n`
+            ))).join("-----------\n");
         } else {
             throw new Error(data.err_msg);
         }
@@ -49,11 +50,9 @@ class JuejinDaily extends Subscriber {
         try {
             await this.getLatestInfo();
             const rec = await DBHandler.getJuejinSubscribe(this.tableName, 0);
-            console.log(rec);
             rec.forEach(group => {
-                qq.sendToGroup(group.group_id, "每日掘金文章推荐");
                 for (let i in this.__info) {
-                    qq.sendToGroup(group.group_id, `${i}:\n${this.__info[i]}`);
+                    qq.sendToGroup(group.group_id, `每日掘金文章推荐\n${i}:\n${this.__info[i]}`);
                 }
             });
         } catch (e) {
@@ -90,15 +89,16 @@ class JuejinDaily extends Subscriber {
             log.warn(e);
             log.warn("请求安卓文章失败");
         }
+        log.info(this.__info);
     }
 
     async addSub(groupId: number) {
         const rec = await DBHandler.getJuejinSubscribeInfo(this.tableName, 0, groupId);
         if (!rec.length) {
             await DBHandler.addJuejinSubscribe(this.tableName, groupId, 0);
-            qq.sendToGroup(groupId, `该群订阅掘金成功`);
+            await qq.sendToGroupSync(groupId, `该群订阅掘金成功`);
             for (let i in this.__info) {
-                qq.sendToGroup(groupId, `${i}:\n${this.__info[i]}`);
+                qq.sendToGroup(groupId, `每日掘金文章推荐\n${i}:\n${this.__info[i]}`);
             }
         } else {
             qq.sendToGroup(groupId, `该群已订阅掘金`);
@@ -117,7 +117,7 @@ class JuejinDaily extends Subscriber {
 
     async run() {
         await this.getLatestInfo();
-        this.__timer = setInterval(this.__intervalHandler, 1000 * 60 * 60 * 24);
+        scheduler.scheduleJob("30 30 6 * * *",this.__intervalHandler);
     }
 }
 

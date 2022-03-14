@@ -71,6 +71,14 @@ export default {
         {
             "name": "removeJuejinSubscribe",
             "on": true
+        },
+        {
+            "name": "addGithubSubscribe",
+            "on": true
+        },
+        {
+            "name": "removeGithubSubscribe",
+            "on": true
         }
     ]
 }

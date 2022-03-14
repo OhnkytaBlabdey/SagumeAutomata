@@ -27,6 +27,10 @@ export default {
         {
             "name": "JuejinDaily",
             "on": true
+        },
+        {
+            "name": "Github",
+            "on": true
         }
     ]
 }

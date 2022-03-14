@@ -42,6 +42,7 @@ QQ 客户端依赖于 OneBot（原 CQHTTP）协议支持（例如基于 mirai �
 -   添加access_token功能，在配置文件中配置 `onebot_pw` 字段
 -   修复文件名错误
 -   添加新功能：每日掘金文章推送
+-   添加新功能：每日Github Trending推送
 
 ### 0.2.0(dev)
 

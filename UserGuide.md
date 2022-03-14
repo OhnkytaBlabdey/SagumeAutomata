@@ -64,3 +64,15 @@
 
 1. `订阅掘金`
 2. `取消订阅掘金`
+
+## `Github Trendings`订阅
+
+-   [x] 管理员权限
+    > 每天推送一次今日Github Trending
+    > 
+    > 暂时只提供JS、Java、Kotlin、Python类的Trending
+    > 
+    > 可手动修改`./src/Plugins/Github/index.ts`内的语言选项
+
+1. `订阅Github`
+2. `取消订阅Github`

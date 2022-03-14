@@ -23,6 +23,10 @@ export default {
         {
             "name": "Setu",
             "on": false
+        },
+        {
+            "name": "JuejinDaily",
+            "on": true
         }
     ]
 }

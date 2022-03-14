@@ -2,21 +2,6 @@
     "DBTarget": "automata.db",
     "tables": [
         {
-            "tName": "yorha",
-            "columns": [
-                {
-                    "cName": "android_id",
-                    "cDataType": "INTEGER",
-                    "attributes": ["PRIMARY KEY", "AUTOINCREMENT"]
-                },
-                {
-                    "cName": "android_name",
-                    "cDataType": "TEXT",
-                    "attributes": ["NOT NULL"]
-                }
-            ]
-        },
-        {
             "tName": "group_msg",
             "columns": [
                 {
@@ -43,21 +28,6 @@
                     "cName": "msg",
                     "cDataType": "TEXT",
                     "attributes": ["NOT NULL"]
-                }
-            ]
-        },
-        {
-            "tName": "mankind",
-            "columns": [
-                {
-                    "cName": "mankind_id",
-                    "cDataType": "INTEGER",
-                    "attributes": ["PRIMARY KEY", "AUTOINCREMENT"]
-                },
-                {
-                    "cName": "mankind_name",
-                    "cDataType": "TEXT",
-                    "attributes": ["NUO NULL"]
                 }
             ]
         },
@@ -242,10 +212,15 @@
             ]
         },
         {
-            "tName": "CounterStrike",
+            "tName": "JuejinDaily",
             "columns": [
                 {
-                    "cName": "armor_name",
+                    "cName": "group_id",
+                    "cDataType": "INTEGER",
+                    "attributes": ["NOT NULL"]
+                },
+                {
+                    "cName": "type",
                     "cDataType": "INTEGER",
                     "attributes": ["NOT NULL"]
                 }

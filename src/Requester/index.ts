@@ -47,22 +47,18 @@ class Requester {
 
     /**
      *
+     * @param url
      * @param para: RequesterPostArg
      * @param customConf: AxiosRequestConfig
      * @return Promise
      */
-    public post(para: any, customConf: AxiosRequestConfig = {}): Promise<AxiosResponse> {
-        Object.assign(customConf, {
-            headers: {
-                "content-type": para.contentType,
-            },
-        });
+    public post<T>(url: string, para: any, customConf: AxiosRequestConfig = {}): Promise<AxiosResponse<T>> {
         return new Promise(
             (res, rej) => {
                 this.__service({
                     method: "POST",
-                    url: para.url,
-                    data: para.data,
+                    url: url,
+                    data: para,
                     ...customConf,
                 }).then(
                     (d) => {

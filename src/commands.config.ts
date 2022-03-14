@@ -63,6 +63,14 @@ export default {
         {
             "name": "videoRemoveByUid",
             "on": true
+        },
+        {
+            "name": "addJuejinSubscribe",
+            "on": true
+        },
+        {
+            "name": "removeJuejinSubscribe",
+            "on": true
         }
     ]
 }

@@ -3,6 +3,7 @@ import {messageEvent} from "../QQMessage/event.interface";
 import log from "../Logger";
 import {RunResult} from "better-sqlite3";
 import {BiliSubscriberType, PaperSubscriberType} from "../Plugins/type";
+import {JuejinType} from "../Plugins/JuejinDaily/type";
 
 
 export default class DBHandler {
@@ -262,6 +263,73 @@ export default class DBHandler {
                     },
                 ],
                 [`${flagCol}!=${latest}`]
+            )
+                .catch((e) => {
+                    if (e) {
+                        log.warn(e);
+                    }
+                });
+        });
+    }
+
+    static getJuejinSubscribe(tName: string, type: number): Promise<Array<JuejinType.GroupInfo>> {
+        return new Promise((res, rej) => {
+            db.select<JuejinType.GroupInfo>(
+                [tName],
+                ["*"],
+                [`type=${type}`],
+                true
+            ).then(data => {
+                res(data as Array<JuejinType.GroupInfo>);
+            }).catch(e => {
+                rej(e);
+            });
+        });
+    }
+
+    static getJuejinSubscribeInfo(tName: string, type: number, group_id: number): Promise<Array<JuejinType.GroupInfo>> {
+        return new Promise((res, rej) => {
+            db.select<JuejinType.GroupInfo>(
+                [tName],
+                ["*"],
+                [`type=${type}`, `group_id=${group_id}`],
+                true
+            ).then(data => {
+                res(data as Array<JuejinType.GroupInfo>);
+            }).catch(e => {
+                rej(e);
+            });
+        });
+    }
+
+    static addJuejinSubscribe(tName: string, group_id: number, type: number) {
+        return new Promise((res, rej) => {
+            db.insertSingle(
+                tName,
+                [
+                    "group_id",
+                    "type"
+                ],
+                [
+                    group_id, type
+                ]
+            )
+                .catch((e) => {
+                    if (e) {
+                        log.warn(e);
+                    }
+                });
+        });
+    }
+
+    static deleteJuejinSubscribeInfo(tName: string, group_id: number, type: number) {
+        return new Promise((res, rej) => {
+            db.delete(
+                tName,
+                [
+                    `group_id=${group_id}`,
+                    `type=${type}`
+                ]
             )
                 .catch((e) => {
                     if (e) {

@@ -110,7 +110,7 @@ class JuejinDaily extends Subscriber {
         const rec = await DBHandler.getJuejinSubscribeInfo(this.tableName, 0, groupId);
         if (rec.length) {
             await DBHandler.deleteJuejinSubscribeInfo(this.tableName, groupId, 0);
-            await qq.sendToGroupSync(groupId, `该群取消订阅掘金成功`);
+            qq.sendToGroup(groupId, `该群取消订阅掘金成功`);
         } else {
             qq.sendToGroup(groupId, `该群未订阅掘金`);
         }

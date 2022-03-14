@@ -7,7 +7,8 @@
         "init-db": "npx ts-node src/DBManager/test/init.ts",
         "update-db": "npx ts-node src/DBManager/test/update.ts",
         "tsc": "tsc --watch --allowJs --removeComments",
-        "start": "cross-env NODE_ENV=production nodemon -e ts --exec ts-node src/main.ts |cross-env ./node_modules/.bin/bunyan"
+        "start": "cross-env NODE_ENV=production nodemon -e ts --exec ts-node src/main.ts |cross-env ./node_modules/.bin/bunyan",
+        "parse": "npx ts-node src/Util/parseToJSON.ts"
     },
     "repository": {
         "type": "git",
@@ -31,7 +32,8 @@
         "@types/user-agents": "^1.0.2",
         "@types/ws": "^7.4.4",
         "@typescript-eslint/eslint-plugin": "^4.23.0",
-        "@typescript-eslint/parser": "^4.23.0"
+        "@typescript-eslint/parser": "^4.23.0",
+        "node-xlsx": "^0.21.0"
     },
     "dependencies": {
         "better-sqlite3": "^7.5.0",

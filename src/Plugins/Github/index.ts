@@ -29,7 +29,11 @@ class GithubSubscriber extends Subscriber {
             limit: this.__limit,
             offset: 0,
             period: this.__period
-        }));
+        }), {
+            headers: {
+                "content-type": "application/json"
+            }
+        });
         if (data.code === 200) {
             return {
                 data,
@@ -43,6 +47,7 @@ class GithubSubscriber extends Subscriber {
     async getLatestInfo() {
         const task = this.__lang.map(l => this.__requestGithubTrending(l));
         const res = (await Promise.all(task)).map(res => {
+            console.info(res);
             return {
                 lang: res.lang,
                 info: res.data.data.map(repo => `${repo.id}\n${repo.description}\n链接: ${repo.url}\n语言: ${repo.lang}\nFork: ${repo.forkCount} Star: ${repo.starCount}\n`).join("\n")

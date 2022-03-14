@@ -6,7 +6,7 @@ export namespace GithubType {
 
     export interface TrendingInfo {
         description: string;
-        detailedPageUrl: string;
+        url: string;
         id: string;
         lang: string;
         forkCount: number;

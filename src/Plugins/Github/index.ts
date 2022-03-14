@@ -45,7 +45,7 @@ class GithubSubscriber extends Subscriber {
         const res = (await Promise.all(task)).map(res => {
             return {
                 lang: res.lang,
-                info: res.data.data.map(repo => `${repo.id}\n${repo.description}\n链接: ${repo.detailedPageUrl}\n语言: ${repo.lang}\nFork: ${repo.forkCount} Star: ${repo.starCount}\n`).join("\n")
+                info: res.data.data.map(repo => `${repo.id}\n${repo.description}\n链接: ${repo.url}\n语言: ${repo.lang}\nFork: ${repo.forkCount} Star: ${repo.starCount}\n`).join("\n")
             }
         });
         for (let i of res) {

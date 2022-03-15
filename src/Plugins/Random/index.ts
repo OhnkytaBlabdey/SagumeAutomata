@@ -18,7 +18,7 @@ class Random {
     async getImgFromLocal(dir: string) {
         try {
             log.info("读取图片目录成功: " + dir);
-            const data = await fs.readdir(path.resolve(dir));
+            const data = (await fs.readdir(path.resolve(dir))).filter(i => !(/\.gitignore/.test(i)));
             return data ? data : [];
         } catch (e) {
             log.warn(e);

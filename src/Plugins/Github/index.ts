@@ -81,7 +81,11 @@ class GithubSubscriber extends Subscriber {
 
     public async __intervalHandler() {
         try {
-            await this.getLatestInfo();
+            try {
+                await this.getLatestInfo();
+            } catch (e) {
+                log.warn(e);
+            }
             const rec = await DBHandler.getJuejinSubscribe(this.tableName, 1);
             console.log(rec);
             rec.forEach(group => {
@@ -95,8 +99,12 @@ class GithubSubscriber extends Subscriber {
     }
 
     async run() {
-        await this.getLatestInfo();
-        scheduler.scheduleJob("30 0 7 * * *",this.__intervalHandler);
+        try {
+            await this.getLatestInfo();
+        } catch (e) {
+            log.warn(e);
+        }
+        scheduler.scheduleJob("30 0 7 * * *",this.__intervalHandler.bind(this));
     }
 
 }

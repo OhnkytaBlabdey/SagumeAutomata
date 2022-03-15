@@ -39,7 +39,7 @@ class JuejinDaily extends Subscriber {
         });
         if (!data.err_no) {
             return data.data.map(((article, i) => (
-                `#${i}\n《${article.article_info.title}》\n${article.article_info.brief_content}...\n链接: https://juejin.cn/post/${article.article_id}\n标签: ${article.tags.map(t => `${t.tag_name}`).join("")}\n`
+                `#${i}\n《${article.article_info.title}》\n${article.article_info.brief_content}...\n链接: https://juejin.cn/post/${article.article_id}\n标签: ${article.tags.map(t => `${t.tag_name}`).join("")}\n\n`
             ))).join("-----------\n");
         } else {
             throw new Error(data.err_msg);
@@ -48,7 +48,11 @@ class JuejinDaily extends Subscriber {
 
     public async __intervalHandler() {
         try {
-            await this.getLatestInfo();
+            try {
+                await this.getLatestInfo();
+            } catch (e) {
+                log.warn(e);
+            }
             const rec = await DBHandler.getJuejinSubscribe(this.tableName, 0);
             rec.forEach(group => {
                 for (let i in this.__info) {
@@ -116,8 +120,12 @@ class JuejinDaily extends Subscriber {
     }
 
     async run() {
-        await this.getLatestInfo();
-        scheduler.scheduleJob("30 30 6 * * *",this.__intervalHandler);
+        try {
+            await this.getLatestInfo();
+        } catch (e) {
+            log.warn(e);
+        }
+        scheduler.scheduleJob("30 30 6 * * *",this.__intervalHandler.bind(this));
     }
 }
 

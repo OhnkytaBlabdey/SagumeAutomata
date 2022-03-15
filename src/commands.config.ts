@@ -79,6 +79,18 @@ export default {
         {
             "name": "removeGithubSubscribe",
             "on": true
+        },
+        {
+            "name": "askForRa3Data",
+            "on": true
+        },
+        {
+            "name": "randomRa3Joke",
+            "on": true
+        },
+        {
+            "name": "randomMoTalk",
+            "on": true
         }
     ]
 }

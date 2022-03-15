@@ -31,6 +31,10 @@ export default {
         {
             "name": "Github",
             "on": true
+        },
+        {
+            "name":"Random",
+            "on": true
         }
     ]
 }

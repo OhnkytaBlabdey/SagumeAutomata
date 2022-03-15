@@ -9,3 +9,10 @@ build/
 !config/template
 Assets/**/*
 !Assets/.gitignore
+data/joke/**/*.png
+data/joke/**/*.jpg
+data/joke/**/*.gif
+data/mo_talk/**/*.png
+data/mo_talk/**/*.jpg
+data/mo_talk/**/*.gif
+

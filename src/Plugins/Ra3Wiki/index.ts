@@ -1,4 +1,4 @@
-import wikiData from "../../../wiki_data/ra3_wiki_data.json";
+import wikiData from "../../../data/ra3_wiki_data.json";
 import log from "../../Logger";
 import qq from "../../QQMessage";
 import {Ra3WikiType} from "./type";

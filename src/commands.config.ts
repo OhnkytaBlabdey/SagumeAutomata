@@ -83,6 +83,10 @@ export default {
         {
             "name": "askForRa3Data",
             "on": true
+        },
+        {
+            "name": "randomRa3Joke",
+            "on": true
         }
     ]
 }

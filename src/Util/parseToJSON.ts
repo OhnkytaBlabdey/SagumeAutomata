@@ -4,7 +4,7 @@ import fs from "fs/promises";
 const data: any = {};
 /** RAAA Wiki-Data-Wrapper **/
 async function parseXLSX() {
-    const workSheet = xlsx.parse(await fs.readFile("./wiki_data/data.xlsx"));
+    const workSheet = xlsx.parse(await fs.readFile("./data/data.xlsx"));
     console.log(workSheet[0].data);
     const temp = ["base", "armor"];
     workSheet.forEach((s, si) => {
@@ -27,7 +27,7 @@ async function parseXLSX() {
     });
     console.log(data);
     const jsonData = JSON.stringify(data);
-    await fs.writeFile("./wiki_data/ra3_wiki_data.json", jsonData);
+    await fs.writeFile("./data/ra3_wiki_data.json", jsonData);
 }
 
 parseXLSX();

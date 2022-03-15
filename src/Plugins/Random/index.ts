@@ -2,6 +2,7 @@ import log from "../../Logger";
 import path from "path";
 import fs from "fs/promises";
 import qq from "../../QQMessage";
+import url from "url";
 
 class Random {
     public __ra3Joke: Array<string> = [];
@@ -30,7 +31,7 @@ class Random {
             const index = this.getRandomIndex(list.length);
             const aPath = path.resolve(dir, list[index]);
             console.log(`[CQ:image,file=${aPath}]`);
-            qq.sendToGroup(group_id, `[CQ:image,file=${aPath}]`);
+            qq.sendToGroup(group_id, `[CQ:image,file=${url.pathToFileURL(aPath)}]`);
         } else {
             log.warn("您大概没有存放图片素材素材");
         }

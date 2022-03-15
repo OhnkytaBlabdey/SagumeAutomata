@@ -25,8 +25,13 @@ class PluginLoader {
                 if (config.on) {
                     const plugin = (await import(`../Plugins/${config.name}`)).default;
                     log.info(`开启插件: ${config.name}`);
-                    await plugin.run();
-                    this.plugins.push(plugin);
+                    try {
+                        await plugin.run();
+                        this.plugins.push(plugin);
+                    } catch (e) {
+                        log.warn(e);
+                        log.warn(`插件${config.name}开启失败`);
+                    }
                 } else {
                     log.info(config.name, "插件未开启, run 方法不执行");
                 }

@@ -87,6 +87,10 @@ export default {
         {
             "name": "randomRa3Joke",
             "on": true
+        },
+        {
+            "name": "randomMoTalk",
+            "on": true
         }
     ]
 }

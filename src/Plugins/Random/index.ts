@@ -7,6 +7,8 @@ import url from "url";
 class Random {
     public __ra3Joke: Array<string> = [];
     public __ra3JokeDir: string = "./data/joke";
+    public __moTalk: Array<string> = [];
+    public __moTalkDir: string = "./data/mo_talk";
 
     public getRandom(n: number, m: number) {
         return Math.floor(Math.random() * (m - n + 1) + n);
@@ -31,7 +33,7 @@ class Random {
             const index = this.getRandomIndex(list.length);
             const aPath = path.resolve(dir, list[index]);
             console.log(`[CQ:image,file=${aPath}]`);
-            qq.sendToGroup(group_id, `[CQ:image,file=${url.pathToFileURL(aPath)}]`);
+            qq.sendToGroup(group_id, `[CQ:image,file=${url.pathToFileURL(aPath)}]\n服务器带宽较小，加载速度可能较慢`);
         } else {
             log.warn("您大概没有存放图片素材素材");
         }
@@ -39,7 +41,7 @@ class Random {
 
     async run() {
         this.__ra3Joke = await this.getImgFromLocal(this.__ra3JokeDir) as Array<string>;
-
+        this.__moTalk = await this.getImgFromLocal(this.__moTalkDir) as Array<string>;
     }
 }
 

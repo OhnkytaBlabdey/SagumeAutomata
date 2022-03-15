@@ -28,12 +28,21 @@ class Random {
         }
     };
 
-    async randomPic(group_id: number, list: Array<string>, dir: string) {
+    generateExtraMsg(type: string) {
+        switch (type) {
+        case "mo_talk":
+            return "墨曰:\n"
+        default:
+            return "";
+        }
+    }
+
+    async randomPic(group_id: number, list: Array<string>, dir: string, type = "default") {
         if (list.length) {
             const index = this.getRandomIndex(list.length);
             const aPath = path.resolve(dir, list[index]);
             console.log(`[CQ:image,file=${aPath}]`);
-            qq.sendToGroup(group_id, `[CQ:image,file=${url.pathToFileURL(aPath)}]\n服务器带宽较小，加载速度可能较慢`);
+            qq.sendToGroup(group_id, `${this.generateExtraMsg(type)}[CQ:image,file=${url.pathToFileURL(aPath)}]\n服务器带宽较小，加载速度可能较慢`);
         } else {
             log.warn("您大概没有存放图片素材素材");
         }

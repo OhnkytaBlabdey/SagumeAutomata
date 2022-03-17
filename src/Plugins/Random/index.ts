@@ -41,7 +41,7 @@ class Random {
             return "墨曰:\n" + cqCode;
         case "sascha_talk":
             if (isSpecial) {
-                return "你来到了卡巴那岛的森林里\n你发现了一把插在石头里的电锯，上面挂着一根猫尾巴\n传说拥有它就拥有了号令群友发涩图的力量" + cqCode;
+                return "你来到了卡巴那岛的森林里\n你发现了一把插在石头里的电锯\n传说拥有它就拥有了号令群友发涩图的力量" + cqCode;
             }
             return "莎皇诏曰:\n" + cqCode;
         default:

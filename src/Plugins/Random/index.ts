@@ -45,7 +45,7 @@ class Random {
             }
             return "莎皇诏曰:\n" + cqCode;
         default:
-            return "";
+            return "" + cqCode;
         }
     }
 

@@ -6,7 +6,7 @@ const randomSaschaTalk: CmdType.Cmd =  {
     pattern: /^莎之低语/,
     exec: async (ev) => {
         const group_id = ev.group_id;
-        await random.randomPic(group_id, random.__moTalk, random.__moTalkDir, "sascha_talk");
+        await random.randomPic(group_id, random.__saschaTalk, random.__saschaTalkDir, "sascha_talk");
     }
 }
 

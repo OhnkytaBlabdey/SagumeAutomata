@@ -7,8 +7,6 @@ db/*.db
 db/*.db-journal
 build/
 !config/template
-Assets/**/*
-!Assets/.gitignore
 data/joke/**/*.png
 data/joke/**/*.jpg
 data/joke/**/*.gif

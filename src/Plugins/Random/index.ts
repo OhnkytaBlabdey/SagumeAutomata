@@ -3,19 +3,22 @@ import path from "path";
 import fs from "fs/promises";
 import qq from "../../QQMessage";
 import url from "url";
+import sampler from "../../Util/sampler";
 
 class Random {
     public __ra3Joke: Array<string> = [];
     public __ra3JokeDir: string = "./data/joke";
     public __moTalk: Array<string> = [];
     public __moTalkDir: string = "./data/mo_talk";
+    public __saschaTalk: Array<string> = [];
+    public __saschaTalkDir: string = "./data/sascha_talk";
 
     public getRandom(n: number, m: number) {
-        return Math.floor(Math.random() * (m - n + 1) + n);
+        return sampler.integer(n, m);
     }
 
     public getRandomIndex(len: number) {
-        return this.getRandom(0, len - 1);
+        return this.getRandom(0, len);
     }
 
     async getImgFromLocal(dir: string) {
@@ -28,21 +31,44 @@ class Random {
         }
     };
 
-    generateExtraMsg(type: string) {
+    generateExtraMsg(type: string, cqCode: string, isSpecial = false) {
         switch (type) {
         case "mo_talk":
-            return "墨曰:\n"
+            if (isSpecial) {
+                return "你来到了宇宙的尽头\n在世界的尽头的尽头你发现了一个黄色可疑建筑\n" + cqCode;
+            }
+            return "墨曰:\n" + cqCode;
+        case "sascha_talk":
+            if (isSpecial) {
+                return "你来到了卡巴那岛的森林里\n你发现了一把插在石头里的电锯，上面挂着一根猫尾巴\n传说拥有它就拥有了号令群友发涩图的力量" + cqCode;
+            }
+            return "莎皇诏曰:\n" + cqCode;
         default:
             return "";
         }
     }
 
+
+
     async randomPic(group_id: number, list: Array<string>, dir: string, type = "default") {
         if (list.length) {
-            const index = this.getRandomIndex(list.length);
-            const aPath = path.resolve(dir, list[index]);
-            console.log(`[CQ:image,file=${aPath}]`);
-            qq.sendToGroup(group_id, `${this.generateExtraMsg(type)}[CQ:image,file=${url.pathToFileURL(aPath)}]\n服务器带宽较小，加载速度可能较慢`);
+            if (type !== "default") {
+                const index = this.getRandomIndex(list.length);
+                if (index < list.length) {
+                    const aPath = path.resolve(dir, list[index]);
+                    const cqCode = `[CQ:image,file=${url.pathToFileURL(aPath)}]`;
+                    qq.sendToGroup(group_id, `${this.generateExtraMsg(type, cqCode)}\n`);
+                } else {
+                    const aPath = path.resolve("../", dir, `${type}.png`);
+                    const cqCode = `[CQ:image,file=${url.pathToFileURL(aPath)}]`;
+                    qq.sendToGroup(group_id, `${this.generateExtraMsg(type, cqCode, true)}\n`);
+                }
+            } else {
+                const index = this.getRandomIndex(list.length - 1);
+                const aPath = path.resolve(dir, list[index]);
+                const cqCode = `[CQ:image,file=${url.pathToFileURL(aPath)}]`;
+                qq.sendToGroup(group_id, `${this.generateExtraMsg(type, cqCode)}\n`);
+            }
         } else {
             log.warn("您大概没有存放图片素材素材");
         }
@@ -51,6 +77,7 @@ class Random {
     async run() {
         this.__ra3Joke = await this.getImgFromLocal(this.__ra3JokeDir) as Array<string>;
         this.__moTalk = await this.getImgFromLocal(this.__moTalkDir) as Array<string>;
+        this.__saschaTalk = await this.getImgFromLocal(this.__saschaTalkDir) as Array<string>;
     }
 }
 

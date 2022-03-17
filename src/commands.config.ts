@@ -91,6 +91,10 @@ export default {
         {
             "name": "randomMoTalk",
             "on": true
+        },
+        {
+            "name": "randomSaschaTalk",
+            "on": true
         }
     ]
 }

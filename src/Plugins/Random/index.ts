@@ -36,7 +36,7 @@ class Random {
         switch (type) {
         case "mo_talk":
             if (isSpecial) {
-                return "你来到了宇宙的尽头\n在世界的尽头的尽头你发现了一个黄色可疑建筑\n" + cqCode;
+                return "你来到了世界的尽头\n在世界的尽头的尽头你发现了一个黄色可疑建筑\n" + cqCode;
             }
             return "墨曰:\n" + cqCode;
         case "sascha_talk":

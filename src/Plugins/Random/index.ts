@@ -60,7 +60,7 @@ class Random {
                     const cqCode = `[CQ:image,file=${url.pathToFileURL(aPath)}]`;
                     qq.sendToGroup(group_id, `${this.generateExtraMsg(type, cqCode)}\n`);
                 } else {
-                    const aPath = path.resolve("../", dir, `${type}.png`);
+                    const aPath = path.resolve(dir, `${type}.png`);
                     const cqCode = `[CQ:image,file=${url.pathToFileURL(aPath)}]`;
                     qq.sendToGroup(group_id, `${this.generateExtraMsg(type, cqCode, true)}\n`);
                 }

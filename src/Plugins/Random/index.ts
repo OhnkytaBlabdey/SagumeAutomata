@@ -25,7 +25,7 @@ class Random {
         try {
             log.info("读取图片目录成功: " + dir);
             const data = (await fs.readdir(path.resolve(dir))).filter(i => !(/\.gitignore/.test(i)));
-            console.log("读取图片数量: " + data.length);
+            console.log("读取图片数量: " + data && data.length);
             return data ? data : [];
         } catch (e) {
             log.warn(e);

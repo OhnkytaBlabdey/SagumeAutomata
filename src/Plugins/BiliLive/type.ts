@@ -1,5 +1,6 @@
-import {BiliSubscriberType} from "../type";
+import { BiliSubscriberType } from "../type";
 
+// eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace BiliLiveType {
     export interface liveRec extends BiliSubscriberType.Rec {
         before_update: number;

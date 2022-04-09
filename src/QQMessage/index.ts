@@ -1,14 +1,14 @@
 import log from "../Logger";
 import wsClient from "../WebsocketHandler";
 import config from "../../config/config.json";
-import {Config} from "./config.interface";
+import { Config } from "./config.interface";
 import EventEmitter from "events";
-import {env} from "process";
-import {messageEvent, noticeEvent, responseEvent} from "./event.interface";
-import {CommandDispatcher} from "../QQCommand";
+import { env } from "process";
+import { messageEvent, noticeEvent, responseEvent } from "./event.interface";
+import { CommandDispatcher } from "../QQCommand";
 import dbm from "../DBManager";
 import cmdDispatcher from "../QQCommand";
-import {qqMessage} from "./interface";
+import { qqMessage } from "./interface";
 import DBHandler from "../DBHandler";
 
 const errorMessage: qqMessage.IteObjType = {
@@ -21,14 +21,15 @@ const defaultConfig = {
     onebot_host: "",
     onebot_port: 1,
     onebot_pw: "",
-    "qq": 1,
-    "qq_owner": 1145141919810
+    qq: 114514,
+    su: 1919810,
 };
 
 const handleEvent = (event: responseEvent, e: EventEmitter) => {
     let message;
     let flag = true;
     if (event.retcode !== 0 && event.retcode !== 103) {
+        // eslint-disable-next-line no-prototype-builtins
         if (errorMessage.hasOwnProperty(event.retcode)) {
             message = errorMessage[event.retcode];
         } else {
@@ -63,14 +64,17 @@ class QQMessage {
             this.cmd = cmdDispatcher;
             this.e = new EventEmitter();
             this.e.on("qwq", async (e: string) => {
-                let event: responseEvent = JSON.parse(e);
+                const event: responseEvent = JSON.parse(e);
                 if (event.status) {
                     // heart beat
                     if (event.post_type === "meta_event") {
                         return;
                     }
                     handleEvent(event, this.e);
-                } else if (event.post_type === "message" && (<messageEvent>event).message_type === "group") {
+                } else if (
+                    event.post_type === "message" &&
+                    (<messageEvent>event).message_type === "group"
+                ) {
                     const ev = <messageEvent>event;
                     const flag = await this.cmd.dispatchCommand(ev, ev.message);
                     if (!flag) {
@@ -78,7 +82,10 @@ class QQMessage {
                         //[CQ:image,file=80c2b55527aac6750f927aab20a5dd32.image,url=https://gchat.qpic.cn/gchatpic_new/738767136/4141567869-2651177397-80C2B55527AAC6750F927AAB20A5DD32/0?term=3,subType=0]
                         await DBHandler.saveChatMessage(ev);
                     }
-                } else if (event.post_type === "notice" && (<noticeEvent>event).notice_type === "notify") {
+                } else if (
+                    event.post_type === "notice" &&
+                    (<noticeEvent>event).notice_type === "notify"
+                ) {
                     const ev = <noticeEvent>event;
                     if (ev.sub_type === "poke") {
                         // 戳一戳
@@ -96,7 +103,8 @@ class QQMessage {
             if (env.NODE_ENV === "production") {
                 log.warn("使用Production配置");
                 if (
-                    typeof (<Config>(<unknown>config)).onebot_port === "number" &&
+                    typeof (<Config>(<unknown>config)).onebot_port ===
+                        "number" &&
                     typeof (<Config>(<unknown>config)).onebot_host === "string"
                 ) {
                     conf = config;

@@ -8,7 +8,7 @@ const cmdList: CmdType.Cmd = {
     pattern: new RegExp(`^\\[CQ:at,qq=${config.qq}\\] 指令列表`),
     exec: async (ev: messageEvent) => {
         let msg = `史官已开启以下娱乐性功能: \n`;
-        msg += qqCommand.randomImgConf.map(c => c.desc).join("--------");
+        msg += qqCommand.randomImgConf.map(c => c.desc).join("--------\n");
         qq.sendToGroup(
             ev.group_id,
             msg

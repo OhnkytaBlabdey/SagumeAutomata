@@ -12,6 +12,7 @@ export namespace RandomPicType {
         specialPicPath?: string;
         messageTemplate: string;
         hasOwnProperty: (n: string) => boolean;
+        desc: string;
     }
 
     export interface RandomPicDBRes {

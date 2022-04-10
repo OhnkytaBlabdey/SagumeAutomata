@@ -87,6 +87,10 @@ export default {
         {
             "name": "saveImg",
             "on": true
+        },
+        {
+            "name": "cmdList",
+            "on": true
         }
     ]
 }

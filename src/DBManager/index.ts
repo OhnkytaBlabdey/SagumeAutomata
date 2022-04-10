@@ -137,22 +137,24 @@ export class DBManager {
 
     public insertMulti(tableName: string, columns: Array<string>, values: Array<Array<any>>) {
         return new Promise(async (res, rej) => {
-            try {
-                const vQuery = new Array(values[0].length).fill("?").join(",");
-                const cQuery = columns.length ? `(${columns.join(",")})` : "";
-                const stmt = this.__service.prepare(
-                    `insert into ${tableName} ${cQuery} values (${vQuery})`
-                );
-                const handler = this.__service.transaction(
-                    (q: Array<Array<any>>) => {
-                        for (const i of q) stmt.run(...i);
-                    }
-                );
-                handler(values);
-                res(1);
-            } catch (e) {
-                logger.error("执行插入失败");
-                rej(e);
+            if (values.length) {
+                try {
+                    const vQuery = new Array(values[0].length).fill("?").join(",");
+                    const cQuery = columns.length ? `(${columns.join(",")})` : "";
+                    const stmt = this.__service.prepare(
+                        `insert into ${tableName} ${cQuery} values (${vQuery})`
+                    );
+                    const handler = this.__service.transaction(
+                        (q: Array<Array<any>>) => {
+                            for (const i of q) stmt.run(...i);
+                        }
+                    );
+                    handler(values);
+                    res(1);
+                } catch (e) {
+                    logger.error("执行插入失败");
+                    rej(e);
+                }
             }
         });
     }

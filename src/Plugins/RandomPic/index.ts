@@ -34,8 +34,6 @@ class RandomPic{
     static async initTemplateCmd(tName: string, dirName: string) {
         let isTableExist = await dbHandler.checkIfDBTable(tName);
         let isDirExist = (await checkExists(path.resolve("data/", dirName))).status;
-        log.info(isTableExist);
-        log.info(isDirExist);
         if (!isDirExist || !isTableExist) {
             if (!isDirExist) {
                 const mkdir = promisify(fs.mkdir);
@@ -51,7 +49,9 @@ class RandomPic{
             [],
             true
         ) as Array<RandomPicType.RandomPicDBRes>;
+        log.info(dbList);
         const fileList = (await this.getImgFromLocal(dirName)) as Array<string>;
+        log.info(fileList);
         const nfList = fileList.filter((i) => {
             return dbList.findIndex(v => {
                 return v.picName === i;

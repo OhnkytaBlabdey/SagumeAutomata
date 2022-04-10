@@ -3,13 +3,21 @@ export namespace RandomPicType {
         cmdPattern: string;
         dirName: string;
         tableName: string;
-        newestCmd: string;
+        newestCmdPattern?: string;
         allowUpload: boolean;
         uploadCmdPattern?: string;
         uploadCmdAuthID?: Array<string>;
         allowSpecial: boolean;
         special?: string;
-        specialPicDir?: string;
+        specialPicPath?: string;
         messageTemplate: string;
+        hasOwnProperty: (n: string) => boolean;
+    }
+
+    export interface RandomPicDBRes {
+        picName: string;
+        id: number;
+        timestamp: bigint;
+        uploader: string;
     }
 }

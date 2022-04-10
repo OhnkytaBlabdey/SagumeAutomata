@@ -8,7 +8,7 @@ export async function initializer() {
     await Checker.checkComplicity();
     // wsc连接与数据库初始化为其他服务的前驱
     await dbHandler.init();
-    // await pluginLoader.loadPlugins();
-    // await qqCommand.loadCommand();
-    // await qq.wscConnect();
+    await pluginLoader.loadPlugins();
+    await qqCommand.loadCommand();
+    await qq.wscConnect();
 }

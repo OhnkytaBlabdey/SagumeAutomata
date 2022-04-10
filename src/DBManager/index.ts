@@ -49,7 +49,7 @@ export class DBManager {
         });
     }
 
-    private __createTable(t: DB.DBTable) {
+    public __createTable(t: DB.DBTable) {
         const args = t.columns.map(
             (c: DB.DBColumn) =>
                 `${c.cName} ${c.cDataType} ${

@@ -6,10 +6,4 @@ export namespace CmdType {
         cmdName: string;
         exec: (ev: messageEvent) => Promise<any>;
     }
-
-    export interface MessageCmdConfig extends Cmd{
-        pattern: RegExp;
-        cmdName: string;
-        message: string;
-    }
 }

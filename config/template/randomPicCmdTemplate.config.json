@@ -3,12 +3,13 @@
     "cmdPattern": "xxx",
     "dirName": "xxx",
     "tableName": "xxx",
-    "newestCmd": "xxx",
+    "newestCmdPattern": "xxx",
     "allowUpload": "去掉双引号填true或false",
     "uploadCmdPattern": "xxx",
     "uploadCmdAuthID": ["qq号1", "qq号2", "无填空"],
     "allowSpecial": "去掉双引号填true或false",
     "special": "彩蛋信息，带上两个大括号可以被转译为图片，括号内为图片名称，需把图片放入项目根目录 {{image}}进行转义 ",
-    "specialPicDir": "彩蛋所需图片名称，图片放置于data/内"
+    "specialPicPath": "彩蛋所需图片名称，图片放置于data/内",
+    "messageTemplate": "xxx"
   }
 ]

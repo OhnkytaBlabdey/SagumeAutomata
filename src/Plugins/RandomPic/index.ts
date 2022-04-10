@@ -1,17 +1,22 @@
 import log from "../../Logger";
 import path from "path";
-import qq from "../../QQMessage";
-import url from "url";
-import sampler from "../../Util/sampler";
 import fs from "fs";
 import {promisify} from "util";
 import db from "../../DBManager";
+import dbHandler from "../../DBHandler";
+import sampler from "../../Util/sampler";
+import {CmdType} from "../../QQCommand/type";
+import { messageEvent } from "../../QQMessage/event.interface";
+import {RandomPicType} from "./type";
+import qq from "../../QQMessage";
+import url from "url";
 
-class RandomPic {
-    public getRandom(n: number, m: number) {
+class RandomPic{
+    static getRandom(n: number, m: number) {
         return sampler.integer(n, m);
     }
-    async getImgFromLocal(dir: string) {
+
+    static async getImgFromLocal(dir: string) {
         try {
             log.info("读取图片目录成功: " + dir);
             const readDir = promisify(fs.readdir);
@@ -22,7 +27,71 @@ class RandomPic {
             log.warn(e);
         }
     };
-    async checkDBTable(tName: string) {
-        const tableInfo =
+
+    static async initTemplateCmd(tName: string, dirName: string) {
+        if (!await dbHandler.checkIfDBTable(tName)) {
+            await dbHandler.createRandomPicTable(tName);
+            const mkdir = promisify(fs.mkdir);
+            await mkdir(path.resolve("data/", dirName));
+            const list = await this.getImgFromLocal(dirName);
+            await dbHandler.insertPicWhileInit(tName, list as Array<string>);
+        } else {
+            const dbList = await db.select(
+                [tName],
+                ["*"],
+                [],
+                true
+            ) as Array<RandomPicType.RandomPicDBRes>;
+            const fileList = (await this.getImgFromLocal(dirName)) as Array<string>;
+            const nfList = fileList.filter((i) => {
+                return dbList.findIndex(v => {
+                    return v.picName === i;
+                }) < 0;
+            });
+            await dbHandler.insertPicWhileInit(tName, nfList);
+        }
+    }
+
+    static genRandomPicCmdHandler(isSpecial: boolean, tN: string, dirN: string, mTemplate: string, special?: string, specialPicPath?: string) {
+        let toggleSpecial = isSpecial;
+        let specialTxt = special ? special : "";
+        let p = specialPicPath ? specialPicPath : "";
+        let dirName = dirN;
+        let tName = tN;
+        let messageTemplate = mTemplate;
+        return async (ev: messageEvent) => {
+            let list = (await db.select(
+                [tName],
+                ["*"],
+                [],
+                true
+            )) as Array<RandomPicType.RandomPicDBRes>;
+            if (list.length) {
+                let i = this.getRandom(0, toggleSpecial ? list.length : list.length - 1);
+                if (i < list.length) {
+                    const aPath = path.resolve("data/", dirName, list[i].picName);
+                    const cqCode = `[CQ:image,file=${url.pathToFileURL(aPath)}]`;
+                    let m = messageTemplate.replace("{{image}}", cqCode);
+                    qq.sendToGroup(ev.group_id, m);
+                } else {
+                    const aPath = path.resolve("data/", p);
+                    const cqCode = `[CQ:image,file=${url.pathToFileURL(aPath)}]`;
+                    let m = specialTxt.replace("{{image}}", cqCode);
+                    qq.sendToGroup(ev.group_id, m);
+                }
+            } else {
+                log.warn("您大概没有存放图片素材");
+            }
+        }
+    }
+
+    static genRandomPicCmd(pattern: string, cmdName: string, isSpecial: boolean, tN: string, dirN: string, mTemplate: string, special?: string, specialPicPath?: string): CmdType.Cmd {
+        return {
+            cmdName,
+            exec: this.genRandomPicCmdHandler(isSpecial, tN, dirN, mTemplate, special, specialPicPath),
+            pattern: new RegExp(pattern)
+        }
     }
 }
+
+export default RandomPic;

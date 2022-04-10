@@ -49,15 +49,12 @@ class RandomPic{
             [],
             true
         ) as Array<RandomPicType.RandomPicDBRes>;
-        log.info(dbList);
         const fileList = (await this.getImgFromLocal(dirName)) as Array<string>;
-        log.info(fileList);
         const nfList = fileList.filter((i) => {
             return dbList.findIndex(v => {
                 return v.picName === i;
             }) < 0;
         });
-        log.info(nfList);
         await dbHandler.insertPicWhileInit(tName, nfList);
     }
 

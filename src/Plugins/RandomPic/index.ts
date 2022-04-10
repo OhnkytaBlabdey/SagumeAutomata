@@ -194,7 +194,7 @@ class RandomPic{
         return {
             cmdName,
             exec: this.genRandomPicCmdHandler(isSpecial, tN, dirN, mTemplate, special, specialPicPath),
-            pattern: new RegExp(`^{pattern}`)
+            pattern: new RegExp(`^${pattern}`)
         }
     }
 }

@@ -163,7 +163,7 @@ class RandomPic{
         return {
             cmdName,
             exec: this.genUploadPicHandler(tN, dirN, cmdName, auth),
-            pattern: new RegExp(pattern)
+            pattern: new RegExp(`^${pattern}`)
         }
     }
 
@@ -194,7 +194,7 @@ class RandomPic{
         return {
             cmdName,
             exec: this.genRandomPicCmdHandler(isSpecial, tN, dirN, mTemplate, special, specialPicPath),
-            pattern: new RegExp(pattern)
+            pattern: new RegExp(`^{pattern}`)
         }
     }
 }

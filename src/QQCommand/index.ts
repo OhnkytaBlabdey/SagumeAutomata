@@ -77,14 +77,13 @@ export class CommandDispatcher {
             return;
         }
         try {
-            conf = JSON.stringify(confS) as unknown as Array<RandomPicType.RandomPicConf>;
+            conf = JSON.parse(confS) as unknown as Array<RandomPicType.RandomPicConf>;
         } catch (e) {
             log.warn(e);
             log.warn("无法解析JSON文件");
             return;
         }
         for(let c of conf) {
-            log.info(c);
             if (this.validateRandomPicConf(c)) {
                 await RandomPic.initTemplateCmd(c.tableName, c.dirName);
                 let cmd;

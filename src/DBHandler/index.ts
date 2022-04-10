@@ -346,6 +346,7 @@ export default class DBHandler {
 
     static async checkIfDBTable(tName: string) {
         const tableInfo = await db.getTableName();
+        log.info(tableInfo);
         return tableInfo.findIndex(t => t.name === tName) > -1;
     }
 

@@ -18,9 +18,8 @@ class RandomPic{
 
     static async getImgFromLocal(dir: string) {
         try {
-            log.info("读取图片目录成功: " + dir);
             const readDir = promisify(fs.readdir);
-            const data = (await readDir(path.resolve(dir))).filter(i => !(/\.gitignore/.test(i)));
+            const data = (await readDir(path.resolve("data/", dir))).filter(i => !(/\.gitignore/.test(i)));
             console.log("读取图片数量: " + data && data.length);
             return data ? data : [];
         } catch (e) {

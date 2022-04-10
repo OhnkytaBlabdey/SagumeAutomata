@@ -44,23 +44,21 @@ class RandomPic{
             if (!isTableExist) {
                 await dbHandler.createRandomPicTable(tName);
             }
-            const list = await this.getImgFromLocal(dirName);
-            await dbHandler.insertPicWhileInit(tName, list as Array<string>);
-        } else {
-            const dbList = await db.select(
-                [tName],
-                ["*"],
-                [],
-                true
-            ) as Array<RandomPicType.RandomPicDBRes>;
-            const fileList = (await this.getImgFromLocal(dirName)) as Array<string>;
-            const nfList = fileList.filter((i) => {
-                return dbList.findIndex(v => {
-                    return v.picName === i;
-                }) < 0;
-            });
-            await dbHandler.insertPicWhileInit(tName, nfList);
         }
+        const dbList = await db.select(
+            [tName],
+            ["*"],
+            [],
+            true
+        ) as Array<RandomPicType.RandomPicDBRes>;
+        const fileList = (await this.getImgFromLocal(dirName)) as Array<string>;
+        const nfList = fileList.filter((i) => {
+            return dbList.findIndex(v => {
+                return v.picName === i;
+            }) < 0;
+        });
+        log.info(nfList);
+        await dbHandler.insertPicWhileInit(tName, nfList);
     }
 
     static genRandomPicCmdHandler(isSpecial: boolean, tN: string, dirN: string, mTemplate: string, special?: string, specialPicPath?: string) {

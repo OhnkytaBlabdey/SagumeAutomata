@@ -384,6 +384,7 @@ export default class DBHandler {
     }
 
     static async insertPicWhileInit(tName: string, list: Array<string>) {
+        log.info(list.map(i => [i]))
         try {
             await db.insertMulti(
                 tName,

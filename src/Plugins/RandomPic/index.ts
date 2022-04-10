@@ -10,6 +10,7 @@ import { messageEvent } from "../../QQMessage/event.interface";
 import {RandomPicType} from "./type";
 import qq from "../../QQMessage";
 import url from "url";
+import {checkExists} from "../../Util/FileHandler";
 
 class RandomPic{
     static getRandom(n: number, m: number) {
@@ -28,12 +29,18 @@ class RandomPic{
     };
 
     static async initTemplateCmd(tName: string, dirName: string) {
-        if (!await dbHandler.checkIfDBTable(tName)) {
-            await dbHandler.createRandomPicTable(tName);
-            const mkdir = promisify(fs.mkdir);
-            await mkdir(path.resolve("data/", dirName));
-            const list = await this.getImgFromLocal(dirName);
-            await dbHandler.insertPicWhileInit(tName, list as Array<string>);
+        let isTableExist = await dbHandler.checkIfDBTable(tName);
+        let isDirExist = await checkExists(path.resolve("data/", dirName));
+        if (!isDirExist && !isTableExist) {
+            if (!isDirExist) {
+                const mkdir = promisify(fs.mkdir);
+                await mkdir(path.resolve("data/", dirName));
+            }
+            if (!isTableExist) {
+                await dbHandler.createRandomPicTable(tName);
+                const list = await this.getImgFromLocal(dirName);
+                await dbHandler.insertPicWhileInit(tName, list as Array<string>);
+            }
         } else {
             const dbList = await db.select(
                 [tName],

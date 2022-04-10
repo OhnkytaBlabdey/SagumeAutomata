@@ -5,7 +5,6 @@ import {Config} from "./config.interface";
 import EventEmitter from "events";
 import {env} from "process";
 import {messageEvent, noticeEvent, responseEvent} from "./event.interface";
-import {CommandDispatcher} from "../QQCommand";
 import dbm from "../DBManager";
 import cmdDispatcher from "../QQCommand";
 import {qqMessage} from "./interface";
@@ -48,19 +47,16 @@ const handleEvent = (event: responseEvent, e: EventEmitter) => {
 class QQMessage {
     private wsc!: wsClient;
     private e: EventEmitter;
-    private cmd: CommandDispatcher;
     private db = dbm;
     private cnt = 0;
     protected qqid?: number;
 
     constructor() {
         if (env.MUTE && env.MUTE === "mute") {
-            this.cmd = cmdDispatcher;
             this.e = new EventEmitter();
             this.qqid = 0;
         } else {
             let conf: Config;
-            this.cmd = cmdDispatcher;
             this.e = new EventEmitter();
             this.e.on("qwq", async (e: string) => {
                 let event: responseEvent = JSON.parse(e);
@@ -72,9 +68,9 @@ class QQMessage {
                     handleEvent(event, this.e);
                 } else if (event.post_type === "message" && (<messageEvent>event).message_type === "group") {
                     const ev = <messageEvent>event;
-                    const flag = await this.cmd.dispatchCommand(ev, ev.message);
+                    const flag = await cmdDispatcher.dispatchCommand(ev, ev.message);
                     if (!flag) {
-                        console.log(ev.message);
+                        // console.log(ev.message);
                         //[CQ:image,file=80c2b55527aac6750f927aab20a5dd32.image,url=https://gchat.qpic.cn/gchatpic_new/738767136/4141567869-2651177397-80C2B55527AAC6750F927AAB20A5DD32/0?term=3,subType=0]
                         await DBHandler.saveChatMessage(ev);
                     }

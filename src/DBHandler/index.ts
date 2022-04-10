@@ -346,7 +346,6 @@ export default class DBHandler {
 
     static async checkIfDBTable(tName: string) {
         const tableInfo = await db.getTableName();
-        log.info(tableInfo);
         return tableInfo.findIndex(t => t.name === tName) > -1;
     }
 
@@ -384,7 +383,6 @@ export default class DBHandler {
     }
 
     static async insertPicWhileInit(tName: string, list: Array<string>) {
-        log.info(list.map(i => [i]));
         if (list.length > 0) {
             try {
                 await db.insertMulti(

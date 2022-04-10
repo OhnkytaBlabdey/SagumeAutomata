@@ -116,7 +116,13 @@ export class CommandDispatcher {
     }
 
     public validateRandomPicConf(c: RandomPicType.RandomPicConf) {
-        const check = (c: RandomPicType.RandomPicConf) => (c.hasOwnProperty("cmdPattern") && c.hasOwnProperty("dirName") && c.hasOwnProperty("tableName") && c.hasOwnProperty("allowUpload") && c.hasOwnProperty("allowSpecial") && c.hasOwnProperty("messageTemplate"));
+        const check = (c: RandomPicType.RandomPicConf) => (
+            c.hasOwnProperty("cmdPattern") &&
+            c.hasOwnProperty("dirName") &&
+            c.hasOwnProperty("tableName") &&
+            c.hasOwnProperty("allowUpload") &&
+            c.hasOwnProperty("allowSpecial") &&
+            c.hasOwnProperty("messageTemplate"));
         const checkUpload = (c: RandomPicType.RandomPicConf) => (c.hasOwnProperty("newestCmdPattern") && c.hasOwnProperty("uploadCmdPattern") && c.hasOwnProperty("uploadCmdAuthID") && Array.isArray(c.uploadCmdAuthID));
         const checkSpecial = (c: RandomPicType.RandomPicConf) => (c.hasOwnProperty("special") && c.hasOwnProperty("specialPicPath"));
         if (check(c)) {
@@ -141,5 +147,6 @@ export class CommandDispatcher {
 }
 
 const cmdDispatcher = new CommandDispatcher();
+console.log(cmdDispatcher);
 
 export default cmdDispatcher;

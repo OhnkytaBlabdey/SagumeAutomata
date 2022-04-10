@@ -7,14 +7,7 @@ db/*.db
 db/*.db-journal
 build/
 !config/template/**/*
-data/joke/**/*.png
-data/joke/**/*.jpg
-data/joke/**/*.gif
-data/mo_talk/**/*.png
-data/mo_talk/**/*.jpg
-data/mo_talk/**/*.gif
-data/sascha_talk/**/*.png
-data/sascha_talk/**/*.jpg
-data/sascha_talk/**/*.gif
+data/**/*
+!data/ra3_wiki_data.json
 messageCmdTemplate.config.json
 randomPicCmdTemplate.config.json

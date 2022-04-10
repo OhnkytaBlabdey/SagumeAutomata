@@ -25,22 +25,23 @@ class RandomPic{
             return data ? data : [];
         } catch (e) {
             log.warn(e);
+            return [];
         }
     };
 
     static async initTemplateCmd(tName: string, dirName: string) {
         let isTableExist = await dbHandler.checkIfDBTable(tName);
         let isDirExist = await checkExists(path.resolve("data/", dirName));
-        if (!isDirExist && !isTableExist) {
+        if (!isDirExist || !isTableExist) {
             if (!isDirExist) {
                 const mkdir = promisify(fs.mkdir);
                 await mkdir(path.resolve("data/", dirName));
             }
             if (!isTableExist) {
                 await dbHandler.createRandomPicTable(tName);
-                const list = await this.getImgFromLocal(dirName);
-                await dbHandler.insertPicWhileInit(tName, list as Array<string>);
             }
+            const list = await this.getImgFromLocal(dirName);
+            await dbHandler.insertPicWhileInit(tName, list as Array<string>);
         } else {
             const dbList = await db.select(
                 [tName],

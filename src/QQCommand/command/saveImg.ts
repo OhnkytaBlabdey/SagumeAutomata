@@ -10,8 +10,8 @@ const cmd: CmdType.Cmd = {
     cmdName: "saveImg",
     exec: async (ev: messageEvent) => {
         let res = dbHandler.__service.prepare(`select * from cmdQueue where uid=${ev.sender?.user_id} order by timestamp desc`).get();
-        if (res) {
-            let index = qqCommand.randomImgConf.findIndex(i => i.cmdPattern === res.type);
+        if (res && (new Date().getTime() - res.timestamp < 1000 * 60 * 5)) {
+            let index = qqCommand.randomImgConf.findIndex(i => i.uploadCmdPattern === res.type);
             await RandomPic.saveImg(ev, qqCommand.randomImgConf[index].tableName, qqCommand.randomImgConf[index].dirName);
         }
     }

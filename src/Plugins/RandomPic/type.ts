@@ -6,7 +6,7 @@ export namespace RandomPicType {
         newestCmdPattern?: string;
         allowUpload: boolean;
         uploadCmdPattern?: string;
-        uploadCmdAuthID?: Array<string>;
+        uploadCmdAuthID?: Array<number>;
         allowSpecial: boolean;
         special?: string;
         specialPicPath?: string;

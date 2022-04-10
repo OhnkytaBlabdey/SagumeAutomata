@@ -22,9 +22,11 @@ function *iteConfig(configs: Array<PluginLoaderType.PluginConfig>) {
 
 export class CommandDispatcher {
     private commands: Array<CmdType.Cmd>;
+    public randomImgConf: Array<RandomPicType.RandomPicConf>
 
     constructor() {
         this.commands = [];
+        this.randomImgConf = [];
     }
 
     public async dispatchCommand(
@@ -85,6 +87,7 @@ export class CommandDispatcher {
         }
         for(let c of conf) {
             if (this.validateRandomPicConf(c)) {
+                this.randomImgConf.push(c);
                 await RandomPic.initTemplateCmd(c.tableName, c.dirName);
                 let cmd;
                 if (!c.allowSpecial) {
@@ -108,7 +111,14 @@ export class CommandDispatcher {
                         c.specialPicPath
                     );
                 }
+                log.info(`加载命令: ${cmd.cmdName}`);
                 this.commands.push(cmd);
+                if (c.allowUpload) {
+                    const uploadCmd = RandomPic.genUploadPicCmd((c.uploadCmdPattern) as string, (c.uploadCmdPattern) as string, c.tableName, c.dirName, (c.uploadCmdAuthID) as Array<number>);
+                    this.commands.push(uploadCmd);
+                    const newestCmd = RandomPic.genNewestCmd((c.newestCmdPattern) as string, (c.newestCmdPattern) as string, c.tableName, c.dirName, c.messageTemplate);
+                    this.commands.push(newestCmd);
+                }
             } else {
                 log.warn("非法的命令配置");
             }

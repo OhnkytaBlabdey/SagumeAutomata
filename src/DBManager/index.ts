@@ -7,7 +7,7 @@ import {DB} from "./interface";
 
 export class DBManager {
     private readonly __rootDir: string;
-    private __service!: Database.Database;
+    public __service!: Database.Database;
     private __dbConfig!: DB.DBConfig;
     private __targetDir: string;
 

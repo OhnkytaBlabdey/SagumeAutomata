@@ -397,4 +397,22 @@ export default class DBHandler {
             }
         }
     }
+
+    static async insertPic(tName: string, fileName: string, uploaderID: string | number = 0) {
+        try {
+            await db.insertSingle(
+                tName,
+                [
+                    "picName",
+                    "timestamp",
+                    "uploader"
+                ],
+                [
+                    fileName, new Date().getTime(), uploaderID
+                ]
+            );
+        } catch (e) {
+            log.warn(e);
+        }
+    }
 }

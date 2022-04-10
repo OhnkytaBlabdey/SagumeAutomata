@@ -84,6 +84,7 @@ export class CommandDispatcher {
             return;
         }
         for(let c of conf) {
+            log.info(c);
             if (this.validateRandomPicConf(c)) {
                 await RandomPic.initTemplateCmd(c.tableName, c.dirName);
                 let cmd;

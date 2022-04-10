@@ -76,11 +76,13 @@ class RandomPic{
                     const aPath = path.resolve("data/", dirName, list[i].picName);
                     const cqCode = `[CQ:image,file=${url.pathToFileURL(aPath)}]`;
                     let m = messageTemplate.replace("{{image}}", cqCode);
+                    log.info("发送: " + m);
                     qq.sendToGroup(ev.group_id, m);
                 } else {
                     const aPath = path.resolve("data/", p);
                     const cqCode = `[CQ:image,file=${url.pathToFileURL(aPath)}]`;
                     let m = specialTxt.replace("{{image}}", cqCode);
+                    log.info("发送: " + m);
                     qq.sendToGroup(ev.group_id, m);
                 }
             } else {

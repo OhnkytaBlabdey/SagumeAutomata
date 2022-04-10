@@ -185,7 +185,7 @@ class RandomPic{
     static genNewestCmd(pattern: string, cmdName: string, tName: string, dirName: string, mT: string) {
         return {
             cmdName,
-            pattern: new RegExp(pattern),
+            pattern: new RegExp(`^${pattern}`),
             exec: this.genNewestCmdHandler(tName, dirName, mT)
         }
     }

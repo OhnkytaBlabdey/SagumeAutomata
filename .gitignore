@@ -13,4 +13,5 @@ data/joke/**/*.gif
 data/mo_talk/**/*.png
 data/mo_talk/**/*.jpg
 data/mo_talk/**/*.gif
-
+messageCmdTemplate.config.json
+randomPicCmdTemplate.config.json

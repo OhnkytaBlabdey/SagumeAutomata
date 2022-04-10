@@ -42,9 +42,10 @@ export class CommandDispatcher {
         });
     }
 
-    public async loadCommand() {
+    async registerCmd() {
         const len = config.commands.length;
         const confGen = iteConfig(config.commands);
+        log.info("开始注册命令...");
         for (let i = 0; i < len; i++) {
             const conf = confGen.next().value;
             if (conf && conf.hasOwnProperty("name") && conf.hasOwnProperty("on")) {
@@ -56,9 +57,19 @@ export class CommandDispatcher {
                     log.info("不加载命令: ", conf.name);
                 }
             } else {
-                log.warn("invalid command config", conf);
+                log.warn("非法的命令配置", conf);
             }
         }
+    }
+
+    public async loadTemplateCommand() {
+
+    }
+
+    public async loadCommand() {
+        await this.registerCmd();
+        log.info("开始注册模板命令...");
+
     }
 }
 

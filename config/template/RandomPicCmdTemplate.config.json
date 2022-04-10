@@ -1,9 +1,0 @@
-[
-  {
-    "cmdPattern": "xxx",
-    "dirName": "xxx",
-    "tableName": "xxx",
-    "uploadCmdPattern": "xxx",
-    "uploadCmdAuthID": ["qq号1", "qq号2"]
-  }
-]

@@ -32,6 +32,8 @@ class RandomPic{
     static async initTemplateCmd(tName: string, dirName: string) {
         let isTableExist = await dbHandler.checkIfDBTable(tName);
         let isDirExist = await checkExists(path.resolve("data/", dirName));
+        log.info(isTableExist);
+        log.info(isDirExist);
         if (!isDirExist || !isTableExist) {
             if (!isDirExist) {
                 const mkdir = promisify(fs.mkdir);

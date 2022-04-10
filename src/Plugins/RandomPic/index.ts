@@ -36,7 +36,7 @@ class RandomPic{
         let isDirExist = await checkExists(path.resolve("data/", dirName));
         log.info(isTableExist);
         log.info(isDirExist);
-        if (!isDirExist || !isTableExist) {
+        if (!(isDirExist.status) || !isTableExist) {
             if (!isDirExist) {
                 const mkdir = promisify(fs.mkdir);
                 await mkdir(path.resolve("data/", dirName));

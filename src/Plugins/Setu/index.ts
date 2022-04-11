@@ -24,7 +24,7 @@ class Setu extends Subscriber {
                     .then((result) => {
                         if (result && result.data) {
                             const jsondata = result.data;
-                            log.debug(jsondata);
+                            // log.debug(jsondata);
                             if (jsondata.data && jsondata.data[0]) {
                                 const setuinfo = jsondata.data[0];
                                 res({

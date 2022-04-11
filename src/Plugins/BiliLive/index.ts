@@ -95,7 +95,7 @@ class BiliLiveSubscriber extends BiliSubscriber {
                         rec.uid
                     )) as BiliLiveType.liveInfo;
                 } catch (error: any) {
-                    log.warn(error.errMessage ? error.errMessage : error);
+                    log.warn(error.message ? error.message : error);
                     return;
                 }
                 if (!info) {
@@ -103,7 +103,7 @@ class BiliLiveSubscriber extends BiliSubscriber {
                     return;
                 }
                 if (rec.liveStatus == info.liveStatus) {
-                    log.debug(rec.uid, "直播间状态没有变化");
+                    // log.debug(rec.uid, "直播间状态没有变化");
                     return;
                 } else {
                     if (info.liveStatus == 1) {
@@ -118,7 +118,7 @@ class BiliLiveSubscriber extends BiliSubscriber {
                                     rec.uid,
                                     true
                                 );
-                            log.info(data);
+                            log.debug(data);
                         } catch (e: any) {
                             log.error(e.message ? e.message : e);
                             return;
@@ -130,7 +130,7 @@ class BiliLiveSubscriber extends BiliSubscriber {
                                 rec.uid,
                                 info.liveStatus
                             );
-                            log.info(data);
+                            log.debug(data);
                         } catch (e: any) {
                             log.warn(e.message ? e.message : e);
                             return;

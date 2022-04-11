@@ -88,7 +88,7 @@ class QQMessage {
                     if (ev.sub_type === "poke") {
                         // 戳一戳
                         if (ev.target_id === (<Config>config).qq) {
-                            log.info("被戳了", e);
+                            log.debug("被戳了", e);
                             this.sendToGroupSync(
                                 (<noticeEvent>event).group_id,
                                 `[CQ:poke,qq=${(<noticeEvent>event).user_id}]`
@@ -160,7 +160,7 @@ class QQMessage {
                     log.warn(msg, "发送失败");
                     rej(new Error("QQ消息发送失败"));
                 } else {
-                    log.debug(msg, "发送成功");
+                    // log.debug(msg, "发送成功");
                     res((ev as responseEvent).echo);
                 }
             });

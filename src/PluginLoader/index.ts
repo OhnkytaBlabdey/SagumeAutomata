@@ -1,3 +1,4 @@
+/* eslint-disable no-prototype-builtins */
 import Subscriber from "../Plugins/Subscriber";
 import pluginsConfig from "../plugins.config";
 import log from "../Logger";

@@ -145,7 +145,7 @@ class BiliDynamicSubscriber extends BiliSubscriber {
                 )) as BiliDynamicType.dynamicInfo;
             } catch (error: any) {
                 if (error) {
-                    log.warn(error.errMessage ? error.errMessage : error);
+                    log.warn(error.message ? error.message : error);
                     return;
                 }
                 log.error("没有捕获到异常");
@@ -158,7 +158,7 @@ class BiliDynamicSubscriber extends BiliSubscriber {
             }
 
             if (rec.latest_dynamic_id == info.dynamic_id) {
-                log.debug(rec.uid, "最新动态没有变化");
+                // log.debug(rec.uid, "最新动态没有变化");
                 return;
             } else if (rec.ctime > info.timestamp) {
                 log.info(rec.uid, "删除了动态");
@@ -172,7 +172,7 @@ class BiliDynamicSubscriber extends BiliSubscriber {
                         info.dynamic_id,
                         rec.uid
                     );
-                    log.info(data);
+                    log.debug(data);
                     const recs =
                         await DBHandler.getBiliRec<BiliDynamicType.dynamicRec>(
                             this.tableName,

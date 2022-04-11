@@ -98,7 +98,7 @@ abstract class PaperSubscriber extends Subscriber {
             info = (await this.getLatestInfo()) as Info;
         } catch (error: any) {
             if (error) {
-                log.warn(error.errMessage ? error.errMessage : error);
+                log.warn(error.message ? error.message : error);
                 return;
             }
             log.error("没有捕获到异常");
@@ -110,7 +110,7 @@ abstract class PaperSubscriber extends Subscriber {
         }
 
         if (this.__checkIfValid(rec, info)) {
-            log.debug("最新文章没有变化");
+            // log.debug("最新文章没有变化");
             return;
         } else if (rec.timestamp > info.timestamp) {
             log.info("删除了文章");

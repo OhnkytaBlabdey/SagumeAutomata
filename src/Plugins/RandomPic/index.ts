@@ -98,7 +98,7 @@ class RandomPic {
                         aPath
                     )}]`;
                     const m = messageTemplate.replace("{{image}}", cqCode);
-                    log.info("发送: " + m);
+                    // log.debug("发送: " + m);
                     qq.sendToGroup(ev.group_id, m);
                 } else {
                     const aPath = path.resolve("data/", p);
@@ -150,7 +150,7 @@ class RandomPic {
                         fileName,
                         ev.sender?.user_id
                     );
-                    log.info("保存图片成功" + fileName);
+                    // log.debug("保存图片成功" + fileName);
                     qq.sendToGroup(
                         ev.group_id,
                         `上传成功：[CQ:image,file=${url.pathToFileURL(

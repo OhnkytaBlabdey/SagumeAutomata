@@ -8,7 +8,7 @@ class Ra3Wiki {
         const data = wikiData as Ra3WikiType.WikiData;
         // eslint-disable-next-line no-prototype-builtins
         if (wikiData.hasOwnProperty(unitName)) {
-            log.info("查找命中");
+            // log.debug("查找命中");
             let info = `名称: ${unitName}\n基础信息:\n`;
             // @ts-ignore
             for (const i in wikiData[unitName].base) {

@@ -41,7 +41,7 @@ class GithubSubscriber extends Subscriber {
     async getLatestInfo() {
         const task = this.__lang.map((l) => this.__requestGithubTrending(l));
         const res = (await Promise.all(task)).map((res) => {
-            console.info(res);
+            // log.debug(res);
             res.data.items.splice(3, res.data.items.length - 1);
             return {
                 lang: res.lang,

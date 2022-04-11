@@ -75,7 +75,7 @@ export class DBManager {
         try {
             this.__connectDB();
         } catch (e) {
-            logger.info(e);
+            logger.warn(e);
             const { status } = await utils.checkExists(this.__targetDir);
             if (!status) {
                 logger.warn("数据库文件不存在，将要创建数据库文件");

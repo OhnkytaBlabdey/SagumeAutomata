@@ -52,7 +52,7 @@ class VideoSubscriber extends BiliSubscriber {
                 log.warn(result.data, "视频返回格式错误");
             }
         } catch (e: any) {
-            log.warn(e.message ? e.message : e);
+            log.warn((<Error>e).message ? (<Error>e).message : e);
         }
     }
 
@@ -68,7 +68,7 @@ class VideoSubscriber extends BiliSubscriber {
                     rec.uid
                 )) as BiliVideoType.videoInfo;
             } catch (error: any) {
-                log.warn(error.errMessage ? error.errMessage : error);
+                log.warn(error.message ? error.message : error);
                 return;
             }
             if (!info) {
@@ -76,7 +76,7 @@ class VideoSubscriber extends BiliSubscriber {
                 return;
             }
             if (rec.latest_av == info.av) {
-                log.debug(rec.uid, "最新视频没有变化");
+                // log.debug(rec.uid, "最新视频没有变化");
                 return;
             } else if (rec.ctime > info.timestamp) {
                 log.info(rec.uid, "删除了视频");
@@ -90,7 +90,7 @@ class VideoSubscriber extends BiliSubscriber {
                         info.av,
                         rec.uid
                     );
-                    log.info(data);
+                    log.debug(data);
                     const recs =
                         await DBHandler.getBiliRec<BiliVideoType.videoRec>(
                             this.tableName,

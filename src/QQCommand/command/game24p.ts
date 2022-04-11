@@ -185,14 +185,14 @@ const game24p: CmdType.Cmd = {
             parseInt(params[4]),
         ];
         const target = parseInt(params[5]);
-        Logger.info("[24p]", nums, target);
+        Logger.debug("[24p]", nums, target);
         const solution = solve24p(nums, target);
-        Logger.info(groupId, solution || "not found");
+        Logger.debug(groupId, solution || "not found");
         if (solution) qq.sendToGroup(groupId, solution as string);
         else {
             Logger.warn("[24p]", nums, target, "未找到解答");
         }
     },
-    cmdName: "game24p"
+    cmdName: "game24p",
 };
 export default game24p;

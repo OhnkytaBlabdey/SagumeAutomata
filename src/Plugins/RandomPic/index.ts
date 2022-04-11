@@ -83,7 +83,7 @@ class RandomPic{
                 } else {
                     const aPath = path.resolve("data/", p);
                     const cqCode = `[CQ:image,file=${url.pathToFileURL(aPath)}]`;
-                    let m = specialTxt.replace("{{image}}", cqCode);
+                    let m = (await checkExists(aPath)).status ? specialTxt.replace("{{image}}", cqCode) : specialTxt;
                     log.info("发送: " + m);
                     qq.sendToGroup(ev.group_id, m);
                 }

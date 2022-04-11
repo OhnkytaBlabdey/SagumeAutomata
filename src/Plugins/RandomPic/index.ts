@@ -140,6 +140,12 @@ class RandomPic{
                 if (cqImageList && cqImageList.length) {
                     //[CQ:image,file=80c2b55527aac6750f927aab20a5dd32.image,url=https://gchat.qpic.cn/gchatpic_new/738767136/4141567869-2651177397-80C2B55527AAC6750F927AAB20A5DD32/0?term=3,subType=0]
                     await this.saveImg(ev, tableName, dirName);
+                    await db.delete(
+                        "cmdQueue",
+                        [
+                            `uid=${ev.sender?.user_id}`
+                        ]
+                    );
                 } else {
                     await db.insertSingle(
                         "cmdQueue",

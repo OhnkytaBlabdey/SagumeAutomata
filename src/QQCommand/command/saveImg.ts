@@ -13,6 +13,12 @@ const cmd: CmdType.Cmd = {
         if (res && (new Date().getTime() - res.timestamp < 1000 * 60 * 5)) {
             let index = qqCommand.randomImgConf.findIndex(i => i.uploadCmdPattern === res.type);
             await RandomPic.saveImg(ev, qqCommand.randomImgConf[index].tableName, qqCommand.randomImgConf[index].dirName);
+            await dbHandler.delete(
+                "cmdQueue",
+                [
+                    `uid=${ev.sender?.user_id}`
+                ]
+            );
         }
     }
 }

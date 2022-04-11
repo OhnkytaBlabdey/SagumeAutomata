@@ -22,35 +22,31 @@ class BiliLiveSubscriber extends BiliSubscriber {
     async getLatestInfo(
         uid: number
     ): Promise<BiliLiveType.liveInfo | undefined> {
-        // eslint-disable-next-line no-useless-catch
-        try {
-            const { data } = await req.get({
-                url: "https://api.bilibili.com/x/space/acc/info",
-                params: {
-                    mid: uid,
-                },
-            });
-            if (data && data.data) {
-                const jsonData = data.data;
-                if (jsonData) {
-                    const data = jsonData.live_room;
-                    if (!data) {
-                        log.warn("获取直播间状态失败");
-                    }
-                    return {
-                        cover: data.cover,
-                        liveStatus: data.liveStatus,
-                        url: (data.url as string).split("?")[0],
-                        online: data.online || data.watched_show.num,
-                        title: data.title,
-                        timestamp: -1,
-                    };
-                } else {
-                    log.warn("直播间返回格式错误", JSON.stringify(jsonData));
+        const { data } = await req.get({
+            url: "https://api.bilibili.com/x/space/acc/info",
+            params: {
+                mid: uid,
+            },
+        });
+        if (data && data.data) {
+            const jsonData = data.data;
+            if (jsonData) {
+                const data = jsonData.live_room;
+                if (!data) {
+                    log.warn("获取直播间状态失败");
+                    return;
                 }
+                return {
+                    cover: data.cover,
+                    liveStatus: data.liveStatus,
+                    url: (data.url as string).split("?")[0],
+                    online: data.online || data.watched_show.num,
+                    title: data.title,
+                    timestamp: -1,
+                };
+            } else {
+                log.warn("直播间返回格式错误", JSON.stringify(jsonData));
             }
-        } catch (e) {
-            throw e;
         }
     }
 

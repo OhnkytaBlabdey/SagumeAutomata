@@ -1,4 +1,6 @@
-# API Document
+# ~~API Document~~
+
+# 过期，仅供参考划掉的一定不能用 剩下的不一定能用
 
 ## Class: `Requester`
 
@@ -39,7 +41,7 @@ Requester.post({
 
 -   `data`: any
 
--~- #### `RequesterErrorType`: extend `RequesterReturnType` -~-
+#### ~~`RequesterErrorType`: extend `RequesterReturnType`~~
 
 -   `errCode`: `string`
 -   `errMessage`: `string`

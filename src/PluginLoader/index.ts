@@ -1,10 +1,10 @@
 import Subscriber from "../Plugins/Subscriber";
 import pluginsConfig from "../plugins.config";
 import log from "../Logger";
-import {PluginLoaderType} from "./type";
+import { PluginLoaderType } from "./type";
 
-function *itePluginConfig(config: Array<PluginLoaderType.PluginConfig>) {
-    for (let c of config) {
+function* itePluginConfig(config: Array<PluginLoaderType.PluginConfig>) {
+    for (const c of config) {
         yield c;
     }
 }
@@ -21,9 +21,14 @@ class PluginLoader {
         const genIte = itePluginConfig(pluginsConfig.plugins);
         for (let i = 0; i < len; i++) {
             const config = genIte.next().value;
-            if (config && config.hasOwnProperty("name") && config.hasOwnProperty("on")) {
+            if (
+                config &&
+                config.hasOwnProperty("name") &&
+                config.hasOwnProperty("on")
+            ) {
                 if (config.on) {
-                    const plugin = (await import(`../Plugins/${config.name}`)).default;
+                    const plugin = (await import(`../Plugins/${config.name}`))
+                        .default;
                     log.info(`开启插件: ${config.name}`);
                     try {
                         await plugin.run();

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-namespace */
 export declare namespace DB {
     interface DBColumn {
         cName: string;

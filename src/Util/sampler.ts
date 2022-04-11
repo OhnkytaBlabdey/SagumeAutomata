@@ -10,6 +10,7 @@ class sampler {
     public static integer(min: number, max: number): number {
         return this.random.integer(min, max);
     }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     public static sampleWithDist(objs: any[], dist: number[]): any {
         if (objs.length != dist.length) {
             Logger.error("采样的分布数组与元素个数不相等");

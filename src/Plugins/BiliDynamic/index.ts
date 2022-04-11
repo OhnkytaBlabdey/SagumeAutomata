@@ -3,7 +3,7 @@ import BiliSubscriber from "../BiliSubscriber";
 import log from "../../Logger";
 import DBHandler from "../../DBHandler";
 import qq from "../../QQMessage";
-import {BiliDynamicType} from "./type";
+import { BiliDynamicType } from "./type";
 
 class BiliDynamicSubscriber extends BiliSubscriber {
     tableName = "bili_dynamic";
@@ -17,31 +17,29 @@ class BiliDynamicSubscriber extends BiliSubscriber {
         this.sampleRec = this.sampleRec.bind(this);
     }
 
-    async getLatestInfo(uid: number): Promise<BiliDynamicType.dynamicInfo | undefined> {
-        try {
-            const {"data": result} = await req.get({
-                url: "https://api.vc.bilibili.com/dynamic_svr/v1/dynamic_svr/space_history",
-                params: {
-                    host_uid: uid,
-                },
-            });
-            if (!(result && result.data)) {
-                log.warn(`获取${uid}动态失败`);
-                throw new Error("没有响应值");
-            }
-            const cards = result.data.cards;
-            if (!(cards && cards[0])) {
-                log.warn(`获取${uid}的动态没有数据`);
-                throw new Error("没有获取到数据");
-            }
-            return {
-                dynamic_id: BigInt(cards[0].desc.dynamic_id_str),
-                timestamp: cards[0].desc.timestamp,
-                card: cards[0].card,
-            };
-        } catch (e) {
-            throw e;
+    async getLatestInfo(
+        uid: number
+    ): Promise<BiliDynamicType.dynamicInfo | undefined> {
+        const { data: result } = await req.get({
+            url: "https://api.vc.bilibili.com/dynamic_svr/v1/dynamic_svr/space_history",
+            params: {
+                host_uid: uid,
+            },
+        });
+        if (!(result && result.data)) {
+            log.warn(`获取${uid}动态失败`);
+            throw new Error("没有响应值");
         }
+        const cards = result.data.cards;
+        if (!(cards && cards[0])) {
+            log.warn(`获取${uid}的动态没有数据`);
+            throw new Error("没有获取到数据");
+        }
+        return {
+            dynamic_id: BigInt(cards[0].desc.dynamic_id_str),
+            timestamp: cards[0].desc.timestamp,
+            card: cards[0].card,
+        };
     }
 
     private parseDynamicCardToString(
@@ -55,7 +53,7 @@ class BiliDynamicSubscriber extends BiliSubscriber {
         let card = null;
         try {
             card = JSON.parse(cardStr);
-        } catch (ex) {
+        } catch (ex: any) {
             log.warn(ex.message ? ex.message : ex);
             return "解析失败";
         }
@@ -142,7 +140,9 @@ class BiliDynamicSubscriber extends BiliSubscriber {
                 return;
             }
             try {
-                info = await this.getLatestInfo(rec.uid) as BiliDynamicType.dynamicInfo;
+                info = (await this.getLatestInfo(
+                    rec.uid
+                )) as BiliDynamicType.dynamicInfo;
             } catch (error: any) {
                 if (error) {
                     log.warn(error.errMessage ? error.errMessage : error);
@@ -165,9 +165,20 @@ class BiliDynamicSubscriber extends BiliSubscriber {
                 return;
             } else {
                 try {
-                    const data = await DBHandler.updateBiliSubscriberHitCount(this.tableName, this.flagCol, info.timestamp, info.dynamic_id, rec.uid);
+                    const data = await DBHandler.updateBiliSubscriberHitCount(
+                        this.tableName,
+                        this.flagCol,
+                        info.timestamp,
+                        info.dynamic_id,
+                        rec.uid
+                    );
                     log.info(data);
-                    const recs = await DBHandler.getBiliRec<BiliDynamicType.dynamicRec>(this.tableName, rec.uid, info.dynamic_id);
+                    const recs =
+                        await DBHandler.getBiliRec<BiliDynamicType.dynamicRec>(
+                            this.tableName,
+                            rec.uid,
+                            info.dynamic_id
+                        );
                     recs.forEach((dynamic) => {
                         qq.sendToGroup(
                             dynamic.group_id,
@@ -176,17 +187,21 @@ class BiliDynamicSubscriber extends BiliSubscriber {
                             }]${this.parseDynamicCardToString(info.card)}`
                         );
                     });
-                } catch (e) {
+                } catch (e: any) {
                     log.warn(e.message ? e.message : e);
-                    return ;
+                    return;
                 }
                 try {
-                    await DBHandler.updateSubscribeStatus(this.tableName, rec.uid, info.dynamic_id);
-                } catch (e) {
+                    await DBHandler.updateSubscribeStatus(
+                        this.tableName,
+                        rec.uid,
+                        info.dynamic_id
+                    );
+                } catch (e: any) {
                     log.warn(e.message ? e.message : e);
                 }
             }
-        }, 8000)
+        }, 8000);
     }
 }
 

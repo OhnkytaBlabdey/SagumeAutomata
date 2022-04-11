@@ -2,7 +2,7 @@ abstract class Subscriber {
     protected abstract tableName: string;
     protected abstract actionName: string;
     protected abstract flagCol: string;
-    public __on: boolean = false;
+    public __on = false;
 
     abstract getLatestInfo(...a: any): Promise<any>;
 

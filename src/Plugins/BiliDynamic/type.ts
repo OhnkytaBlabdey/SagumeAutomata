@@ -1,4 +1,5 @@
-import {BiliSubscriberType} from "../type";
+/* eslint-disable @typescript-eslint/no-namespace */
+import { BiliSubscriberType } from "../type";
 
 export namespace BiliDynamicType {
     export interface dynamicInfo extends BiliSubscriberType.Info {

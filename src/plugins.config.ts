@@ -29,8 +29,8 @@ export default {
             on: true,
         },
         {
-            "name": "Github",
-            "on": false
-        }
-    ]
-}
+            name: "Github",
+            on: false,
+        },
+    ],
+};

@@ -3,7 +3,7 @@ import req from "../../Requester";
 import log from "../../Logger";
 import DBHandler from "../../DBHandler";
 import qq from "../../QQMessage";
-import {BiliVideoType} from "./type";
+import { BiliVideoType } from "./type";
 
 class VideoSubscriber extends BiliSubscriber {
     tableName = "bili_video";
@@ -14,9 +14,11 @@ class VideoSubscriber extends BiliSubscriber {
         super();
     }
 
-    async getLatestInfo(uid: number): Promise<BiliVideoType.videoInfo | undefined> {
+    async getLatestInfo(
+        uid: number
+    ): Promise<BiliVideoType.videoInfo | undefined> {
         try {
-            let {"data": result} = await req.get({
+            const { data: result } = await req.get({
                 url: "https://api.bilibili.com/x/space/arc/search",
                 params: {
                     mid: uid,
@@ -49,7 +51,7 @@ class VideoSubscriber extends BiliSubscriber {
             } else {
                 log.warn(result.data, "视频返回格式错误");
             }
-        } catch (e) {
+        } catch (e: any) {
             log.warn(e.message ? e.message : e);
         }
     }
@@ -59,11 +61,13 @@ class VideoSubscriber extends BiliSubscriber {
             const rec = await this.sampleRec<BiliVideoType.videoRec>();
             let info: BiliVideoType.videoInfo;
             if (rec == null) {
-                return ;
+                return;
             }
             try {
-                info = await this.getLatestInfo(rec.uid) as BiliVideoType.videoInfo;
-            } catch (error) {
+                info = (await this.getLatestInfo(
+                    rec.uid
+                )) as BiliVideoType.videoInfo;
+            } catch (error: any) {
                 log.warn(error.errMessage ? error.errMessage : error);
                 return;
             }
@@ -79,29 +83,44 @@ class VideoSubscriber extends BiliSubscriber {
                 return;
             } else {
                 try {
-                    const data = await DBHandler.updateBiliSubscriberHitCount(this.tableName, this.flagCol, info.timestamp, info.av, rec.uid);
+                    const data = await DBHandler.updateBiliSubscriberHitCount(
+                        this.tableName,
+                        this.flagCol,
+                        info.timestamp,
+                        info.av,
+                        rec.uid
+                    );
                     log.info(data);
-                    const recs = await DBHandler.getBiliRec<BiliVideoType.videoRec>(this.tableName, rec.uid, info.av);
+                    const recs =
+                        await DBHandler.getBiliRec<BiliVideoType.videoRec>(
+                            this.tableName,
+                            rec.uid,
+                            info.av
+                        );
                     log.info("视频更新", info.title);
                     recs.forEach((av) => {
                         qq.sendToGroup(
                             av.group_id,
                             `${av.name} 更了. ${info.title}\nb23.tv/av${av.latest_av}\n[CQ:image,file=${info.cover}]\n` +
-                            `发布 ${info.pubdate} 时长【${info.length}】\n` +
-                            `简介：${info.desc} ${
-                                info.desc.length > 200 ? " ..." : " "
-                            }`
+                                `发布 ${info.pubdate} 时长【${info.length}】\n` +
+                                `简介：${info.desc} ${
+                                    info.desc.length > 200 ? " ..." : " "
+                                }`
                         );
                     });
-                } catch(e) {
+                } catch (e: any) {
                     log.warn(e.message ? e.message : e);
-                    return ;
+                    return;
                 }
                 try {
-                    await DBHandler.updateSubscribeStatus(this.tableName, rec.uid, info.av);
-                } catch (e) {
+                    await DBHandler.updateSubscribeStatus(
+                        this.tableName,
+                        rec.uid,
+                        info.av
+                    );
+                } catch (e: any) {
                     log.warn(e.message ? e.message : e);
-                    return ;
+                    return;
                 }
             }
         }, 8000);

@@ -3,7 +3,7 @@ import req from "../../Requester";
 import { setuInfo } from "./type";
 import Subscriber from "../Subscriber";
 
-class Setu extends Subscriber{
+class Setu extends Subscriber {
     getSetuUrl(keyword: string | null): Promise<setuInfo | boolean> {
         return new Promise((res, rej) => {
             if (this.__on) {
@@ -23,7 +23,7 @@ class Setu extends Subscriber{
                 })
                     .then((result) => {
                         if (result && result.data) {
-                            const jsondata = (result).data;
+                            const jsondata = result.data;
                             log.debug(jsondata);
                             if (jsondata.data && jsondata.data[0]) {
                                 const setuinfo = jsondata.data[0];
@@ -58,24 +58,24 @@ class Setu extends Subscriber{
                         }
                     });
             } else {
-                res(false)
+                res(false);
             }
         });
     }
 
-    protected actionName: string = "";
-    protected flagCol: string = "";
-    protected tableName: string = "";
+    protected actionName = "";
+    protected flagCol = "";
+    protected tableName = "";
 
-    close(): void {
-    }
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    close(): void {}
 
     getLatestInfo(...a: any): Promise<any> {
         return Promise.resolve(undefined);
     }
 
-    run(): void {
-    }
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    run(): void {}
 }
 
 const setu = new Setu();

@@ -1,4 +1,4 @@
-export interface messageEvent extends responseEvent{
+export interface messageEvent extends responseEvent {
     ClassType: string;
     message_id: number;
     message_type: string;
@@ -13,7 +13,7 @@ export interface messageEvent extends responseEvent{
     } | null;
 }
 
-export interface noticeEvent extends responseEvent{
+export interface noticeEvent extends responseEvent {
     notice_type: string;
     target_id: number;
 }
@@ -30,4 +30,3 @@ export interface responseEvent {
     user_id: number;
     sub_type: string;
 }
-

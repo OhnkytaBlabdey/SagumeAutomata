@@ -85,12 +85,12 @@ export default {
             on: false,
         },
         {
-            "name": "saveImg",
-            "on": true
+            name: "saveImg",
+            on: true,
         },
         {
-            "name": "cmdList",
-            "on": true
-        }
-    ]
-}
+            name: "cmdList",
+            on: true,
+        },
+    ],
+};

@@ -94,8 +94,7 @@ class BiliLiveSubscriber extends BiliSubscriber {
                     info = (await this.getLatestInfo(
                         rec.uid
                     )) as BiliLiveType.liveInfo;
-                } catch (error) {
-                    //TODO 解决静态检查warning
+                } catch (error: any) {
                     log.warn(error.errMessage ? error.errMessage : error);
                     return;
                 }
@@ -120,7 +119,7 @@ class BiliLiveSubscriber extends BiliSubscriber {
                                     true
                                 );
                             log.info(data);
-                        } catch (e) {
+                        } catch (e: any) {
                             log.error(e.message ? e.message : e);
                             return;
                         }
@@ -132,14 +131,14 @@ class BiliLiveSubscriber extends BiliSubscriber {
                                 info.liveStatus
                             );
                             log.info(data);
-                        } catch (e) {
+                        } catch (e: any) {
                             log.warn(e.message ? e.message : e);
                             return;
                         }
                     }
                     try {
                         await this.__broadcastLiveStatusInfo(rec, info);
-                    } catch (e) {
+                    } catch (e: any) {
                         log.warn(e.message ? e.message : e);
                         return;
                     }
@@ -149,7 +148,7 @@ class BiliLiveSubscriber extends BiliSubscriber {
                             rec.uid,
                             info.liveStatus
                         );
-                    } catch (e) {
+                    } catch (e: any) {
                         log.warn(e.message ? e.message : e);
                     }
                 }

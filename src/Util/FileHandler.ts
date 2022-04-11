@@ -1,7 +1,11 @@
 import fs from "fs";
-import {ReadDoneType, UtilBaseType} from "./interface";
+import { ReadDoneType, UtilBaseType } from "./interface";
 
-export function readFile(path: string, option: Object = {}): Promise<ReadDoneType> {
+export function readFile(
+    path: string,
+    // eslint-disable-next-line @typescript-eslint/ban-types
+    option: Object = {}
+): Promise<ReadDoneType> {
     return new Promise((res, rej) => {
         fs.readFile(path, option, (err, data) => {
             if (err) {
@@ -9,21 +13,26 @@ export function readFile(path: string, option: Object = {}): Promise<ReadDoneTyp
             } else {
                 res({
                     status: 1,
-                    data: data.toString()
+                    data: data.toString(),
                 });
             }
         });
     });
 }
 
-export function writeFile(path: string, data: string, option: Object = {}): Promise<UtilBaseType> {
+export function writeFile(
+    path: string,
+    data: string,
+    // eslint-disable-next-line @typescript-eslint/ban-types
+    option: Object = {}
+): Promise<UtilBaseType> {
     return new Promise((res, rej) => {
-        fs.writeFile(path, data, option, err => {
+        fs.writeFile(path, data, option, (err) => {
             if (err) {
                 rej(err);
             } else {
                 res({
-                    status: 1
+                    status: 1,
                 });
             }
         });
@@ -35,11 +44,11 @@ export function checkExists(path: string): Promise<UtilBaseType> {
         fs.access(path, fs.constants.F_OK | fs.constants.W_OK, (err) => {
             if (err) {
                 res({
-                    status: 0
+                    status: 0,
                 });
             } else {
                 res({
-                    status: 1
+                    status: 1,
                 });
             }
         });

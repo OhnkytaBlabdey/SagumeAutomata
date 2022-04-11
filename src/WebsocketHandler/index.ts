@@ -44,11 +44,11 @@ class WebsocketHandler extends EventEmitter {
                 logger.info("ws已建立连接");
                 res(1);
             });
-            this.__wsClient.on("error", (e) => {
+            this.__wsClient.on("error", (e: any) => {
                 logger.error("ws连接发生错误");
                 rej(e);
             });
-            this.__wsClient.on("message", (data) => {
+            this.__wsClient.on("message", (data: any) => {
                 // logger.debug("ws接收到来自服务端消息");
                 this.__eventListener.emit(this.__eventTarget, data);
             });

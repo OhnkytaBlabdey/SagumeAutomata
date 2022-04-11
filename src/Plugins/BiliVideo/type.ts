@@ -1,4 +1,5 @@
-import {BiliSubscriberType} from "../type";
+/* eslint-disable @typescript-eslint/no-namespace */
+import { BiliSubscriberType } from "../type";
 
 export namespace BiliVideoType {
     export interface videoRec extends BiliSubscriberType.Rec {
@@ -18,5 +19,4 @@ export namespace BiliVideoType {
         pubdate: string;
         title: string;
     }
-
 }

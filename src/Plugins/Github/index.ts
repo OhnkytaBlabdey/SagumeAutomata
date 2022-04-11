@@ -44,7 +44,7 @@ class GithubSubscriber extends Subscriber {
         const task = this.__lang.map(l => this.__requestGithubTrending(l));
         const res = (await Promise.all(task)).map(res => {
             console.info(res);
-            res.data.items.splice(5, res.data.items.length - 1);
+            res.data.items.splice(3, res.data.items.length - 1);
             return {
                 lang: res.lang,
                 info: res.data.items.map(repo => `仓库：${repo.repo}\n简介：${repo.desc}\n链接: ${repo.repo_link}\n语言: ${res.lang}\nFork: ${repo.forks} Star: ${repo.stars}\n`).join("-----------\n")
@@ -53,7 +53,6 @@ class GithubSubscriber extends Subscriber {
         for (let i of res) {
             this.__info[i.lang] = i.info;
         }
-        log.info(this.__info);
     }
 
     async addSub(groupId: number) {
@@ -84,17 +83,16 @@ class GithubSubscriber extends Subscriber {
             try {
                 await this.getLatestInfo();
             } catch (e) {
-                log.warn(e);
+                log.warn(e.message ? e.message : e);
             }
             const rec = await DBHandler.getJuejinSubscribe(this.tableName, 1);
-            console.log(rec);
             rec.forEach(group => {
                 for (let i in this.__info) {
                     qq.sendToGroup(group.group_id, `Github Trending\n${i}:\n${this.__info[i]}`);
                 }
             });
         } catch (e) {
-            log.warn(e);
+            log.warn(e.message ? e.message : e);
         }
     }
 
@@ -102,7 +100,7 @@ class GithubSubscriber extends Subscriber {
         try {
             await this.getLatestInfo();
         } catch (e) {
-            log.warn(e);
+            log.warn(e.message ? e.message : e);
         }
         scheduler.scheduleJob("30 0 7 * * *",this.__intervalHandler.bind(this));
     }

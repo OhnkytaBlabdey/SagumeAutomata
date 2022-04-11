@@ -21,7 +21,7 @@ const defaultConfig = {
     onebot_port: 1,
     onebot_pw: "",
     qq: 114514,
-    su: 1919810,
+    qq_owner: 1919810,
 };
 
 const handleEvent = (event: responseEvent, e: EventEmitter) => {
@@ -74,7 +74,7 @@ class QQMessage {
                     const ev = <messageEvent>event;
                     const flag = await cmdDispatcher.dispatchCommand(ev, ev.message);
                     if (!flag) {
-                        console.log(ev.message);
+                        // console.log(ev.message);
                         //[CQ:image,file=80c2b55527aac6750f927aab20a5dd32.image,url=https://gchat.qpic.cn/gchatpic_new/738767136/4141567869-2651177397-80C2B55527AAC6750F927AAB20A5DD32/0?term=3,subType=0]
                         await DBHandler.saveChatMessage(ev);
                     }

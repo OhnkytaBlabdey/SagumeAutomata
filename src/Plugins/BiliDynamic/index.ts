@@ -56,7 +56,7 @@ class BiliDynamicSubscriber extends BiliSubscriber {
         try {
             card = JSON.parse(cardStr);
         } catch (ex) {
-            log.warn(ex);
+            log.warn(ex.message ? ex.message : ex);
             return "解析失败";
         }
         if (card.aid) {
@@ -177,13 +177,13 @@ class BiliDynamicSubscriber extends BiliSubscriber {
                         );
                     });
                 } catch (e) {
-                    log.warn(e);
+                    log.warn(e.message ? e.message : e);
                     return ;
                 }
                 try {
                     await DBHandler.updateSubscribeStatus(this.tableName, rec.uid, info.dynamic_id);
                 } catch (e) {
-                    log.warn(e);
+                    log.warn(e.message ? e.message : e);
                 }
             }
         }, 8000)

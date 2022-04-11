@@ -30,9 +30,16 @@ class WebsocketHandler extends EventEmitter {
 
     connect() {
         return new Promise((res, rej) => {
-            this.__wsClient = new Websocket(
-                `ws://${this.__host}:${this.__port}?access_token=${this.__access_token}`
-            );
+            if (this.__access_token && this.__access_token.length) {
+                this.__wsClient = new Websocket(
+                    `ws://${this.__host}:${this.__port}?access_token=${this.__access_token}`
+                );
+            } else {
+                this.__wsClient = new Websocket(
+                    `ws://${this.__host}:${this.__port}`
+                );
+            }
+
             this.__wsClient.on("open", () => {
                 logger.info("ws已建立连接");
                 res(1);

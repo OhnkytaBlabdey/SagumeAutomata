@@ -6,7 +6,7 @@ const isAdmin = (ev: messageEvent): boolean => {
     if (ev.sender?.role == "owner" || ev.sender?.role == "admin" || ev.sender?.user_id == config.qq_owner) {
         return true;
     }
-    if ((config as Config)?.su == ev.user_id) {
+    if ((config as Config)?.qq_owner == ev.user_id) {
         return true;
     }
     return false;

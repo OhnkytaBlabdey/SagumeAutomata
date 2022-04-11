@@ -121,7 +121,7 @@ class BiliLiveSubscriber extends BiliSubscriber {
                                 );
                             log.info(data);
                         } catch (e) {
-                            log.error(e);
+                            log.error(e.message ? e.message : e);
                             return;
                         }
                     } else {
@@ -133,14 +133,14 @@ class BiliLiveSubscriber extends BiliSubscriber {
                             );
                             log.info(data);
                         } catch (e) {
-                            log.warn(e);
+                            log.warn(e.message ? e.message : e);
                             return;
                         }
                     }
                     try {
                         await this.__broadcastLiveStatusInfo(rec, info);
                     } catch (e) {
-                        log.warn(e);
+                        log.warn(e.message ? e.message : e);
                         return;
                     }
                     try {
@@ -150,7 +150,7 @@ class BiliLiveSubscriber extends BiliSubscriber {
                             info.liveStatus
                         );
                     } catch (e) {
-                        log.warn(e);
+                        log.warn(e.message ? e.message : e);
                     }
                 }
             }

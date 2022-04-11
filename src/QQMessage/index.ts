@@ -21,7 +21,7 @@ const defaultConfig = {
     onebot_port: 1,
     onebot_pw: "",
     qq: 114514,
-    su: 1919810,
+    qq_owner: 1919810,
 };
 
 const handleEvent = (event: responseEvent, e: EventEmitter) => {

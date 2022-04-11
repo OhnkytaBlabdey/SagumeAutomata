@@ -51,7 +51,7 @@ class JuejinDaily extends Subscriber {
             try {
                 await this.getLatestInfo();
             } catch (e) {
-                log.warn(e);
+                log.warn(e.message ? e.message : e);
             }
             const rec = await DBHandler.getJuejinSubscribe(this.tableName, 0);
             rec.forEach(group => {
@@ -60,7 +60,7 @@ class JuejinDaily extends Subscriber {
                 }
             });
         } catch (e) {
-            log.warn(e);
+            log.warn(e.message ? e.message : e);
         }
     }
 
@@ -72,28 +72,27 @@ class JuejinDaily extends Subscriber {
         try {
             this.__info["FrontEnd"] = await this.__requestJuejinAPI(this.__frontEndId);
         } catch (e) {
-            log.warn(e);
+            log.warn(e.message ? e.message : e);
             log.warn("请求前端文章失败");
         }
         try {
             this.__info["BackEnd"] = await this.__requestJuejinAPI(this.__backEndId);
         } catch (e) {
-            log.warn(e);
+            log.warn(e.message ? e.message : e);
             log.warn("请求后端文章失败");
         }
         try {
             this.__info["IntelligentIdiot"] = await this.__requestJuejinAPI(this.__intelligentIdiotId);
         } catch (e) {
-            log.warn(e);
+            log.warn(e.message ? e.message : e);
             log.warn("请求人工智能文章失败");
         }
         try {
             this.__info["Android"] = await this.__requestJuejinAPI(this.__androidId);
         } catch (e) {
-            log.warn(e);
+            log.warn(e.message ? e.message : e);
             log.warn("请求安卓文章失败");
         }
-        log.info(this.__info);
     }
 
     async addSub(groupId: number) {
@@ -123,7 +122,7 @@ class JuejinDaily extends Subscriber {
         try {
             await this.getLatestInfo();
         } catch (e) {
-            log.warn(e);
+            log.warn(e.message ? e.message : e);
         }
         scheduler.scheduleJob("30 30 6 * * *",this.__intervalHandler.bind(this));
     }

@@ -265,7 +265,7 @@ export default class DBHandler {
             )
                 .catch((e) => {
                     if (e) {
-                        log.warn(e);
+                        log.warn(e.message ? e.message : e);
                     }
                 });
         });
@@ -318,7 +318,7 @@ export default class DBHandler {
                 })
                 .catch((e) => {
                     if (e) {
-                        log.warn(e);
+                        log.warn(e.message ? e.message : e);
                     }
                 });
         });
@@ -338,7 +338,7 @@ export default class DBHandler {
                 })
                 .catch((e) => {
                     if (e) {
-                        log.warn(e);
+                        log.warn(e.message ? e.message : e);
                     }
                 });
         });
@@ -378,7 +378,7 @@ export default class DBHandler {
             }
             await db.__createTable(conf);
         } catch (e) {
-            log.warn(e);
+            log.warn(e.message ? e.message : e);
         }
     }
 
@@ -412,7 +412,7 @@ export default class DBHandler {
                 ]
             );
         } catch (e) {
-            log.warn(e);
+            log.warn(e.message ? e.message : e);
         }
     }
 }

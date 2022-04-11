@@ -91,7 +91,7 @@ class BiliLiveSubscriber extends BiliSubscriber {
                             const data = await dbHandler.updateBiliSubscriberHitCount(this.tableName, this.flagCol, info.timestamp ? info.timestamp : -1, info.liveStatus, rec.uid, true);
                             log.info(data);
                         } catch (e) {
-                            log.error(e);
+                            log.error(e.message ? e.message : e);
                             return;
                         }
                     } else {
@@ -99,20 +99,20 @@ class BiliLiveSubscriber extends BiliSubscriber {
                             const data = await dbHandler.updateBiliLiveStatus(this.tableName, rec.uid, info.liveStatus);
                             log.info(data);
                         } catch (e) {
-                            log.warn(e);
+                            log.warn(e.message ? e.message : e);
                             return;
                         }
                     }
                     try {
                         await this.__broadcastLiveStatusInfo(rec, info);
                     } catch (e) {
-                        log.warn(e);
+                        log.warn(e.message ? e.message : e);
                         return;
                     }
                     try {
                         await dbHandler.updateSubscribeStatus(this.tableName, rec.uid, info.liveStatus);
                     } catch (e) {
-                        log.warn(e);
+                        log.warn(e.message ? e.message : e);
                     }
                 }
             }

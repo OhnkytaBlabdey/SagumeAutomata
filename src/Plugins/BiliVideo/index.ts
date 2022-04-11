@@ -50,7 +50,7 @@ class VideoSubscriber extends BiliSubscriber {
                 log.warn(result.data, "视频返回格式错误");
             }
         } catch (e) {
-            log.warn(e);
+            log.warn(e.message ? e.message : e);
         }
     }
 
@@ -94,13 +94,13 @@ class VideoSubscriber extends BiliSubscriber {
                         );
                     });
                 } catch(e) {
-                    log.warn(e);
+                    log.warn(e.message ? e.message : e);
                     return ;
                 }
                 try {
                     await DBHandler.updateSubscribeStatus(this.tableName, rec.uid, info.av);
                 } catch (e) {
-                    log.warn(e);
+                    log.warn(e.message ? e.message : e);
                     return ;
                 }
             }

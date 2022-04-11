@@ -55,14 +55,6 @@ class RandomPic{
                 return v.picName === i;
             }) < 0;
         });
-        const dL = dbList.filter(i => {
-            return nfList.findIndex(v => {
-                return i.picName === v
-            }) < 0;
-        });
-        await Promise.all(dL.map(i => db.delete(tName, [
-            `picName=${DBText(i.picName)}`
-        ])));
         await dbHandler.insertPicWhileInit(tName, nfList);
     }
 

@@ -1,6 +1,7 @@
 import xlsx from "node-xlsx";
 import fs from "fs/promises";
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const data: any = {};
 /** RAAA Wiki-Data-Wrapper **/
 async function parseXLSX() {
@@ -20,7 +21,9 @@ async function parseXLSX() {
                     data[value][temp[si]] = {};
                     name = value;
                 } else {
-                    data[name][temp[si]][attrName[index]] = value ? value : "无";
+                    data[name][temp[si]][attrName[index]] = value
+                        ? value
+                        : "无";
                 }
             });
         });

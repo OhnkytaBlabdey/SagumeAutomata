@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-namespace */
 export namespace RandomPicType {
     export interface RandomPicConf {
         cmdPattern: string;

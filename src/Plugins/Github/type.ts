@@ -1,8 +1,9 @@
+/* eslint-disable @typescript-eslint/no-namespace */
 export namespace GithubType {
     export interface Response {
         count: number;
         msg: string;
-        items: Array<TrendingInfo>
+        items: Array<TrendingInfo>;
     }
 
     export interface TrendingInfo {

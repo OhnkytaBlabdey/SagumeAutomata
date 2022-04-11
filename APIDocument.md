@@ -1,33 +1,33 @@
-# API Document
+# ~~API Document~~
+
+# 过期，仅供参考划掉的一定不能用 剩下的不一定能用
 
 ## Class: `Requester`
+
 ### Example
+
 ```typescript
 import Requester from "path/to/Requester";
 
 Requester.get({
     url: "path/to/request",
     params: {
-        key: value
-    }
-}).then((res) => {
-    
-}, (err) => {
-    
-});
+        key: value,
+    },
+}).then(
+    (res) => {},
+    (err) => {}
+);
 
 Requester.post({
     url: "path/to/post",
     data: "...",
-    contentType: "..."
-}).then((res) => {
-  
-}, (rej) => {
-    
-});
+    contentType: "...",
+}).then(
+    (res) => {},
+    (rej) => {}
+);
 ```
-
-
 
 ### Interface Refer
 
@@ -41,7 +41,7 @@ Requester.post({
 
 -   `data`: any
 
-#### `RequesterErrorType`: extend `RequesterReturnType`
+#### ~~`RequesterErrorType`: extend `RequesterReturnType`~~
 
 -   `errCode`: `string`
 -   `errMessage`: `string`
@@ -60,8 +60,6 @@ Requester.post({
 -   `data`: `any`
 -   `contentType`: `string`
 
-
-
 ### API Refer
 
 #### `static getInstance(void)`
@@ -71,6 +69,7 @@ Requester.post({
 #### `get(para[, customOptions])`
 
 -   `para`: `Object<RequesterGetArgs>`
+
     -   `url`: `string`
     -   `params`: `Object`
 
@@ -88,9 +87,9 @@ Requester.post({
 
 -   `para`: `Object<RequesterPostArgs>`
     -   `url`: `string`
-    -   `data`:  `any`
+    -   `data`: `any`
     -   `contentType`: `string`
--   `customOptions`: `Object<AxiosRequestConfig>`,  用户自定义 `axios` 配置
+-   `customOptions`: `Object<AxiosRequestConfig>`, 用户自定义 `axios` 配置
 
 -   return: `Promise<Object<RequesterResponseType> | Object<RequesterErrorType>>`
     -   `Object<RequesterResponseType>`
@@ -101,8 +100,6 @@ Requester.post({
         -   `errCode`: `string`
         -   `errMessage`: `string`
 
-
-
 ## Class: `RequesterMonitor`
 
 ### Example
@@ -110,7 +107,10 @@ Requester.post({
 ```typescript
 import Monitor from "../index";
 import EventEmitter from "events";
-import {MonitorWorkerType, RequestMethod} from "../RequesterMonitor.interface";
+import {
+    MonitorWorkerType,
+    RequestMethod,
+} from "../RequesterMonitor.interface";
 
 let event = new EventEmitter();
 event.on("test", (d) => {
@@ -122,63 +122,60 @@ Monitor.request({
     args: {
         url: "https://api.live.bilibili.com/room/v1/Room/room_init",
         params: {
-            id: 528210
-        }
+            id: 528210,
+        },
     },
     callback: (data) => {
         console.log(1);
         console.log(data.code);
     },
     requestMethod: RequestMethod.GET,
-    type: MonitorWorkerType.CALLBACK
+    type: MonitorWorkerType.CALLBACK,
 });
 
 Monitor.request({
     args: {
         url: "https://api.live.bilibili.com/room/v1/Room/room_init",
         params: {
-            id: 528210
-        }
+            id: 528210,
+        },
     },
     callback: (data) => {
         console.log(2);
         console.log(data.code);
     },
     requestMethod: RequestMethod.GET,
-    type: MonitorWorkerType.CALLBACK
+    type: MonitorWorkerType.CALLBACK,
 });
 
 Monitor.request({
     args: {
         url: "https://api.live.bilibili.com/room/v1/Room/room_init",
         params: {
-            id: 528210
-        }
+            id: 528210,
+        },
     },
     type: MonitorWorkerType.EVENT,
     requestMethod: RequestMethod.GET,
     eventListener: event,
-    eventName: "test"
-})
+    eventName: "test",
+});
 
 Monitor.request({
     args: {
         url: "https://api.live.bilibili.com/room/v1/Room/room_init",
         params: {
-            id: 528210
-        }
+            id: 528210,
+        },
     },
     callback: (data) => {
         console.log(3);
         console.log(data.code);
     },
     requestMethod: RequestMethod.GET,
-    type: MonitorWorkerType.CALLBACK
+    type: MonitorWorkerType.CALLBACK,
 });
-
 ```
-
-
 
 ### Interface Refer
 
@@ -201,8 +198,6 @@ Monitor.request({
 -   `eventName`: `string`
 -   `eventListener`: `Object<EventEmitter>`
 
-
-
 ### API Refer
 
 #### `static getInstance(void)`
@@ -211,7 +206,7 @@ Monitor.request({
 
 #### `request(worker)`
 
-添加一个待处理请求项进入处理队列，在 `RequesterMonitor.config.js` 中修改每个处理项之间间隔的时长。其中，request提供回调函数、事件两种接收请求结果的方式。
+添加一个待处理请求项进入处理队列，在 `RequesterMonitor.config.js` 中修改每个处理项之间间隔的时长。其中，request 提供回调函数、事件两种接收请求结果的方式。
 
 -   `worker`: `Object<MonitorWorkerCallbackType | MonitorWorkerEventType>`
     -   `type`: `Enum<MointorWorkerType>`
@@ -231,39 +226,47 @@ Monitor.request({
 
 ```typescript
 import dbHandler from "../index";
-import {DBText} from "../../Util/Text";
+import { DBText } from "../../Util/Text";
 
 async function main() {
     await dbHandler.init();
     await dbHandler.insertSingle("yorha", ["android_name"], ["2B"]);
     await dbHandler.insertSingle("yorha", [], [100, "Commander"]);
-    await dbHandler.insertMulti("yorha", ["android_id", "android_name"], [
-        [2, "9S"],
-        [3, "A2"],
-        [4, "unknown"]
-    ]);
-    await dbHandler.insertMulti("yorha", ["android_name"], [
-        ["10S"],
-        ["A3"],
-        ["unknownN"]
-    ]);
-    await dbHandler.delete("yorha", [
-        "android_id=2"
-    ]);
-    await dbHandler.update("yorha", [
-        {
-            k: "android_name",
-            v: `${DBText("Conquer")}`
-        }
-    ], [
-        `android_name=${DBText("unknown")}`
-    ]);
+    await dbHandler.insertMulti(
+        "yorha",
+        ["android_id", "android_name"],
+        [
+            [2, "9S"],
+            [3, "A2"],
+            [4, "unknown"],
+        ]
+    );
+    await dbHandler.insertMulti(
+        "yorha",
+        ["android_name"],
+        [["10S"], ["A3"], ["unknownN"]]
+    );
+    await dbHandler.delete("yorha", ["android_id=2"]);
+    await dbHandler.update(
+        "yorha",
+        [
+            {
+                k: "android_name",
+                v: `${DBText("Conquer")}`,
+            },
+        ],
+        [`android_name=${DBText("unknown")}`]
+    );
     console.log(await dbHandler.select(["yorha"], ["*"], [], false));
-    console.log(await dbHandler.select(["yorha"], ["android_name"], [
-        "android_id>0"
-    ], true));
+    console.log(
+        await dbHandler.select(
+            ["yorha"],
+            ["android_name"],
+            ["android_id>0"],
+            true
+        )
+    );
 }
-
 ```
 
 ### Introduction
@@ -281,23 +284,19 @@ async function main() {
                 {
                     "cName": "android_id",
                     "cDataType": "INTEGER",
-                    "attributes": [
-                        "PRIMARY KEY",
-                        "AUTOINCREMENT"
-                    ]
+                    "attributes": ["PRIMARY KEY", "AUTOINCREMENT"]
                 }
             ]
         }
     ]
 }
-
 ```
 
 其中 `DBTarget` 为目标数据库文件。
 
--   具体API使用方法见Example
+-   具体 API 使用方法见 Example
 
--   当前未针对Union等进行封装，故将数据库的部分基本方法暴露出来以供进行高阶操作
+-   当前未针对 Union 等进行封装，故将数据库的部分基本方法暴露出来以供进行高阶操作
 
 ### API Reference
 
@@ -311,17 +310,16 @@ async function main() {
 
 -   return: `Promise<Object<any>>`
 
-执行查找并在Promise中返回查找到的第一条结果
+执行查找并在 Promise 中返回查找到的第一条结果
 
 #### `getMulti(query: string, value: Array<any> = [])`
 
 -   return: `Promise<Object<any>>`
 
-执行查找并在Promise中返回查找到的所有结果
+执行查找并在 Promise 中返回查找到的所有结果
 
 #### `getService()`
 
 -   return: `Database`
 
 返回数据库实例（不建议频繁使用）
-

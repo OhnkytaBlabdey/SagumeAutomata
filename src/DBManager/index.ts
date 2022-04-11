@@ -1,9 +1,10 @@
-import Database, {RunResult} from "better-sqlite3";
+/* eslint-disable no-async-promise-executor */
+import Database, { RunResult } from "better-sqlite3";
 import path from "path";
 import logger from "../Logger";
 import utils from "../Util";
 import process from "process";
-import {DB} from "./interface";
+import { DB } from "./interface";
 
 export class DBManager {
     private readonly __rootDir: string;
@@ -20,7 +21,9 @@ export class DBManager {
     }
 
     private async __getDBConfig(): Promise<DB.DBConfig> {
-        const {data} = await utils.readFile(path.resolve(this.__rootDir, "db.config.json"));
+        const { data } = await utils.readFile(
+            path.resolve(this.__rootDir, "db.config.json")
+        );
         try {
             return JSON.parse(data);
         } catch (e) {
@@ -72,8 +75,8 @@ export class DBManager {
         try {
             this.__connectDB();
         } catch (e) {
-            logger.info(e);
-            const {status} = await utils.checkExists(this.__targetDir);
+            logger.warn(e);
+            const { status } = await utils.checkExists(this.__targetDir);
             if (!status) {
                 logger.warn("数据库文件不存在，将要创建数据库文件");
                 await utils.writeFile(this.__targetDir, "");
@@ -118,7 +121,11 @@ export class DBManager {
         });
     }
 
-    public insertSingle(tableName: string, columns: Array<string>, values: Array<any>) {
+    public insertSingle(
+        tableName: string,
+        columns: Array<string>,
+        values: Array<any>
+    ) {
         return new Promise(async (res, rej) => {
             try {
                 const vQuery = new Array(values.length).fill("?").join(",");
@@ -135,7 +142,11 @@ export class DBManager {
         });
     }
 
-    public insertMulti(tableName: string, columns: Array<string>, values: Array<Array<any>>) {
+    public insertMulti(
+        tableName: string,
+        columns: Array<string>,
+        values: Array<Array<any>>
+    ) {
         return new Promise(async (res, rej) => {
             try {
                 const vQuery = new Array(values[0].length).fill("?").join(",");
@@ -172,7 +183,11 @@ export class DBManager {
         });
     }
 
-    public update(tableName: string, newPair: Array<DB.UpdatePairType>, condition: Array<string>): Promise<RunResult> {
+    public update(
+        tableName: string,
+        newPair: Array<DB.UpdatePairType>,
+        condition: Array<string>
+    ): Promise<RunResult> {
         return new Promise(async (res, rej) => {
             try {
                 const nPQuery = newPair.map((i) => `${i.k}=${i.v}`).join(",");
@@ -188,7 +203,12 @@ export class DBManager {
         });
     }
 
-    public select<T>(tableName: Array<string>, columns: Array<string>, condition: Array<string>, all = false): Promise<Array<T> | T> {
+    public select<T>(
+        tableName: Array<string>,
+        columns: Array<string>,
+        condition: Array<string>,
+        all = false
+    ): Promise<Array<T> | T> {
         return new Promise((res, rej) => {
             try {
                 const columnQuery = columns.join(",");

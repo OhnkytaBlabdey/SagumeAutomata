@@ -17,7 +17,7 @@ class sampler {
         }
         const epsilon = 0.3;
         if (this.real() < epsilon) {
-            Logger.debug("均匀随机选择");
+            // Logger.debug("均匀随机选择");
             try {
                 return objs[
                     Math.min(this.integer(0, objs.length), objs.length - 1)
@@ -28,7 +28,7 @@ class sampler {
                 }
             }
         } else {
-            Logger.debug("按分布选择");
+            // Logger.debug("按分布选择");
             const r = this.real();
             let x = 0;
             for (let i = 0; i < objs.length; i++) {

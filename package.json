@@ -1,6 +1,6 @@
 {
     "name": "sagume_automata",
-    "version": "0.0.1",
+    "version": "0.2.2",
     "description": "A QQ bot project",
     "main": "main.js",
     "scripts": {

@@ -89,7 +89,7 @@ class warpLogger {
                 return err;
             }
         }
-        const err = getException();
+        const err: any = getException();
         const stack = err.stack;
         const stackArr = stack.split("\n");
         let callerLogIndex = 0;

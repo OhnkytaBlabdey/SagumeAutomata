@@ -1,10 +1,11 @@
+/* eslint-disable camelcase */
 import log from "../Logger";
 import wsClient from "../WebsocketHandler";
 import config from "../../config/config.json";
 import { Config } from "./config.interface";
 import EventEmitter from "events";
-import {env} from "process";
-import {messageEvent, noticeEvent, responseEvent} from "./event.interface";
+import { env } from "process";
+import { messageEvent, noticeEvent, responseEvent } from "./event.interface";
 import dbm from "../DBManager";
 import cmdDispatcher from "../QQCommand";
 import { qqMessage } from "./interface";
@@ -72,10 +73,11 @@ class QQMessage {
                     (<messageEvent>event).message_type === "group"
                 ) {
                     const ev = <messageEvent>event;
-                    const flag = await cmdDispatcher.dispatchCommand(ev, ev.message);
+                    const flag = await cmdDispatcher.dispatchCommand(
+                        ev,
+                        ev.message
+                    );
                     if (!flag) {
-                        // console.log(ev.message);
-                        //[CQ:image,file=80c2b55527aac6750f927aab20a5dd32.image,url=https://gchat.qpic.cn/gchatpic_new/738767136/4141567869-2651177397-80C2B55527AAC6750F927AAB20A5DD32/0?term=3,subType=0]
                         await DBHandler.saveChatMessage(ev);
                     }
                 } else if (
@@ -86,7 +88,7 @@ class QQMessage {
                     if (ev.sub_type === "poke") {
                         // 戳一戳
                         if (ev.target_id === (<Config>config).qq) {
-                            log.info("被戳了", e);
+                            log.debug("被戳了", e);
                             this.sendToGroupSync(
                                 (<noticeEvent>event).group_id,
                                 `[CQ:poke,qq=${(<noticeEvent>event).user_id}]`
@@ -158,7 +160,7 @@ class QQMessage {
                     log.warn(msg, "发送失败");
                     rej(new Error("QQ消息发送失败"));
                 } else {
-                    log.debug(msg, "发送成功");
+                    // log.debug(msg, "发送成功");
                     res((ev as responseEvent).echo);
                 }
             });
@@ -166,7 +168,6 @@ class QQMessage {
                 JSON.stringify({
                     action: "send_group_msg",
                     params: {
-                        // eslint-disable-next-line camelcase
                         group_id: groupId,
                         message: msg,
                     },

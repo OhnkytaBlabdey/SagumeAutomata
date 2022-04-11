@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-namespace */
 export namespace BiliSubscriberType {
     export interface Info {
         latest?: number;
@@ -28,5 +29,3 @@ export namespace PaperSubscriberType {
         title: string;
     }
 }
-
-

@@ -1,8 +1,9 @@
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import Subscriber from "./Subscriber";
 import log from "../Logger";
 import dbHandler from "../DBHandler";
 import qq from "../QQMessage";
-import {PaperSubscriberType} from "./type";
+import { PaperSubscriberType } from "./type";
 
 abstract class PaperSubscriber extends Subscriber {
     abstract __generateMsg(info: any): string;
@@ -15,7 +16,10 @@ abstract class PaperSubscriber extends Subscriber {
         log.debug(`将要添加${this.actionName}订阅`);
         log.debug("group:", groupId);
         try {
-            const chk = await dbHandler.selectPaperSubscribeGroupId(this.tableName, groupId);
+            const chk = await dbHandler.selectPaperSubscribeGroupId(
+                this.tableName,
+                groupId
+            );
             if (chk) {
                 log.error(`已经添加过${this.actionName}订阅了`);
                 qq.sendToGroup(
@@ -29,23 +33,21 @@ abstract class PaperSubscriber extends Subscriber {
             return false;
         }
         try {
-            const res = await dbHandler.addPaperSubscribe(this.tableName, this.flagCol, groupId);
+            const res = await dbHandler.addPaperSubscribe(
+                this.tableName,
+                this.flagCol,
+                groupId
+            );
             if (res) {
                 //回复订阅成功
                 log.info(`添加${this.actionName}订阅成功`);
-                qq.sendToGroup(
-                    groupId,
-                    `添加${this.actionName}订阅成功`
-                );
+                qq.sendToGroup(groupId, `添加${this.actionName}订阅成功`);
                 return true;
             }
         } catch (e) {
             log.warn(e);
             log.warn(`添加${this.actionName}订阅失败，原因`);
-            qq.sendToGroup(
-                groupId,
-                `添加${this.actionName}订阅失败`
-            );
+            qq.sendToGroup(groupId, `添加${this.actionName}订阅失败`);
             return false;
         }
         return false;
@@ -58,14 +60,8 @@ abstract class PaperSubscriber extends Subscriber {
             const res = await dbHandler.removePaperSub(this.tableName, groupId);
             if (res.changes > 0) {
                 //回复移除成功
-                log.info(
-                    `${this.actionName}订阅已移除`,
-                    res.changes
-                );
-                qq.sendToGroup(
-                    groupId,
-                    `${this.actionName}订阅已移除`
-                );
+                log.info(`${this.actionName}订阅已移除`, res.changes);
+                qq.sendToGroup(groupId, `${this.actionName}订阅已移除`);
             } else {
                 log.warn(`${this.actionName}移除失败，该群没有订阅`);
                 qq.sendToGroup(
@@ -76,17 +72,19 @@ abstract class PaperSubscriber extends Subscriber {
         } catch (e) {
             log.warn(`${this.actionName}订阅移除失败，原因`);
             log.warn(e);
-            qq.sendToGroup(
-                groupId,
-                `${this.actionName}订阅移除失败`
-            );
+            qq.sendToGroup(groupId, `${this.actionName}订阅移除失败`);
         }
     }
 
-    async intervalHandler<Rec extends PaperSubscriberType.Rec, Info extends PaperSubscriberType.Info>() {
+    async intervalHandler<
+        Rec extends PaperSubscriberType.Rec,
+        Info extends PaperSubscriberType.Info
+    >() {
         let rec;
         try {
-            rec = await dbHandler.getPaperSubscribeTempInfo(this.tableName) as Rec;
+            rec = (await dbHandler.getPaperSubscribeTempInfo(
+                this.tableName
+            )) as Rec;
             if (rec == null) {
                 log.warn(`没有${this.actionName}订阅记录`);
                 return;
@@ -97,10 +95,10 @@ abstract class PaperSubscriber extends Subscriber {
         }
         let info: Info;
         try {
-            info = await this.getLatestInfo() as Info;
+            info = (await this.getLatestInfo()) as Info;
         } catch (error: any) {
             if (error) {
-                log.warn(error.errMessage ? error.errMessage : error);
+                log.warn(error.message ? error.message : error);
                 return;
             }
             log.error("没有捕获到异常");
@@ -112,13 +110,17 @@ abstract class PaperSubscriber extends Subscriber {
         }
 
         if (this.__checkIfValid(rec, info)) {
-            log.debug("最新文章没有变化");
+            // log.debug("最新文章没有变化");
             return;
         } else if (rec.timestamp > info.timestamp) {
             log.info("删除了文章");
             return;
         } else {
-            const recs = await dbHandler.getPaperSubscribeGroups<Rec>(this.tableName, this.flagCol, info.latest.toString());
+            const recs = await dbHandler.getPaperSubscribeGroups<Rec>(
+                this.tableName,
+                this.flagCol,
+                info.latest.toString()
+            );
             recs.forEach((rec) => {
                 qq.sendToGroup(
                     rec.group_id,
@@ -129,7 +131,11 @@ abstract class PaperSubscriber extends Subscriber {
                     // }`
                 );
             });
-            await dbHandler.updatePaperSubscribeInfo(this.tableName, this.flagCol, info.latest);
+            await dbHandler.updatePaperSubscribeInfo(
+                this.tableName,
+                this.flagCol,
+                info.latest
+            );
         }
     }
 

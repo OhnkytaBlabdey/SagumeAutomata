@@ -1,11 +1,11 @@
 import fileList from "./file.config";
-import {CheckerType} from "./type";
+import { CheckerType } from "./type";
 import log from "../Logger";
-import {checkExists, writeFile} from "../Util/FileHandler";
+import { checkExists, writeFile } from "../Util/FileHandler";
 import path from "path";
 
-function *iteGen(list: Array<CheckerType.CheckerSel>) {
-    for (let i of list) {
+function* iteGen(list: Array<CheckerType.CheckerSel>) {
+    for (const i of list) {
         yield i;
     }
 }

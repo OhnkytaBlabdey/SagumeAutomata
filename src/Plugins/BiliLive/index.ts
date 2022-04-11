@@ -22,35 +22,31 @@ class BiliLiveSubscriber extends BiliSubscriber {
     async getLatestInfo(
         uid: number
     ): Promise<BiliLiveType.liveInfo | undefined> {
-        // eslint-disable-next-line no-useless-catch
-        try {
-            const { data } = await req.get({
-                url: "https://api.bilibili.com/x/space/acc/info",
-                params: {
-                    mid: uid,
-                },
-            });
-            if (data && data.data) {
-                const jsonData = data.data;
-                if (jsonData) {
-                    const data = jsonData.live_room;
-                    if (!data) {
-                        log.warn("获取直播间状态失败");
-                    }
-                    return {
-                        cover: data.cover,
-                        liveStatus: data.liveStatus,
-                        url: (data.url as string).split("?")[0],
-                        online: data.online || data.watched_show.num,
-                        title: data.title,
-                        timestamp: -1,
-                    };
-                } else {
-                    log.warn("直播间返回格式错误", JSON.stringify(jsonData));
+        const { data } = await req.get({
+            url: "https://api.bilibili.com/x/space/acc/info",
+            params: {
+                mid: uid,
+            },
+        });
+        if (data && data.data) {
+            const jsonData = data.data;
+            if (jsonData) {
+                const data = jsonData.live_room;
+                if (!data) {
+                    log.warn("获取直播间状态失败");
+                    return;
                 }
+                return {
+                    cover: data.cover,
+                    liveStatus: data.liveStatus,
+                    url: (data.url as string).split("?")[0],
+                    online: data.online || data.watched_show.num,
+                    title: data.title,
+                    timestamp: -1,
+                };
+            } else {
+                log.warn("直播间返回格式错误", JSON.stringify(jsonData));
             }
-        } catch (e) {
-            throw e;
         }
     }
 
@@ -94,9 +90,8 @@ class BiliLiveSubscriber extends BiliSubscriber {
                     info = (await this.getLatestInfo(
                         rec.uid
                     )) as BiliLiveType.liveInfo;
-                } catch (error) {
-                    //TODO 解决静态检查warning
-                    log.warn(error.errMessage ? error.errMessage : error);
+                } catch (error: any) {
+                    log.warn(error.message ? error.message : error);
                     return;
                 }
                 if (!info) {
@@ -104,7 +99,7 @@ class BiliLiveSubscriber extends BiliSubscriber {
                     return;
                 }
                 if (rec.liveStatus == info.liveStatus) {
-                    log.debug(rec.uid, "直播间状态没有变化");
+                    // log.debug(rec.uid, "直播间状态没有变化");
                     return;
                 } else {
                     if (info.liveStatus == 1) {
@@ -119,8 +114,8 @@ class BiliLiveSubscriber extends BiliSubscriber {
                                     rec.uid,
                                     true
                                 );
-                            log.info(data);
-                        } catch (e) {
+                            log.debug(data);
+                        } catch (e: any) {
                             log.error(e.message ? e.message : e);
                             return;
                         }
@@ -131,15 +126,15 @@ class BiliLiveSubscriber extends BiliSubscriber {
                                 rec.uid,
                                 info.liveStatus
                             );
-                            log.info(data);
-                        } catch (e) {
+                            log.debug(data);
+                        } catch (e: any) {
                             log.warn(e.message ? e.message : e);
                             return;
                         }
                     }
                     try {
                         await this.__broadcastLiveStatusInfo(rec, info);
-                    } catch (e) {
+                    } catch (e: any) {
                         log.warn(e.message ? e.message : e);
                         return;
                     }
@@ -149,7 +144,7 @@ class BiliLiveSubscriber extends BiliSubscriber {
                             rec.uid,
                             info.liveStatus
                         );
-                    } catch (e) {
+                    } catch (e: any) {
                         log.warn(e.message ? e.message : e);
                     }
                 }

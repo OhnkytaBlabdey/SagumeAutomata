@@ -1,4 +1,4 @@
-import axios, {AxiosRequestConfig, AxiosResponse, AxiosInstance} from "axios";
+import axios, { AxiosRequestConfig, AxiosResponse, AxiosInstance } from "axios";
 import axiosConf from "./axios.config";
 
 /**
@@ -27,13 +27,16 @@ class Requester {
      * @param customConf: AxiosRequestConfig
      * @return Promise<RequesterResponseType>
      */
-    public get(para: any, customConf: AxiosRequestConfig = {}): Promise<AxiosResponse> {
+    public get(
+        para: any,
+        customConf: AxiosRequestConfig = {}
+    ): Promise<AxiosResponse> {
         return new Promise((res, rej) => {
             this.__service({
                 method: "GET",
                 url: para.url,
                 params: para.params,
-                ...customConf
+                ...customConf,
             }).then(
                 (d) => {
                     res(d);
@@ -52,24 +55,26 @@ class Requester {
      * @param customConf: AxiosRequestConfig
      * @return Promise
      */
-    public post<T>(url: string, para: any, customConf: AxiosRequestConfig = {}): Promise<AxiosResponse<T>> {
-        return new Promise(
-            (res, rej) => {
-                this.__service({
-                    method: "POST",
-                    url: url,
-                    data: para,
-                    ...customConf,
-                }).then(
-                    (d) => {
-                        res(d);
-                    },
-                    (e) => {
-                        rej(e);
-                    }
-                );
-            }
-        );
+    public post<T>(
+        url: string,
+        para: any,
+        customConf: AxiosRequestConfig = {}
+    ): Promise<AxiosResponse<T>> {
+        return new Promise((res, rej) => {
+            this.__service({
+                method: "POST",
+                url: url,
+                data: para,
+                ...customConf,
+            }).then(
+                (d) => {
+                    res(d);
+                },
+                (e) => {
+                    rej(e);
+                }
+            );
+        });
     }
 }
 

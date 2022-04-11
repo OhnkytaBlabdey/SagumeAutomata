@@ -1,4 +1,5 @@
-export interface ReadDoneType extends UtilBaseType{
+/* eslint-disable @typescript-eslint/no-namespace */
+export interface ReadDoneType extends UtilBaseType {
     data: string;
 }
 

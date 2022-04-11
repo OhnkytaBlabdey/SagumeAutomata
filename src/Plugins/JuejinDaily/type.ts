@@ -1,7 +1,8 @@
+/* eslint-disable @typescript-eslint/no-namespace */
 export namespace JuejinType {
     export interface Response {
         err_no: number;
-        data: Array<ResponseData>
+        data: Array<ResponseData>;
         err_msg: string;
     }
 
@@ -21,7 +22,7 @@ export namespace JuejinType {
     }
 
     export interface Info {
-        [index : string]: string;
+        [index: string]: string;
     }
 
     export interface GroupInfo {

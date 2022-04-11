@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-namespace */
 export namespace Ra3WikiType {
     export interface WikiData {
         [name: string]: UnitData;

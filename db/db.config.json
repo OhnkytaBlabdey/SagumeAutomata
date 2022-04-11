@@ -225,6 +225,26 @@
                     "attributes": ["NOT NULL"]
                 }
             ]
+        },
+        {
+            "tName": "cmdQueue",
+            "columns": [
+                {
+                    "cName": "uid",
+                    "cDataType": "BIGINT",
+                    "attributes": ["NOT NULL"]
+                },
+                {
+                    "cName": "type",
+                    "cDataType": "TEXT",
+                    "attributes": ["NOT NULL"]
+                },
+                {
+                    "cName": "timestamp",
+                    "cDataType": "BIGINT",
+                    "attributes": ["NOT NULL"]
+                }
+            ]
         }
     ]
 }

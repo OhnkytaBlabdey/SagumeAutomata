@@ -29,12 +29,8 @@ export default {
             on: true,
         },
         {
-            name: "Github",
-            on: true,
-        },
-        {
-            name: "Random",
-            on: false,
-        },
-    ],
-};
+            "name": "Github",
+            "on": true
+        }
+    ]
+}

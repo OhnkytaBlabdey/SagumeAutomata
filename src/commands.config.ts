@@ -85,12 +85,12 @@ export default {
             on: false,
         },
         {
-            name: "randomRa3Joke",
-            on: false,
+            "name": "saveImg",
+            "on": true
         },
         {
-            name: "randomMoTalk",
-            on: false,
-        },
-    ],
-};
+            "name": "cmdList",
+            "on": true
+        }
+    ]
+}

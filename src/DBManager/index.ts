@@ -7,7 +7,7 @@ import {DB} from "./interface";
 
 export class DBManager {
     private readonly __rootDir: string;
-    private __service!: Database.Database;
+    public __service!: Database.Database;
     private __dbConfig!: DB.DBConfig;
     private __targetDir: string;
 
@@ -49,7 +49,7 @@ export class DBManager {
         });
     }
 
-    private __createTable(t: DB.DBTable) {
+    public __createTable(t: DB.DBTable) {
         const args = t.columns.map(
             (c: DB.DBColumn) =>
                 `${c.cName} ${c.cDataType} ${

@@ -5,7 +5,6 @@ import {RunResult} from "better-sqlite3";
 import {BiliSubscriberType, PaperSubscriberType} from "../Plugins/type";
 import {JuejinType} from "../Plugins/JuejinDaily/type";
 
-
 export default class DBHandler {
     static saveChatMessage(ev: messageEvent) {
         return db.insertSingle(
@@ -343,5 +342,77 @@ export default class DBHandler {
                     }
                 });
         });
+    }
+
+    static async checkIfDBTable(tName: string) {
+        const tableInfo = await db.getTableName();
+        return tableInfo.findIndex(t => t.name === tName) > -1;
+    }
+
+    static async createRandomPicTable(tName: string) {
+        try {
+            const conf = {
+                tName,
+                columns: [
+                    {
+                        cName: "picName",
+                        cDataType: "TEXT",
+                        attributes: []
+                    },
+                    {
+                        cName: "id",
+                        cDataType: "INTEGER",
+                        attributes: ["PRIMARY KEY", "AUTOINCREMENT"]
+                    },
+                    {
+                        cName: "timestamp",
+                        cDataType: "BIGINT",
+                        attributes: ["default 0"]
+                    },
+                    {
+                        cName: "uploader",
+                        cDataType: "BIGINT",
+                        attributes: ["default 0"]
+                    }
+                ]
+            }
+            await db.__createTable(conf);
+        } catch (e) {
+            log.warn(e);
+        }
+    }
+
+    static async insertPicWhileInit(tName: string, list: Array<string>) {
+        if (list.length > 0) {
+            try {
+                await db.insertMulti(
+                    tName,
+                    [
+                        "picName"
+                    ],
+                    list.map(i => [i])
+                );
+            } catch (e) {
+                log.warn(e);
+            }
+        }
+    }
+
+    static async insertPic(tName: string, fileName: string, uploaderID: string | number = 0) {
+        try {
+            await db.insertSingle(
+                tName,
+                [
+                    "picName",
+                    "timestamp",
+                    "uploader"
+                ],
+                [
+                    fileName, new Date().getTime(), uploaderID
+                ]
+            );
+        } catch (e) {
+            log.warn(e);
+        }
     }
 }

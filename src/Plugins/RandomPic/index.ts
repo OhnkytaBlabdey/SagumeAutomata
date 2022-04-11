@@ -12,6 +12,7 @@ import qq from "../../QQMessage";
 import url from "url";
 import requester from "../../Requester";
 import {checkExists, writeFile} from "../../Util/FileHandler";
+import {DBText} from "../../Util/Text";
 
 class RandomPic{
     static getRandom(n: number, m: number) {
@@ -54,6 +55,14 @@ class RandomPic{
                 return v.picName === i;
             }) < 0;
         });
+        const dL = dbList.filter(i => {
+            return nfList.findIndex(v => {
+                return i.picName === v
+            }) < 0;
+        });
+        await Promise.all(dL.map(i => db.delete(tName, [
+            `picName=${DBText(i.picName)}`
+        ])));
         await dbHandler.insertPicWhileInit(tName, nfList);
     }
 

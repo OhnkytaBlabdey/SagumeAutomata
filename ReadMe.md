@@ -18,7 +18,7 @@ SagumeAutomata 是一个 QQ 聊天机器人，现正处于开发阶段。
 -   [x] ~~`Lolicon` 色图~~
 -   [ ] ~~`Saucenao` 以图搜图~~
 -   [x] 每日掘金文章推送
--   [x] 每日 Github 仓库推荐
+-   [x] 每日 Github 仓库推荐(默认不开启，开启请修改src/plugins.config.ts的github项)
 
 ## 帮助
 

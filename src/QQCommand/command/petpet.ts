@@ -8,7 +8,6 @@ import log from "../../Logger";
 import qq from "../../QQMessage";
 import url from "url";
 import db from "../../DBManager";
-import {DBText} from "../../Util/Text";
 
 const petPet: CmdType.Cmd = {
     pattern: new RegExp(`^\\[CQ:at,qq=${config.qq}\\] rua!$`),
@@ -17,7 +16,6 @@ const petPet: CmdType.Cmd = {
         let id = ev.sender?.user_id;
         let p = path.resolve("data/", "petPetGifCache/", `${id}.gif`);
         try {
-            await db.insertSingle("cmdQueue", ["uid", "type", "timestamp"], [id, DBText("petpet"), new Date().getTime()]);
             if (!((await checkExists(p)).status)) {
                 let url = `http://q1.qlogo.cn/g?b=qq&nk=${id}&s=100`;
                 let gif = await petPetGen(url);

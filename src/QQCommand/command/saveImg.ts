@@ -3,7 +3,6 @@ import { CmdType } from "../type";
 import dbHandler from "../../DBManager";
 import qqCommand from "../index";
 import RandomPic from "../../Plugins/RandomPic";
-import {DBText} from "../../Util/Text";
 
 const cmd: CmdType.Cmd = {
     pattern: /\[CQ:image.*\]/,

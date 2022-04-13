@@ -18,12 +18,14 @@ const cmd: CmdType.Cmd = {
             const index = qqCommand.randomImgConf.findIndex(
                 (i) => i.uploadCmdPattern === res.type
             );
-            await RandomPic.saveImg(
-                ev,
-                qqCommand.randomImgConf[index].tableName,
-                qqCommand.randomImgConf[index].dirName
-            );
-            await dbHandler.delete("cmdQueue", [`uid=${ev.sender?.user_id}`,`type=${DBText(res.type)}`]);
+            if (index > -1) {
+                await RandomPic.saveImg(
+                    ev,
+                    qqCommand.randomImgConf[index].tableName,
+                    qqCommand.randomImgConf[index].dirName
+                );
+                await dbHandler.delete("cmdQueue", [`uid=${ev.sender?.user_id}`,`type=${res.type}`]);
+            }
         }
     },
 };

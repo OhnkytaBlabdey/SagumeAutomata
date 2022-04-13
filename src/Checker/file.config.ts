@@ -9,6 +9,6 @@ export default [
     },
     {
         type: "dir",
-        name: "petPetGifCache"
+        name: "data/petPetGifCache/"
     }
 ]

@@ -23,7 +23,7 @@ const cmd: CmdType.Cmd = {
                 qqCommand.randomImgConf[index].tableName,
                 qqCommand.randomImgConf[index].dirName
             );
-            await dbHandler.delete("cmdQueue", [`uid=${ev.sender?.user_id}`,`type=${DBText("randomImage")}`]);
+            await dbHandler.delete("cmdQueue", [`uid=${ev.sender?.user_id}`,`type=${DBText(res.type)}`]);
         }
     },
 };

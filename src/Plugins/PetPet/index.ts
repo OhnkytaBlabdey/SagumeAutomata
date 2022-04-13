@@ -48,7 +48,7 @@ export default async (avatarURL: string, options = {} as PetPetType.Option) => {
         const offsetX = (1 - width) * 0.5 + 0.1
         const offsetY = (1 - height) - 0.08
 
-        if (i == petGifCache.length) petGifCache.push(await Canvas.loadImage(path.resolve(__dirname, `img/pet${i}.gif`)))
+        if (i == petGifCache.length) petGifCache.push(await Canvas.loadImage(path.resolve(__dirname, `assets/pet${i}.gif`)))
 
         ctx.drawImage(avatar, options.resolution * offsetX, options.resolution * offsetY, options.resolution * width, options.resolution * height)
         ctx.drawImage(petGifCache[i], 0, 0, options.resolution, options.resolution)

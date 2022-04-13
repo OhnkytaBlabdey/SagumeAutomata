@@ -10,7 +10,7 @@ const petGifCache: Array<Image> = [];
 
 const defaultOptions = {
     resolution: 128,
-    delay: 20,
+    delay: 5,
     backgroundColor: null,
 }
 

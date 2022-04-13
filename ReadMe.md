@@ -42,6 +42,10 @@ QQ 客户端依赖于 OneBot（原 CQHTTP）协议支持（例如基于 mirai �
 - 添加新功能，随机图片模板命令
 > 通过在根目录配置 `randomPicCmdTemplate.config.json` 进行模板命令配置，可参照[randomPicCmdYemplate.config.json](config/template/randomPicCmdTemplate.config.json)进行配置，详细参考 [Bot 使用说明](./UserGuide.md)
 
+### 0.2.2(dev)
+
+-   添加新功能: PetPet
+
 ### 0.2.1(dev)
 
 -   添加access_token功能，在配置文件中配置 `onebot_pw` 字段

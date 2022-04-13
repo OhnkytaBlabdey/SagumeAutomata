@@ -15,7 +15,7 @@ const petPet: CmdType.Cmd = {
         try {
             let id = ev.sender?.user_id;
             let p = path.resolve("data/", "petPetGifCache/", `${id}.gif`);
-            if (!(await checkExists(p)).status) {
+            if (!((await checkExists(p)).status)) {
                 let url = `http://q1.qlogo.cn/g?b=qq&nk=${id}&s=100`;
                 let gif = await petPetGen(url);
                 await writeFile(p, gif);

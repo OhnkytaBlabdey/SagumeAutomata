@@ -22,7 +22,7 @@ export function readFile(
 
 export function writeFile(
     path: string,
-    data: string,
+    data: any,
     // eslint-disable-next-line @typescript-eslint/ban-types
     option: Object = {}
 ): Promise<UtilBaseType> {

@@ -92,5 +92,9 @@ export default {
             name: "cmdList",
             on: true,
         },
+        {
+            name: "petpet",
+            on: true
+        }
     ],
 };

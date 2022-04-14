@@ -10,7 +10,7 @@ import url from "url";
 import db from "../../DBManager";
 
 const petPet: CmdType.Cmd = {
-    pattern: new RegExp(`^\\[CQ:at,qq=${config.qq}\\] rua$`),
+    pattern: new RegExp(`^\\[CQ:at,qq=${config.qq}\\] rua`),
     cmdName: "petPet",
     exec: async (ev: messageEvent) => {
         let id = ev.sender?.user_id;

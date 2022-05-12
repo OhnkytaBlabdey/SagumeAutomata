@@ -22,7 +22,7 @@ export default async (avatarURL: string, options = {} as PetPetType.Option) => {
 
     encoder.start();
     encoder.setRepeat(0);
-    encoder.setDelay(options.delay);
+    // encoder.setDelay(options.delay);
     // @ts-ignore
     encoder.setTransparent();
 

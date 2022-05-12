@@ -16,8 +16,8 @@ const petPet: CmdType.Cmd = {
         let id = ev.sender?.user_id;
         let p = path.resolve("data/", "petPetGifCache/", `${id}.gif`);
         try {
-            let url = `http://q1.qlogo.cn/g?b=qq&nk=${id}&s=100`;
-            let gif = await petPetGen(url);
+            let avatarURL = `http://q1.qlogo.cn/g?b=qq&nk=${id}&s=100`;
+            let gif = await petPetGen(avatarURL);
             await writeFile(p, gif);
             qq.sendToGroup(ev.group_id, `[CQ:at,qq=${id}][CQ:image,file=${url.pathToFileURL(p)}]\n rua!`);
         } catch (e) {

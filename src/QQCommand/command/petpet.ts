@@ -1,13 +1,12 @@
-import petPetGen from "../../Plugins/PetPet";
 import {CmdType} from "../type";
 import config from "../../../config/config.json";
 import {messageEvent} from "../../QQMessage/event.interface";
-import {checkExists, writeFile} from "../../Util/FileHandler";
+import {writeFile} from "../../Util/FileHandler";
 import path from "path";
 import log from "../../Logger";
 import qq from "../../QQMessage";
 import url from "url";
-import db from "../../DBManager";
+import petPetGif from "pet-pet-gif";
 
 const petPet: CmdType.Cmd = {
     pattern: new RegExp(`^\\[CQ:at,qq=${config.qq}\\] rua`),
@@ -17,8 +16,8 @@ const petPet: CmdType.Cmd = {
         let p = path.resolve("data/", "petPetGifCache/", `${id}.gif`);
         try {
             let avatarURL = `http://q1.qlogo.cn/g?b=qq&nk=${id}&s=100`;
-            let gif = await petPetGen(avatarURL);
-            await writeFile(p, gif);
+            let animatedGif = await petPetGif(avatarURL);
+            await writeFile(p, animatedGif);
             qq.sendToGroup(ev.group_id, `[CQ:at,qq=${id}][CQ:image,file=${url.pathToFileURL(p)}]\n rua!`);
         } catch (e) {
             // @ts-ignore

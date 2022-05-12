@@ -6,6 +6,7 @@ import path from "path";
 import log from "../../Logger";
 import qq from "../../QQMessage";
 import url from "url";
+// @ts-ignore
 import petPetGif from "pet-pet-gif";
 
 const petPet: CmdType.Cmd = {

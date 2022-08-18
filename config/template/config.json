@@ -5,5 +5,6 @@
     "cookie": "访问网站需要用",
     "qq": 114514,
     "qq_owner": 1919810,
-    "saucenao_api_key": "调用saucenao接口需要的key"
+    "saucenao_api_key": "调用saucenao接口需要的key",
+    "ban_words": ["不想要出现的关键词"]
 }

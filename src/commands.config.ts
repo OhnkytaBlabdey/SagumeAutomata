@@ -82,7 +82,7 @@ export default {
         },
         {
             name: "askForRa3Data",
-            on: false,
+            on: true,
         },
         {
             name: "saveImg",

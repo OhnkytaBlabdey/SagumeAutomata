@@ -139,11 +139,17 @@ class QQMessage {
 
     public sendToGroup(groupId: number, msg: string): void {
         // 过滤不合法模式
+        let invalid = false;
         this.conf.ban_words.forEach((patt) => {
             if (RegExp(patt).test(msg)) {
+                invalid = true;
                 return;
             }
         });
+        if (invalid) {
+            log.info("试图发送不合法内容", msg);
+            return;
+        }
         this.cnt++;
         this.wsc.sendMessage(
             JSON.stringify({

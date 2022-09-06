@@ -82,7 +82,7 @@ export default {
         },
         {
             name: "askForRa3Data",
-            on: false,
+            on: true,
         },
         {
             name: "saveImg",
@@ -92,5 +92,9 @@ export default {
             name: "cmdList",
             on: true,
         },
+        {
+            name: "petpet",
+            on: true
+        }
     ],
 };

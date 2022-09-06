@@ -6,5 +6,9 @@ export default [
     {
         type: "file",
         name: "randomPicCmdTemplate.config.json"
+    },
+    {
+        type: "dir",
+        name: "data/petPetGifCache/"
     }
 ]

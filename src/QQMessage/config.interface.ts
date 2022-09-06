@@ -6,4 +6,5 @@ export interface Config {
     onebot_pw: string | null;
     qq: number;
     qq_owner?: number | null;
+    ban_words: string[];
 }

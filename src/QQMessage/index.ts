@@ -23,6 +23,7 @@ const defaultConfig = {
     onebot_pw: "",
     qq: 114514,
     qq_owner: 1919810,
+    ban_words: ["哼哼啊啊啊"],
 };
 
 const handleEvent = (event: responseEvent, e: EventEmitter) => {
@@ -52,6 +53,7 @@ class QQMessage {
     private db = dbm;
     private cnt = 0;
     protected qqid?: number;
+    protected conf: Config = defaultConfig;
 
     constructor() {
         if (env.MUTE && env.MUTE === "mute") {
@@ -127,6 +129,7 @@ class QQMessage {
             );
 
             this.qqid = conf.qq;
+            this.conf = conf;
         }
     }
 
@@ -135,6 +138,18 @@ class QQMessage {
     }
 
     public sendToGroup(groupId: number, msg: string): void {
+        // 过滤不合法模式
+        let invalid = false;
+        this.conf.ban_words.forEach((patt) => {
+            if (RegExp(patt).test(msg)) {
+                invalid = true;
+                return;
+            }
+        });
+        if (invalid) {
+            log.info("试图发送不合法内容", msg);
+            return;
+        }
         this.cnt++;
         this.wsc.sendMessage(
             JSON.stringify({

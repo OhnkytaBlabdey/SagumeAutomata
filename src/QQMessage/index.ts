@@ -140,7 +140,7 @@ class QQMessage {
     public sendToGroup(groupId: number, msg: string): void {
         // 过滤不合法模式
         let invalid = false;
-        this.conf.ban_words!.forEach((patt) => {
+        this.conf.ban_words && this.conf.ban_words.forEach((patt) => {
             if (RegExp(patt).test(msg)) {
                 invalid = true;
                 return;

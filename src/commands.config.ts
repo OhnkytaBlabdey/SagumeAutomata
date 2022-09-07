@@ -2,11 +2,11 @@ export default {
     commands: [
         {
             name: "BAIRAdd",
-            on: true,
+            on: false,
         },
         {
             name: "BAIRRemove",
-            on: true,
+            on: false,
         },
         {
             name: "dynamicAdd",
@@ -22,7 +22,7 @@ export default {
         },
         {
             name: "game24p",
-            on: true,
+            on: false,
         },
         {
             name: "help",
@@ -30,11 +30,11 @@ export default {
         },
         {
             name: "kexuefmAdd",
-            on: true,
+            on: false,
         },
         {
             name: "kexuefmRemove",
-            on: true,
+            on: false,
         },
         {
             name: "liveAdd",

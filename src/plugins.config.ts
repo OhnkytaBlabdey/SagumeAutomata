@@ -2,7 +2,7 @@ export default {
     plugins: [
         {
             name: "BAIR",
-            on: true,
+            on: false,
         },
         {
             name: "BiliDynamic",
@@ -18,7 +18,7 @@ export default {
         },
         {
             name: "Kexue.fm",
-            on: true,
+            on: false,
         },
         {
             name: "Setu",

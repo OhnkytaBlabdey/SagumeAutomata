@@ -6,6 +6,7 @@ import QQMessage from "../../QQMessage";
 import path from "path";
 import url from "url";
 import scheduler from "node-schedule";
+import log from "../../Logger";
 
 let seSeCount = 0;
 const seSeMaxCount = 15;
@@ -23,10 +24,22 @@ const setu: CmdType.Cmd = {
                 .then(async (i: setuInfo | boolean) => {
                     if (i) {
                         const info = i as setuInfo;
-                        QQMessage.sendToGroup(
-                            groupId,
-                            `作者：${info.author}\t标题：${info.title}\n${info.url}\n[CQ:image,file=${info.url}]\n涩涩次数:${seSeCount}/${seSeMaxCount}`
-                        );
+                        try {
+                            log.info("请求涩图信息成功");
+                            await setuPlugin.cacheSetu(info);
+                            log.info("缓存涩图成功");
+                            QQMessage.sendToGroup(
+                                groupId,
+                                `作者：${info.author}\t标题：${info.title}\n${info.url}\n[CQ:image,file=${info.url}]\n涩涩次数:${seSeCount}/${seSeMaxCount}`
+                            );
+                        } catch (e) {
+                            log.warn(e);
+                            QQMessage.sendToGroup(
+                                groupId,
+                                `作者：${info.author}\t标题：${info.title}\n${info.url}\n涩涩次数:${seSeCount}/${seSeMaxCount}\n涩图请求失败o(一︿一+)o`
+                            );
+                        }
+
                     } else {
                         QQMessage.sendToGroup(
                             groupId,

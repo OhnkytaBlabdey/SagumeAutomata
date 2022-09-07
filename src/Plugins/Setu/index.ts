@@ -2,8 +2,36 @@ import log from "../../Logger";
 import req from "../../Requester";
 import { setuInfo } from "./type";
 import Subscriber from "../Subscriber";
+import path from "path";
+import axios from "axios";
+import globalConfig from "../../../config/config.json";
+import {writeFile} from "../../Util/FileHandler";
 
 class Setu extends Subscriber {
+    async cacheSetu(info: setuInfo) {
+        let name = `setu_cache.jpg`;
+        let p = path.resolve("data/", "setuCache/", name);
+        let data = "";
+        if (globalConfig.use_proxy_for_setu) {
+            log.info("使用代理请求图片");
+            data = (await axios.get(info.url, {
+                responseType: "arraybuffer",
+                proxy: {
+                    host: globalConfig.setu_proxy_host,
+                    port: globalConfig.setu_proxy_port
+                }
+            })).data;
+        } else {
+            log.info("直连请求图片");
+            data = (await axios.get(info.url, {
+                responseType: "arraybuffer"
+            })).data;
+        }
+        log.info(`缓存图片${name}, url: ${info.url}`);
+        await writeFile(p, data);
+        return p;
+    }
+
     getSetuUrl(keyword: string | null): Promise<setuInfo | boolean> {
         return new Promise((res, rej) => {
             //请求api

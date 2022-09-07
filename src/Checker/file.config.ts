@@ -10,5 +10,9 @@ export default [
     {
         type: "dir",
         name: "data/petPetGifCache/"
+    },
+    {
+        type: "dir",
+        name: "data/setuCache"
     }
 ]

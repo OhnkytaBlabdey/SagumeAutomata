@@ -7,7 +7,6 @@ import axios from "axios";
 import globalConfig from "../../../config/config.json";
 import {writeFile} from "../../Util/FileHandler";
 import {AxiosError} from "axios";
-import AxiosConfig from "../../Requester/axios.config";
 
 class Setu extends Subscriber {
     async cacheSetu(info: setuInfo) {
@@ -31,13 +30,7 @@ class Setu extends Subscriber {
                 })).data;
             }
         } catch (e: any) {
-            if (e.hasOwnProperty("code") && e.code === "ERR_BAD_REQUEST") {
-                log.info(`缓存图片${name}, url: ${info.url}`);
-                await writeFile(p, e.data);
-                return p;
-            } else {
-                throw e;
-            }
+            throw p;
         }
         log.info(`缓存图片${name}, url: ${info.url}`);
         await writeFile(p, data);

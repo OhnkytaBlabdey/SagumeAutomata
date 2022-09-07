@@ -8,10 +8,12 @@ import globalConfig from "../../../config/config.json";
 import {writeFile} from "../../Util/FileHandler";
 import tunnel from "tunnel";
 import https from "https";
+import scheduler from "node-schedule";
+import fs from "fs";
 
 class Setu extends Subscriber {
     async cacheSetu(info: setuInfo) {
-        let name = `setu_cache.jpg`;
+        let name = `${info.title}.jpg`;
         let p = path.resolve("data/", "setuCache/", name);
         let data = "";
         try {
@@ -110,7 +112,20 @@ class Setu extends Subscriber {
     }
 
     // eslint-disable-next-line @typescript-eslint/no-empty-function
-    run(): void {}
+    run(): void {
+        scheduler.scheduleJob(
+            "0 0 1 * * *",
+            () => {
+                let p = path.resolve("data/", "setuCache/");
+                const files = fs.readdirSync(p);
+                files.forEach(file => {
+                    const filePath = `${path}/${file}`;
+                    fs.rmSync(filePath);
+                    console.log(`删除${file}文件成功`);
+                });
+            }
+        );
+    }
 }
 
 const setu = new Setu();

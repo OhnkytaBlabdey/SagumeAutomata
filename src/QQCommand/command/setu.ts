@@ -19,7 +19,6 @@ const setu: CmdType.Cmd = {
         const params = ev.message.split(RegExp(/\s/), 2);
         const keyword = params.length > 1 ? params[1] : null;
         if (seSeCount < seSeMaxCount) {
-            seSeCount += 1;
             setuPlugin.getSetuUrl(keyword)
                 .then(async (i: setuInfo | boolean) => {
                     if (i) {
@@ -28,6 +27,7 @@ const setu: CmdType.Cmd = {
                             log.info("请求涩图信息成功");
                             let p = await setuPlugin.cacheSetu(info);
                             log.info("缓存涩图成功");
+                            seSeCount += 1;
                             QQMessage.sendToGroup(
                                 groupId,
                                 `作者：${info.author}\t标题：${info.title}\n${info.url}\n[CQ:image,file=${url.pathToFileURL(p)}]\n涩涩次数:${seSeCount}/${seSeMaxCount}`

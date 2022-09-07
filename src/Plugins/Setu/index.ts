@@ -6,26 +6,38 @@ import path from "path";
 import axios from "axios";
 import globalConfig from "../../../config/config.json";
 import {writeFile} from "../../Util/FileHandler";
+import {AxiosError} from "axios";
+import AxiosConfig from "../../Requester/axios.config";
 
 class Setu extends Subscriber {
     async cacheSetu(info: setuInfo) {
         let name = `setu_cache.jpg`;
         let p = path.resolve("data/", "setuCache/", name);
         let data = "";
-        if (globalConfig.use_proxy_for_setu) {
-            log.info("使用代理请求图片");
-            data = (await axios.get(info.url, {
-                responseType: "arraybuffer",
-                proxy: {
-                    host: globalConfig.setu_proxy_host,
-                    port: globalConfig.setu_proxy_port
-                }
-            })).data;
-        } else {
-            log.info("直连请求图片");
-            data = (await axios.get(info.url, {
-                responseType: "arraybuffer"
-            })).data;
+        try {
+            if (globalConfig.use_proxy_for_setu) {
+                log.info("使用代理请求图片");
+                data = (await axios.get(info.url, {
+                    responseType: "arraybuffer",
+                    proxy: {
+                        host: globalConfig.setu_proxy_host,
+                        port: globalConfig.setu_proxy_port
+                    }
+                })).data;
+            } else {
+                log.info("直连请求图片");
+                data = (await axios.get(info.url, {
+                    responseType: "arraybuffer"
+                })).data;
+            }
+        } catch (e: any) {
+            if (e.hasOwnProperty("code") && e.code === "ERR_BAD_REQUEST") {
+                log.info(`缓存图片${name}, url: ${info.url}`);
+                await writeFile(p, e.data);
+                return p;
+            } else {
+                throw e;
+            }
         }
         log.info(`缓存图片${name}, url: ${info.url}`);
         await writeFile(p, data);

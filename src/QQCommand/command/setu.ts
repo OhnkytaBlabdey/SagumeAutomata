@@ -26,11 +26,11 @@ const setu: CmdType.Cmd = {
                         const info = i as setuInfo;
                         try {
                             log.info("请求涩图信息成功");
-                            await setuPlugin.cacheSetu(info);
+                            let p = await setuPlugin.cacheSetu(info);
                             log.info("缓存涩图成功");
                             QQMessage.sendToGroup(
                                 groupId,
-                                `作者：${info.author}\t标题：${info.title}\n${info.url}\n[CQ:image,file=${info.url}]\n涩涩次数:${seSeCount}/${seSeMaxCount}`
+                                `作者：${info.author}\t标题：${info.title}\n${info.url}\n[CQ:image,file=${url.pathToFileURL(p)}]\n涩涩次数:${seSeCount}/${seSeMaxCount}`
                             );
                         } catch (e) {
                             log.warn(e);

@@ -6,7 +6,8 @@ import path from "path";
 import axios from "axios";
 import globalConfig from "../../../config/config.json";
 import {writeFile} from "../../Util/FileHandler";
-import {AxiosError} from "axios";
+import tunnel from "tunnel";
+import https from "https";
 
 class Setu extends Subscriber {
     async cacheSetu(info: setuInfo) {
@@ -18,10 +19,11 @@ class Setu extends Subscriber {
                 log.info("使用代理请求图片");
                 data = (await axios.get(info.url, {
                     responseType: "arraybuffer",
-                    proxy: {
-                        host: globalConfig.setu_proxy_host,
-                        port: globalConfig.setu_proxy_port
-                    }
+                    proxy: false,
+                    httpsAgent: tunnel.httpsOverHttp({proxy:{
+                            host: globalConfig.setu_proxy_host,//代理服务器域名或者ip
+                            port: globalConfig.setu_proxy_port //代理服务器端口
+                    }})
                 })).data;
             } else {
                 log.info("直连请求图片");
@@ -46,12 +48,16 @@ class Setu extends Subscriber {
                     keyword
                 )}`;
             }
-            req.get({
-                url: reqUrl,
+            axios.get(reqUrl,{
                 params: {
                     // keyword: keyword,
                     // r18: 0, //都是成年人（ //企鹅觉得不行
                 },
+                proxy: false,
+                httpsAgent: globalConfig.use_proxy_for_setu ? new https.Agent({keepAlive: true}) : tunnel.httpsOverHttp({proxy:{
+                        host: globalConfig.setu_proxy_host,//代理服务器域名或者ip
+                        port: globalConfig.setu_proxy_port //代理服务器端口
+                }})
             })
                 .then((result) => {
                     if (result && result.data) {

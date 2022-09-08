@@ -119,7 +119,7 @@ class Setu extends Subscriber {
                 let p = path.resolve("data/", "setuCache/");
                 const files = fs.readdirSync(p);
                 files.forEach(file => {
-                    const filePath = `${path}/${file}`;
+                    const filePath = `${p}/${file}`;
                     fs.rmSync(filePath);
                     console.log(`删除${file}文件成功`);
                 });

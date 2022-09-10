@@ -51,7 +51,7 @@ const setu: CmdType.Cmd = {
                 if (e) {
                     QQMessage.sendToGroup(
                         groupId,
-                        (<Error>e).message ? "涩涩失败" : (<Error>e).message
+                        e as string
                     );
                 }
             }

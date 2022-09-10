@@ -13,8 +13,8 @@ const seSeMaxCount = 30;
 let isSeSeing = false;
 
 const setu: CmdType.Cmd = {
-    // pattern: /^涩涩(\s\S+)?/,
-    pattern: /^涩涩$/,
+    pattern: /^涩涩(\s\S+)?/,
+    // pattern: /^涩涩$/,
     exec: async (ev: messageEvent) => {
         const groupId = ev.group_id;
         const params = ev.message.split(RegExp(/\s/), 2);

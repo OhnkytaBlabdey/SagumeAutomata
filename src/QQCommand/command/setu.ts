@@ -19,9 +19,8 @@ const setu: CmdType.Cmd = {
         const groupId = ev.group_id;
         const params = ev.message.split(RegExp(/\s/), 2);
         const keyword = params.length > 1 ? params[1] : null;
-        if (seSeCount < seSeMaxCount && !isSeSeing) {
+        if (seSeCount < seSeMaxCount) {
             seSeCount += 1;
-            isSeSeing = true;
             try {
                 let i = await setuPlugin.getSetuUrl(keyword);
                 if (i) {
@@ -52,11 +51,9 @@ const setu: CmdType.Cmd = {
                 if (e) {
                     QQMessage.sendToGroup(
                         groupId,
-                        `涩涩失败`
+                        (<Error>e).message ? "涩涩失败" : (<Error>e).message
                     );
                 }
-            } finally {
-                isSeSeing = false;
             }
             // setuPlugin.getSetuUrl(keyword)
             //     .then(async (i: setuInfo | boolean) => {
@@ -98,11 +95,6 @@ const setu: CmdType.Cmd = {
             QQMessage.sendToGroup(
                 groupId,
                 `要被榨干了！！不可以涩涩!!\n[CQ:image,file=${url.pathToFileURL(p)}]`
-            );
-        } else if (isSeSeing) {
-            QQMessage.sendToGroup(
-                groupId,
-                `心急看不了好涩图`
             );
         }
     },

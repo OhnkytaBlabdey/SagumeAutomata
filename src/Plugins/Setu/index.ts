@@ -74,27 +74,27 @@ class Setu extends Subscriber {
                             } as setuInfo);
                         } else if (jsondata.data && !jsondata.data[0]) {
                             log.warn("色图获取失败1");
-                            rej(new Error("没搜到"));
+                            rej(new Error("未找到对应涩图"));
                         } else if (jsondata.error) {
                             log.warn("色图获取失败2");
                             log.error(jsondata.error);
-                            rej(new Error(jsondata.error));
+                            rej(new Error("参数错误"));
                         } else {
                             log.warn("色图获取失败，并且没有失败原因3");
                             log.warn(`${reqUrl + keyword}`);
-                            rej(new Error("原因你猜猜3"));
+                            rej(new Error("未知错误"));
                         }
                     } else {
                         log.warn("色图获取失败，并且没有失败原因4");
                         log.warn(`${reqUrl + keyword}`);
-                        rej(new Error("原因你猜猜4"));
+                        rej(new Error("未知错误"));
                     }
                 })
                 .catch((e: Error) => {
                     if (e) {
                         log.error("色图获取错误5");
                         log.error(e);
-                        rej(e);
+                        rej(new Error("未知错误"));
                     }
                 });
         });

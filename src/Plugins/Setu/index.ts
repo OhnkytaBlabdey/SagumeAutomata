@@ -44,9 +44,9 @@ class Setu extends Subscriber {
     getSetuUrl(keyword: string | null): Promise<setuInfo | boolean> {
         return new Promise((res, rej) => {
             //请求api
-            let reqUrl = "https://api.lolicon.app/setu/v2";
+            let reqUrl = "https://api.lolicon.app/setu/v2?r18=$0";
             if (keyword) {
-                reqUrl = `https://api.lolicon.app/setu/v2?r18=${0}&keyword=${encodeURI(
+                reqUrl = `https://api.lolicon.app/setu/v2?r18=0&keyword=${encodeURI(
                     keyword
                 )}`;
             }

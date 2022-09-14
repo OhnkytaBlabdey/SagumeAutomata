@@ -1,7 +1,7 @@
 import fileList from "./file.config";
 import { CheckerType } from "./type";
 import log from "../Logger";
-import { checkExists, writeFile } from "../Util/FileHandler";
+import { checkExists, writeFile } from "../Util/fileHandler";
 import path from "path";
 import {promisify} from "util";
 import {mkdir} from "fs";

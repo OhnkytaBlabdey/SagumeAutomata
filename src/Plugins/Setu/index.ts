@@ -5,7 +5,7 @@ import Subscriber from "../Subscriber";
 import path from "path";
 import axios from "axios";
 import globalConfig from "../../../config/config.json";
-import {writeFile} from "../../Util/FileHandler";
+import {writeFile} from "../../Util/fileHandler";
 import tunnel from "tunnel";
 import https from "https";
 import scheduler from "node-schedule";

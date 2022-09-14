@@ -12,7 +12,7 @@ import { RandomPicType } from "./type";
 import qq from "../../QQMessage";
 import url from "url";
 import requester from "../../Requester";
-import { checkExists, writeFile } from "../../Util/FileHandler";
+import { checkExists, writeFile } from "../../Util/fileHandler";
 
 class RandomPic {
     static getRandom(n: number, m: number) {

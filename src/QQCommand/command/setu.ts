@@ -12,7 +12,7 @@ import {getPluginInfo} from "../../Util/configParser";
 let seSeCount = 0;
 const seSeMaxCount = 30;
 let isSeSeing = false;
-const pixivProxy = "https://px2.rainchan.win/img/small/"
+const pixivProxy = "https://px2.rainchan.win/img/regular/"
 
 interface pluginConfType {
     name: string;

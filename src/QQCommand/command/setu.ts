@@ -12,6 +12,7 @@ import {getPluginInfo} from "../../Util/configParser";
 let seSeCount = 0;
 const seSeMaxCount = 30;
 let isSeSeing = false;
+const pixivProxy = "https://px2.rainchan.win/img/regular/"
 
 interface pluginConfType {
     name: string;
@@ -34,13 +35,13 @@ const setu: CmdType.Cmd = {
                     if (seSeCount < seSeMaxCount) {
                         seSeCount += 1;
                         const info = i as setuInfo;
+                        let isNSFW = info.tags.findIndex((value => value === "R-18"));
                         try {
                             log.info("请求涩图信息成功");
-                            let p = await setuPlugin.cacheSetu(info);
-                            log.info("缓存涩图成功");
+                            let p = path.resolve("data/", "noSeSe.jpg");
                             QQMessage.sendToGroup(
                                 groupId,
-                                `作者：${info.author}\t标题：${info.title}\n${info.url}\n[CQ:image,file=${url.pathToFileURL(p)}]\n涩涩次数:${seSeCount}/${seSeMaxCount}`
+                                `[CQ:image,file=${isNSFW ? url.pathToFileURL(p) : (pixivProxy + info.pid)}]\n作者：${info.author}\t标题：${info.title}\n${info.url}\n标签：${info.tags.join(",")}涩涩次数:${seSeCount}/${seSeMaxCount}`
                             );
                         } catch (e) {
                             log.warn(e);

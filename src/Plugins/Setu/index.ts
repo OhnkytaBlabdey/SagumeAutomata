@@ -71,6 +71,8 @@ class Setu extends Subscriber {
                                 title: setuinfo.title,
                                 author: setuinfo.author,
                                 url: setuinfo.urls.original,
+                                tags: setuinfo.tags,
+                                pid: setuinfo.pid
                             } as setuInfo);
                         } else if (jsondata.data && !jsondata.data[0]) {
                             log.warn("色图获取失败1");

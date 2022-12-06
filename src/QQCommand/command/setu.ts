@@ -41,7 +41,7 @@ const setu: CmdType.Cmd = {
                             let p = path.resolve("data/", "noSeSe.jpg");
                             QQMessage.sendToGroup(
                                 groupId,
-                                `[CQ:image,file=${isNSFW ? url.pathToFileURL(p) : (pixivProxy + info.pid)}]\n作者：${info.author}\t标题：${info.title}\n${info.url}\n标签：${info.tags.join(",")}涩涩次数:${seSeCount}/${seSeMaxCount}`
+                                `[CQ:image,file=${isNSFW > -1 ? url.pathToFileURL(p) : (pixivProxy + info.pid)}]\n作者：${info.author}\t标题：${info.title}\n${info.url}\n标签：${info.tags.join(",")}涩涩次数:${seSeCount}/${seSeMaxCount}`
                             );
                         } catch (e) {
                             log.warn(e);

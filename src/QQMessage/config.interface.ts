@@ -7,4 +7,7 @@ export interface Config {
     qq: number;
     qq_owner?: number | null;
     ban_words?: string[];
+    use_proxy_for_setu: boolean;
+    setu_proxy_host?: string;
+    setu_proxy_port?: number;
 }

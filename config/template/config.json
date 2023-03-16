@@ -6,5 +6,8 @@
     "qq": 114514,
     "qq_owner": 1919810,
     "saucenao_api_key": "调用saucenao接口需要的key",
-    "ban_words": ["不想要出现的关键词"]
+    "ban_words": ["不想要出现的关键词"],
+    "use_proxy_for_setu": false,
+    "setu_proxy_host": "127.0.0.1",
+    "setu_proxy_port": 1081
 }

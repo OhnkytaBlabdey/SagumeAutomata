@@ -24,6 +24,7 @@ const defaultConfig = {
     qq: 114514,
     qq_owner: 1919810,
     ban_words: ["哼哼啊啊啊"],
+    use_proxy_for_setu: false
 };
 
 const handleEvent = (event: responseEvent, e: EventEmitter) => {

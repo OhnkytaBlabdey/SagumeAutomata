@@ -33,7 +33,7 @@ class BiliLiveSubscriber extends BiliSubscriber {
             if (jsonData) {
                 const data = jsonData.live_room;
                 if (!data) {
-                    log.warn("获取直播间状态失败");
+                    log.warn(`获取${uid}直播间状态失败`);
                     return;
                 }
                 return {

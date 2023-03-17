@@ -17,7 +17,7 @@ const errorMessage: qqMessage.IteObjType = {
 	1404: "api的请求404错误",
 };
 
-const defaultConfig = {
+const defaultConfig: Config = {
 	cookie: "",
 	onebot_host: "",
 	onebot_port: 1,

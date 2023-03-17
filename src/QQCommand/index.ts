@@ -5,7 +5,7 @@ import { CmdType } from "./type";
 import lodash from "lodash";
 import config from "../commands.config";
 import { PluginLoaderType } from "../PluginLoader/type";
-import { readFile } from "../Util/FileHandler";
+import { readFile } from "../Util/fileHandler";
 import path from "path";
 import { RandomPicType } from "../Plugins/RandomPic/type";
 import RandomPic from "../Plugins/RandomPic";

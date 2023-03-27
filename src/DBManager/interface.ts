@@ -24,4 +24,9 @@ export declare namespace DB {
     interface TableInfo {
         name: string;
     }
+
+    interface TableAttribute {
+        name: string;
+        type: string;
+    }
 }

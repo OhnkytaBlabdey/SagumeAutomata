@@ -3,14 +3,17 @@ import Database, { RunResult } from "better-sqlite3";
 import path from "path";
 import logger from "../Logger";
 import utils from "../Util";
+import fs from "fs";
 import process from "process";
 import { DB } from "./interface";
+import {result} from "lodash";
 
 export class DBManager {
     private readonly __rootDir: string;
     public __service!: Database.Database;
     private __dbConfig!: DB.DBConfig;
     private __targetDir: string;
+    private __dbName = "automata.db";
 
     constructor() {
         this.__rootDir = path.resolve(__dirname, "../../db");
@@ -246,7 +249,7 @@ export class DBManager {
     }
 
     public getTableName(): Promise<Array<DB.TableInfo>> {
-        return new Promise(async (res, rej) => {
+        return new Promise((res, rej) => {
             try {
                 const query =
                     "select name from sqlite_master where type='table' order by name";
@@ -259,9 +262,34 @@ export class DBManager {
         });
     }
 
+    public getTableAttributesFromDB(tableName: string): Array<DB.TableAttribute> {
+        try {
+            const query = `PRAGMA table_info(${tableName})`;
+            return this.__service.prepare(query).all();
+        } catch (e) {
+            logger.error(`获取${tableName}表属性失败`);
+            throw e;
+        }
+    }
+
+    public addColumn(tableName: string, cName: string, type: string, com: Array<string>) {
+        try {
+            const query = `alter table ${tableName} add column ${cName} ${type} ${com.join(" ")}`;
+            this.__service.prepare(query).run();
+        } catch (e) {
+            logger.error(`获取${tableName}表属性失败`);
+            throw e;
+        }
+    }
+
     public updateTable() {
         return new Promise(async (res, rej) => {
             try {
+                //备份数据库
+                const name = `${new Date().getTime()}_${this.__dbName}.bak`;
+                fs.copyFileSync(path.resolve(this.__rootDir, this.__dbName), path.resolve(this.__rootDir, name));
+                logger.info(`数据库文件已备份为${name}`);
+
                 const tableInfo = await this.getTableName();
                 this.__dbConfig = await this.__getDBConfig();
                 this.__dbConfig.tables.forEach((t: DB.DBTable) => {
@@ -269,8 +297,16 @@ export class DBManager {
                         tableInfo.findIndex((temp) => temp.name === t.tName) >
                         -1
                     ) {
-                        logger.warn(`表${t.tName}已存在`);
+                        logger.info(`表${t.tName}已存在，检查列`);
+                        const tAttr = this.getTableAttributesFromDB(t.tName);
+                        for(const column of t.columns) {
+                            if(tAttr.findIndex((i => i.name === column.cName)) < 0) {
+                                logger.info(`表${t.tName}的列${column.cName}不存在，将要更新${t.tName}`);
+                                this.addColumn(t.tName, column.cName, column.cDataType, column.attributes);
+                            }
+                        }
                     } else {
+                        logger.info(`表${t.tName}不存在，将创建`);
                         this.__createTable(t);
                     }
                 });

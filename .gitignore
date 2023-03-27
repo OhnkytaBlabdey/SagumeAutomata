@@ -4,6 +4,7 @@ config/
 log/
 .prettierrc
 db/*.db
+db/*.db.bak
 db/*.db-journal
 build/
 !config/template/**/*

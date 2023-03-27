@@ -83,7 +83,7 @@ class QQMessage {
 						// 戳一戳
 						if (ev.target_id === (<Config>config).qq) {
 							log.debug("被戳了", e);
-							this.sendToGroupSync(
+							this.sendToGroup(
 								(<noticeEvent>event).group_id,
 								`[CQ:poke,qq=${(<noticeEvent>event).user_id}]`
 							);

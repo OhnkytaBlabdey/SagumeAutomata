@@ -28,12 +28,12 @@ class BiliDynamicSubscriber extends BiliSubscriber {
         });
         if (!(result && result.data)) {
             log.warn(`获取${uid}动态失败`);
-            throw new Error("没有响应值");
+            throw new Error("没有响应值，可能用户账号注销");
         }
         const cards = result.data.cards;
         if (!(cards && cards[0])) {
             log.warn(`获取${uid}的动态没有数据`);
-            throw new Error("没有获取到数据");
+            throw new Error("没有获取到数据，可能用户账号注销");
         }
         return {
             dynamic_id: BigInt(cards[0].desc.dynamic_id_str),

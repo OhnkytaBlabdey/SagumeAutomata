@@ -2,7 +2,6 @@ import log from "../Logger";
 import { messageEvent } from "../QQMessage/event.interface";
 import { CmdType } from "./type";
 import lodash from "lodash";
-import config from "../commands.config";
 import { PluginLoaderType } from "../PluginLoader/type";
 import { readFile } from "../Util/fileHandler";
 import path from "path";

@@ -56,73 +56,79 @@ class VideoSubscriber extends BiliSubscriber {
         }
     }
 
-    public run() {
-        setInterval(async () => {
-            const rec = await this.sampleRec<BiliVideoType.videoRec>();
-            let info: BiliVideoType.videoInfo;
-            if (rec == null) {
-                return;
-            }
+    async runHandler() {
+        const rec = await this.sampleRec<BiliVideoType.videoRec>();
+        let info: BiliVideoType.videoInfo;
+        if (rec == null) {
+            return;
+        }
+        try {
+            info = (await this.getLatestInfo(
+                rec.uid
+            )) as BiliVideoType.videoInfo;
+        } catch (error: any) {
+            log.warn(error.message ? error.message : error);
+            return;
+        }
+        if (!info) {
+            log.info("获取最新视频失败");
+            return;
+        }
+        if (rec.latest_av == info.av) {
+            // log.debug(rec.uid, "最新视频没有变化");
+            return;
+        } else if (rec.ctime > info.timestamp) {
+            log.info(rec.uid, "删除了视频");
+            return;
+        } else {
             try {
-                info = (await this.getLatestInfo(
+                const data = await DBHandler.updateBiliSubscriberHitCount(
+                    this.tableName,
+                    this.flagCol,
+                    info.timestamp,
+                    info.av,
                     rec.uid
-                )) as BiliVideoType.videoInfo;
-            } catch (error: any) {
-                log.warn(error.message ? error.message : error);
-                return;
-            }
-            if (!info) {
-                log.info("获取最新视频失败");
-                return;
-            }
-            if (rec.latest_av == info.av) {
-                // log.debug(rec.uid, "最新视频没有变化");
-                return;
-            } else if (rec.ctime > info.timestamp) {
-                log.info(rec.uid, "删除了视频");
-                return;
-            } else {
-                try {
-                    const data = await DBHandler.updateBiliSubscriberHitCount(
-                        this.tableName,
-                        this.flagCol,
-                        info.timestamp,
-                        info.av,
-                        rec.uid
-                    );
-                    log.debug(data);
-                    const recs =
-                        await DBHandler.getBiliRec<BiliVideoType.videoRec>(
-                            this.tableName,
-                            rec.uid,
-                            info.av
-                        );
-                    log.info("视频更新", info.title);
-                    recs.forEach((av) => {
-                        qq.sendToGroup(
-                            av.group_id,
-                            `${av.name} 更了. ${info.title}\nb23.tv/av${av.latest_av}\n[CQ:image,file=${info.cover}]\n` +
-                                `发布 ${info.pubdate} 时长【${info.length}】\n` +
-                                `简介：${info.desc} ${
-                                    info.desc.length > 200 ? " ..." : " "
-                                }`
-                        );
-                    });
-                } catch (e: any) {
-                    log.warn(e.message ? e.message : e);
-                    return;
-                }
-                try {
-                    await DBHandler.updateSubscribeStatus(
+                );
+                log.debug(data);
+                const recs =
+                    await DBHandler.getBiliRec<BiliVideoType.videoRec>(
                         this.tableName,
                         rec.uid,
                         info.av
                     );
-                } catch (e: any) {
-                    log.warn(e.message ? e.message : e);
-                    return;
-                }
+                log.info("视频更新", info.title);
+                recs.forEach((av) => {
+                    qq.sendToGroup(
+                        av.group_id,
+                        `${av.name} 更了. ${info.title}\nb23.tv/av${av.latest_av}\n[CQ:image,file=${info.cover}]\n` +
+                        `发布 ${info.pubdate} 时长【${info.length}】\n` +
+                        `简介：${info.desc} ${
+                            info.desc.length > 200 ? " ..." : " "
+                        }`
+                    );
+                });
+            } catch (e: any) {
+                log.warn(e.message ? e.message : e);
+                return;
             }
+            try {
+                await DBHandler.updateSubscribeStatus(
+                    this.tableName,
+                    rec.uid,
+                    info.av
+                );
+            } catch (e: any) {
+                log.warn(e.message ? e.message : e);
+                return;
+            }
+        }
+    }
+
+    public run() {
+        setTimeout(() => {
+            this.runHandler().finally(() => {
+                this.run();
+            });
         }, 8000);
     }
 }

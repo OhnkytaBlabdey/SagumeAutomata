@@ -74,72 +74,78 @@ class BiliLiveSubscriber extends BiliSubscriber {
 		});
 	}
 
-	public run() {
-		setInterval(async () => {
-			const rec = await this.sampleRec<BiliLiveType.liveRec>();
-			if (rec) {
-				let info: BiliLiveType.liveInfo;
-				try {
-					info = (await this.getLatestInfo(rec.uid)) as BiliLiveType.liveInfo;
-				} catch (error: any) {
-					// log.warn(error);
-					log.warn(error.message ? error.message : error);
-					return;
-				}
-				if (!info) {
-					log.info("获取直播间状态失败");
-					return;
-				}
-				if (rec.liveStatus == info.liveStatus) {
-					// log.debug(rec.uid, "直播间状态没有变化");
-					return;
-				} else {
-					if (info.liveStatus == 1) {
-						try {
-							// 命中次数增加
-							const data = await dbHandler.updateBiliSubscriberHitCount(
-								this.tableName,
-								this.flagCol,
-								info.timestamp ? info.timestamp : -1,
-								info.liveStatus,
-								rec.uid,
-								true
-							);
-							log.debug(data);
-						} catch (e: any) {
-							log.error(e.message ? e.message : e);
-							return;
-						}
-					} else {
-						try {
-							const data = await dbHandler.updateBiliLiveStatus(
-								this.tableName,
-								rec.uid,
-								info.liveStatus
-							);
-							log.debug(data);
-						} catch (e: any) {
-							log.warn(e.message ? e.message : e);
-							return;
-						}
-					}
+	async runHandler() {
+		const rec = await this.sampleRec<BiliLiveType.liveRec>();
+		if (rec) {
+			let info: BiliLiveType.liveInfo;
+			try {
+				info = (await this.getLatestInfo(rec.uid)) as BiliLiveType.liveInfo;
+			} catch (error: any) {
+				// log.warn(error);
+				log.warn(error.message ? error.message : error);
+				return;
+			}
+			if (!info) {
+				log.info("获取直播间状态失败");
+				return;
+			}
+			if (rec.liveStatus == info.liveStatus) {
+				// log.debug(rec.uid, "直播间状态没有变化");
+				return;
+			} else {
+				if (info.liveStatus == 1) {
 					try {
-						await this.__broadcastLiveStatusInfo(rec, info);
+						// 命中次数增加
+						const data = await dbHandler.updateBiliSubscriberHitCount(
+							this.tableName,
+							this.flagCol,
+							info.timestamp ? info.timestamp : -1,
+							info.liveStatus,
+							rec.uid,
+							true
+						);
+						log.debug(data);
 					} catch (e: any) {
-						log.warn(e.message ? e.message : e);
+						log.error(e.message ? e.message : e);
 						return;
 					}
+				} else {
 					try {
-						await dbHandler.updateSubscribeStatus(
+						const data = await dbHandler.updateBiliLiveStatus(
 							this.tableName,
 							rec.uid,
 							info.liveStatus
 						);
+						log.debug(data);
 					} catch (e: any) {
 						log.warn(e.message ? e.message : e);
+						return;
 					}
 				}
+				try {
+					await this.__broadcastLiveStatusInfo(rec, info);
+				} catch (e: any) {
+					log.warn(e.message ? e.message : e);
+					return;
+				}
+				try {
+					await dbHandler.updateSubscribeStatus(
+						this.tableName,
+						rec.uid,
+						info.liveStatus
+					);
+				} catch (e: any) {
+					log.warn(e.message ? e.message : e);
+				}
 			}
+		}
+	}
+
+	public run() {
+		setTimeout(async () => {
+			this.runHandler().finally(() => {
+				this.run();
+			})
 		}, 6000);
 	}
 }

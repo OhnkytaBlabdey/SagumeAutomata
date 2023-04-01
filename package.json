@@ -8,7 +8,8 @@
     "update-db": "npx ts-node src/DBManager/test/update.ts",
     "tsc": "tsc --watch --allowJs --removeComments",
     "start": "cross-env NODE_ENV=production nodemon -e ts --exec ts-node src/main.ts |cross-env ./node_modules/.bin/bunyan",
-    "parse": "npx ts-node src/Util/parseToJSON.ts"
+    "parse": "npx ts-node src/Util/parseToJSON.ts",
+    "convert-conf": "npx ts-node src/ConfigHandler/convertConfig.ts"
   },
   "repository": {
     "type": "git",
@@ -55,7 +56,8 @@
     "tunnel": "^0.0.6",
     "typescript": "^4.8.2",
     "user-agents": "^1.0.954",
-    "ws": "^7.4.6"
+    "ws": "^7.4.6",
+    "yaml": "^2.2.1"
   },
   "optionalDependencies": {
     "bufferutil": "^4.0.3",

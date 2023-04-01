@@ -30,7 +30,7 @@ export default {
         },
         {
             name: "Github",
-            on: false,
+            on: true,
         },
     ],
 };

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import log from "../../Logger";
 import path from "path";
 import fs from "fs";

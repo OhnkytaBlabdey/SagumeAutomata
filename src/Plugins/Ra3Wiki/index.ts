@@ -5,20 +5,15 @@ import { Ra3WikiType } from "./type";
 class Ra3Wiki {
     static getWikiInfo(group_id: number, unitName: string) {
         const data = wikiData as Ra3WikiType.WikiData;
-        // eslint-disable-next-line no-prototype-builtins
-        if (wikiData.hasOwnProperty(unitName)) {
+        if (Object.prototype.hasOwnProperty.call(data, "unitName")) {
             // log.debug("查找命中");
             let info = `名称: ${unitName}\n基础信息:\n`;
-            // @ts-ignore
-            for (const i in wikiData[unitName].base) {
-                // @ts-ignore
-                info += `${i}: ${wikiData[unitName].base[i]}\n`;
+            for (const i in data[unitName].base) {
+                info += `${i}: ${(data[unitName].base as Ra3WikiType.ite)[i]}\n`;
             }
             info += "护甲信息: \n";
-            // @ts-ignore
-            for (const i in wikiData[unitName].armor) {
-                // @ts-ignore
-                info += `${i}: ${wikiData[unitName].armor[i]}\n`;
+            for (const i in data[unitName].armor) {
+                info += `${i}: ${(data[unitName].armor as Ra3WikiType.ite)[i]}\n`;
             }
             info += "数据来自BiliBili Ra3 Wiki, 详细数据请参考wiki";
             qq.sendToGroup(group_id, info);

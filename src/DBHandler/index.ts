@@ -1,5 +1,3 @@
-/* eslint-disable camelcase */
-/* eslint-disable indent */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import db from "../DBManager";
 import { messageEvent } from "../QQMessage/event.interface";

@@ -6,7 +6,6 @@ import utils from "../Util";
 import fs from "fs";
 import process from "process";
 import { DB } from "./interface";
-import {result} from "lodash";
 
 export class DBManager {
     private readonly __rootDir: string;

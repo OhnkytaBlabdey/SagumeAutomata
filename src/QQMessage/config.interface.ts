@@ -1,4 +1,3 @@
-/* eslint-disable camelcase */
 export interface Config {
 	cookie: string;
 	onebot_host: string;

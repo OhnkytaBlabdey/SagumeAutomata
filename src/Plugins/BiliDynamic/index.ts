@@ -188,7 +188,7 @@ class BiliDynamicSubscriber extends BiliSubscriber {
                         );
                     });
                 } catch (e: any) {
-                    log.warn(e.message ? e.message : e);
+                    log.warn(e);
                     return;
                 }
                 try {

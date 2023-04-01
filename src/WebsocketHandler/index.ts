@@ -6,9 +6,8 @@ import process from "process";
 class WebsocketHandler extends EventEmitter {
     private __port: number;
     private __host: string;
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    private __wsClient: Websocket;
+
+    private __wsClient!: Websocket;
     private __eventListener: EventEmitter;
     private __eventTarget: string;
     private __access_token: string;
@@ -63,11 +62,7 @@ class WebsocketHandler extends EventEmitter {
     }
 
     sendMessage(data: string) {
-        try {
-            this.__wsClient.send(data);
-        } catch (e) {
-            throw e;
-        }
+        this.__wsClient.send(data);
     }
 
     getEventListener(): EventEmitter {

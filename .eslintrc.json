@@ -20,7 +20,11 @@
 		"space-before-function-paren": "off",
 		"no-undef": "off",
 		"arrow-parens": "off",
-		"prefer-const": "off"
+		"prefer-const": "off",
+		"no-multiple-empty-lines": "off",
+		"no-empty": "off",
+		"no-mixed-spaces-and-tabs": "off",
+		"no-empty-function": "off"
 	},
 	"globals": {
 		"dbHandler": "writable"

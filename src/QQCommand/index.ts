@@ -1,4 +1,3 @@
-/* eslint-disable no-prototype-builtins */
 import log from "../Logger";
 import { messageEvent } from "../QQMessage/event.interface";
 import { CmdType } from "./type";
@@ -9,6 +8,7 @@ import { readFile } from "../Util/fileHandler";
 import path from "path";
 import { RandomPicType } from "../Plugins/RandomPic/type";
 import RandomPic from "../Plugins/RandomPic";
+import {CommandConfigType} from "../ConfigHandler/interface";
 
 /**
  * Proselyte, the moment of Yuri's victory is upon us.
@@ -52,19 +52,15 @@ export class CommandDispatcher {
         });
     }
 
-    // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-    async registerCmd() {
-        const len = config.commands.length;
-        const confGen = iteConfig(config.commands);
-        log.info("开始注册命令...");
+    async registerCmd(commands: Array<CommandConfigType>) {
+        const len = commands.length;
+        const confGen = iteConfig(commands);
         for (let i = 0; i < len; i++) {
             const conf = confGen.next().value;
             if (
                 conf &&
-                // eslint-disable-next-line no-prototype-builtins
-                conf.hasOwnProperty("name") &&
-                // eslint-disable-next-line no-prototype-builtins
-                conf.hasOwnProperty("on")
+                Object.prototype.hasOwnProperty.call(conf,"name") &&
+                Object.prototype.hasOwnProperty.call(conf, "on")
             ) {
                 if (conf.on) {
                     const cmd = (await import(`./command/${conf.name}`))
@@ -157,19 +153,19 @@ export class CommandDispatcher {
     // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
     public validateRandomPicConf(c: RandomPicType.RandomPicConf) {
         const check = (c: RandomPicType.RandomPicConf) =>
-            c.hasOwnProperty("cmdPattern") &&
-            c.hasOwnProperty("dirName") &&
-            c.hasOwnProperty("tableName") &&
-            c.hasOwnProperty("allowUpload") &&
-            c.hasOwnProperty("allowSpecial") &&
-            c.hasOwnProperty("messageTemplate");
+            Object.prototype.hasOwnProperty.call(c, "cmdPattern") &&
+            Object.prototype.hasOwnProperty.call(c, "dirName") &&
+            Object.prototype.hasOwnProperty.call(c, "tableName") &&
+            Object.prototype.hasOwnProperty.call(c, "allowUpload") &&
+            Object.prototype.hasOwnProperty.call(c, "allowSpecial") &&
+            Object.prototype.hasOwnProperty.call(c, "messageTemplate");
         const checkUpload = (c: RandomPicType.RandomPicConf) =>
-            c.hasOwnProperty("newestCmdPattern") &&
-            c.hasOwnProperty("uploadCmdPattern") &&
-            c.hasOwnProperty("uploadCmdAuthID") &&
+            Object.prototype.hasOwnProperty.call(c, "newestCmdPattern") &&
+            Object.prototype.hasOwnProperty.call(c, "uploadCmdPattern") &&
+            Object.prototype.hasOwnProperty.call(c, "uploadCmdAuthID") &&
             Array.isArray(c.uploadCmdAuthID);
         const checkSpecial = (c: RandomPicType.RandomPicConf) =>
-            c.hasOwnProperty("special") && c.hasOwnProperty("specialPicPath");
+            Object.prototype.hasOwnProperty.call(c, "special") && Object.prototype.hasOwnProperty.call(c, "specialPicPath");
         if (check(c)) {
             if (!c.allowUpload && !c.allowSpecial) {
                 return true;
@@ -185,14 +181,12 @@ export class CommandDispatcher {
     }
 
     // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-    public async loadCommand() {
-        await this.registerCmd();
+    public async loadTemplateCommand() {
         log.info("开始注册模板命令...");
         await this.loadRandomPicCommand();
     }
 }
 
 const cmdDispatcher = new CommandDispatcher();
-console.log(cmdDispatcher);
 
 export default cmdDispatcher;

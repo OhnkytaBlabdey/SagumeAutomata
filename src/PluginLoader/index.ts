@@ -1,4 +1,3 @@
-import pluginsConfig from "../plugins.config";
 import log from "../Logger";
 import configHandler from "../ConfigHandler";
 import {PluginConfigType} from "../ConfigHandler/interface";

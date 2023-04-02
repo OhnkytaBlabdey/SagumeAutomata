@@ -5,7 +5,7 @@ import EventEmitter from "events";
 import { env } from "process";
 import { messageEvent, noticeEvent, responseEvent } from "./event.interface";
 import dbm from "../DBManager";
-import cmdDispatcher from "../QQCommand";
+import qqCommand from "../QQCommand";
 import { qqMessage } from "./interface";
 import DBHandler from "../DBHandler";
 import { string } from "random-js";
@@ -53,8 +53,12 @@ class QQMessage {
 					(<messageEvent>event).message_type === "group"
 				) {
 					const ev = <messageEvent>event;
-					const flag = await cmdDispatcher.dispatchCommand(ev, ev.message);
-					if (!flag) {
+					let taskFlag = false;
+					const flag = await qqCommand.dispatchCommand(ev, ev.message);
+					if(!flag) {
+						taskFlag = await qqCommand.handleTasks(ev);
+					}
+					if (!taskFlag) {
 						await DBHandler.saveChatMessage(ev);
 					}
 				} else if (

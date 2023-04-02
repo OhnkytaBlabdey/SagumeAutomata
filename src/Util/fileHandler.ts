@@ -2,6 +2,8 @@ import fs from "fs";
 import {promisify} from "util";
 import { ReadDoneType, UtilBaseType } from "./interface";
 const mkdir = promisify(fs.mkdir);
+const readdir = promisify(fs.readdir);
+const stat = promisify(fs.stat);
 
 function readFile(
     path: string,
@@ -61,5 +63,7 @@ export {
     mkdir,
     readFile,
     writeFile,
-    checkExists
+    checkExists,
+    readdir,
+    stat
 }

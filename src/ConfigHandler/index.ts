@@ -5,7 +5,7 @@ import {
 	propertyType,
 	zhMap,
 	ConfigTempType,
-	DynamicLoadConfigType
+	DynamicLoadConfigType, messageTemplateType, uploadTemplateType, templateConfType
 } from "./interface";
 import {Config as ConfigOld} from "../QQMessage/config.interface";
 import path from "path";
@@ -31,7 +31,7 @@ const defaultDynamicLoadConf: DynamicLoadConfigType = {
 	plugins: [
 		{
 			name: "BAIR",
-			on: true,
+			on: false,
 			desc: "Berkeley Artificial Intelligence Research 订阅",
 			commands: [
 				{
@@ -148,7 +148,7 @@ const defaultDynamicLoadConf: DynamicLoadConfigType = {
 		},
 		{
 			name: "JuejinDaily",
-			on: true,
+			on: false,
 			desc: "掘金每日文章推荐",
 			commands: [
 				{
@@ -165,7 +165,7 @@ const defaultDynamicLoadConf: DynamicLoadConfigType = {
 		},
 		{
 			name: "Github",
-			on: true,
+			on: false,
 			desc: "Github每日仓库推荐",
 			commands: [
 				{
@@ -225,7 +225,17 @@ class ConfigHandler {
 	private readonly configDirPath: string;
 	private readonly configPath: string;
 	private readonly pluginConfigPath: string;
+	private readonly templateMessageConfigPath: string;
 	private _dynamicLoadConf!: DynamicLoadConfigType;
+	private _templateConf!: Array<templateConfType>;
+
+	getTemplateConfig() {
+		return this._templateConf;
+	}
+
+	setTemplateConfig(v: Array<messageTemplateType | uploadTemplateType>) {
+		this._templateConf = v;
+	}
 
 	getGlobalConfig(): ConfigType {
 		return this._globalConfig;
@@ -247,6 +257,7 @@ class ConfigHandler {
 		this.configDirPath = path.resolve(__dirname, "../../Config");
 		this.configPath = path.resolve(this.configDirPath, "./config.yaml");
 		this.pluginConfigPath = path.resolve(this.configDirPath, "./plugin.yaml");
+		this.templateMessageConfigPath = path.resolve(this.configDirPath, "./templateMessage.json");
 	}
 
 	async initGlobalConfig(): Promise<boolean> {
@@ -272,12 +283,56 @@ class ConfigHandler {
 				await writeFile(this.pluginConfigPath, yaml.stringify(defaultDynamicLoadConf));
 			}
 
+			if(!isDirExist || !(await checkExists(this.templateMessageConfigPath)).status) {
+				isFileExist = false;
+				console.log(`配置文件不存在，将创建${this.templateMessageConfigPath}并写入默认配置`);
+				await writeFile(this.templateMessageConfigPath, JSON.stringify([]));
+			}
+
 			return isDirExist && isFileExist;
 		} catch (e) {
 			console.error("解析配置文件时出现问题");
 			console.error(e);
 			return false;
 		}
+	}
+
+	checkHasProperty(l: Array<string>, target: unknown) {
+		for(let i of l) {
+			if(!Object.prototype.hasOwnProperty.call(target, i)) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	checkTemplateConf(conf: Array<unknown>) {
+		const nconf = conf.filter(c => {
+			if(!this.checkHasProperty(["cmdName", "type", "desc"], c)) {
+				console.error("无效的模板配置项");
+				return false;
+			}
+			if((<templateConfType>c).type === "message" || (<templateConfType>c).type === "latest") {
+				if(!this.checkHasProperty(["template"], c)) {
+					console.error("无效的模板配置项");
+					return false;
+				}
+				// if(Object.prototype.hasOwnProperty.call(c, "enableEasterEgg") && (<messageTemplateType>c).enableEasterEgg) {
+				// 	if(!this.checkHasProperty(["easterEgg"], c)) {
+				// 		console.error("无效的模板配置项");
+				// 		return false;
+				// 	}
+				// }
+				return true;
+			} else if((<templateConfType>c).type === "upload") {
+				if(!this.checkHasProperty(["preMessage", "authID", "dir", "id"], c)) {
+					console.error("无效的模板配置项");
+					return false;
+				}
+				return true;
+			}
+		});
+		return nconf as Array<messageTemplateType | uploadTemplateType>;
 	}
 
 	checkSimpleAttr(k: string, v: unknown, schema: propertyType) {
@@ -429,7 +484,16 @@ class ConfigHandler {
 		const newPluginConf = this.updateDynamicLoadConf(pluginConf);
 		await writeFile(this.pluginConfigPath, yaml.stringify(newPluginConf));
 		this.setDynamicLoadConf(newPluginConf);
-
+		try {
+			const tConf = JSON.parse((await readFile(this.templateMessageConfigPath)).data) as Array<unknown>;
+			const templateConf = this.checkTemplateConf(tConf);
+			this.setTemplateConfig(templateConf);
+			console.log(`解析模板命令成功，共${this._templateConf.length}项`);
+		} catch (e) {
+			console.log("解析模板配置失败");
+			console.error(e);
+			this.setTemplateConfig([]);
+		}
 		return true;
 	}
 

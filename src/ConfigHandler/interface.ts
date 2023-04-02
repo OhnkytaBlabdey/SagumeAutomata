@@ -58,3 +58,30 @@ export interface DynamicLoadConfigType {
 	plugins: Array<PluginConfigType>;
 	commands: Array<CommandConfigType>;
 }
+
+type cmdType = "message" | "upload" | "latest";
+
+export interface templateConfType {
+	cmdName: string;
+	dir?: string;
+	type: cmdType;
+	desc: string;
+}
+
+export interface messageTemplateType extends templateConfType {
+	template: string;
+	enableEasterEgg?: boolean;
+	easterEgg?: string;
+}
+
+export interface latestTemplateType extends templateConfType {
+	template: string;
+	dir: string;
+}
+
+export interface uploadTemplateType extends templateConfType {
+	preMessage: string;
+	authID: Array<number>;
+	dir: string;
+	id: string;
+}

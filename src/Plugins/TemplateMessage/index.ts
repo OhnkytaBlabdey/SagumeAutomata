@@ -52,15 +52,17 @@ function handleTemplate(s: string, picList: Array<string>, latestPath?: string) 
 }
 
 export function genMessageTemplateCmdHandler(cmdName: string, pattern: string, t: string, d?: string): CmdType.Cmd {
-	const dir = d ? d : "";
+	const dir = d;
 	const template = t;
 	return {
 		cmdName,
 		exec: async (ev: messageEvent) => {
-			if(dir.length > 0) {
+			if(dir && dir.length > 0) {
 				const picList = await getImgFromLocal(path.resolve("data/", dir));
 				const templateS = handleTemplate(template, picList);
 				qq.sendToGroup(ev.group_id, templateS);
+			} else if(!dir){
+				qq.sendToGroup(ev.group_id, template);
 			} else {
 				qq.sendToGroup(ev.group_id, "没有数据捏");
 			}
@@ -76,11 +78,6 @@ export function genLatestTemplateCmdHandler(cmdName: string, pattern: string, t:
 		cmdName,
 		exec: async (ev: messageEvent) => {
 			if(dir.length > 0) {
-				// let files = await readdir(path.resolve("data/", dir));
-				// files.sort(function(a, b) {
-				// 	return fs.statSync(path.resolve(dir, b)).mtime.getTime() -
-				// 		fs.statSync(path.resolve(dir, a)).mtime.getTime();
-				// });
 				const targetDir = path.resolve("data/", dir);
 				let files = fs.readdirSync(targetDir)
 					.map(function(v) {

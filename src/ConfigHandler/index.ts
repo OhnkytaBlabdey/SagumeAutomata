@@ -198,11 +198,6 @@ const defaultDynamicLoadConf: DynamicLoadConfigType = {
 			desc: "RA3Wiki"
 		},
 		{
-			name: "cmdList",
-			on: true,
-			desc: "模板命令列表"
-		},
-		{
 			name: "petpet",
 			on: true,
 			desc: "petpet"

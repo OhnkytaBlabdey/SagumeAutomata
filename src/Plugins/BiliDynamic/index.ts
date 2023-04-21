@@ -4,6 +4,7 @@ import log from "../../Logger";
 import DBHandler from "../../DBHandler";
 import qq from "../../QQMessage";
 import { BiliDynamicType } from "./type";
+import configHandler from "../../ConfigHandler";
 
 class BiliDynamicSubscriber extends BiliSubscriber {
     tableName = "bili_dynamic";
@@ -25,6 +26,10 @@ class BiliDynamicSubscriber extends BiliSubscriber {
             params: {
                 host_uid: uid,
             },
+        }, {
+            headers: {
+                "cookie": configHandler.getGlobalConfig().cookie
+            }
         });
         if (!(result && result.data)) {
             log.warn(`获取${uid}动态失败`);

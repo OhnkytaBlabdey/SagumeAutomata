@@ -4,6 +4,7 @@ import log from "../../Logger";
 import dbHandler from "../../DBHandler";
 import qq from "../../QQMessage";
 import { BiliLiveType } from "./type";
+import configHandler from "../../ConfigHandler";
 
 class BiliLiveSubscriber extends BiliSubscriber {
 	tableName = "bili_live";
@@ -19,13 +20,53 @@ class BiliLiveSubscriber extends BiliSubscriber {
 		this.sampleRec = this.sampleRec.bind(this);
 	}
 
+	parseLiveResponse(response: string): any {
+		const parseRes = [];
+		if (response.length > 0 && response[0] === "{") {
+			let depth = 0, s = 0, end = 0, flag = false;
+			for(let i = 0; i < response.length; ++i) {
+				if(response[i] === "{") {
+					if(depth === 0) {
+						s = i;
+					}
+					depth += 1;
+				} else if(response[i] === "}") {
+					depth -= 1;
+					if(depth === 0) {
+						end = i;
+						flag = true;
+					}
+				}
+				if(flag) {
+					try {
+						parseRes.push(JSON.parse(response.substring(s, end + 1)));
+					} catch (e) {
+						log.warn(e);
+						log.warn("响应分段解析失败");
+					}
+					flag = false;
+				}
+			}
+		}
+		return parseRes.filter(i => i.code === 0);
+	}
+
 	async getLatestInfo(uid: number): Promise<BiliLiveType.liveInfo | undefined> {
-		const { data } = await req.get({
+		let { data } = await req.get({
 			url: "https://api.bilibili.com/x/space/acc/info",
 			params: {
 				mid: uid,
 			},
+		}, {
+			headers: {
+				"cookie": configHandler.getGlobalConfig().cookie
+			}
 		});
+		// 针对阴间响应的解析
+		if (!(data && data.data)) {
+			const t = this.parseLiveResponse(data);
+			data = t.length > 0 ? t[0] : data;
+		}
 		if (data && data.data) {
 			const jsonData = data.data;
 			if (jsonData) {

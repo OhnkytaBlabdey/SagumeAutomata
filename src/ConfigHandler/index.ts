@@ -479,6 +479,7 @@ class ConfigHandler {
 		const newPluginConf = this.updateDynamicLoadConf(pluginConf);
 		await writeFile(this.pluginConfigPath, yaml.stringify(newPluginConf));
 		this.setDynamicLoadConf(newPluginConf);
+
 		try {
 			const tConf = JSON.parse((await readFile(this.templateMessageConfigPath)).data) as Array<unknown>;
 			const templateConf = this.checkTemplateConf(tConf);

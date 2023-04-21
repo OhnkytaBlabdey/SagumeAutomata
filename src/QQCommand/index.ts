@@ -90,7 +90,7 @@ export class CommandDispatcher {
         }
     }
 
-    public async loadTemplateMessageCommand() {
+    public async loadTemplateMessageCommand(): Promise<void> {
         const conf = configHandler.getTemplateConfig();
         const ite = iteConfig(conf);
         for(let i = 0; i < conf.length; ++i) {

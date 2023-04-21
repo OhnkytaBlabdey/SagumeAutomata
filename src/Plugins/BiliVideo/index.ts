@@ -4,6 +4,7 @@ import log from "../../Logger";
 import DBHandler from "../../DBHandler";
 import qq from "../../QQMessage";
 import { BiliVideoType } from "./type";
+import configHandler from "../../ConfigHandler";
 
 class VideoSubscriber extends BiliSubscriber {
     tableName = "bili_video";
@@ -24,6 +25,10 @@ class VideoSubscriber extends BiliSubscriber {
                     mid: uid,
                     ps: 1,
                 },
+            }, {
+                headers: {
+                    "cookie": configHandler.getGlobalConfig().cookie
+                }
             });
             if (result && result.data) {
                 const jsonData = result;

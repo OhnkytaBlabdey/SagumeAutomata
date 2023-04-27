@@ -36,7 +36,7 @@ class Requester {
                 method: "GET",
                 url: para.url,
                 params: para.params,
-                ...customConf,
+                ...customConf
             }).then(
                 (d) => {
                     res(d);

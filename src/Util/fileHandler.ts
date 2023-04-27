@@ -1,7 +1,11 @@
 import fs from "fs";
+import {promisify} from "util";
 import { ReadDoneType, UtilBaseType } from "./interface";
+const mkdir = promisify(fs.mkdir);
+const readdir = promisify(fs.readdir);
+const stat = promisify(fs.stat);
 
-export function readFile(
+function readFile(
     path: string,
     // eslint-disable-next-line @typescript-eslint/ban-types
     option: Object = {}
@@ -20,7 +24,7 @@ export function readFile(
     });
 }
 
-export function writeFile(
+function writeFile(
     path: string,
     data: any,
     // eslint-disable-next-line @typescript-eslint/ban-types
@@ -39,7 +43,7 @@ export function writeFile(
     });
 }
 
-export function checkExists(path: string): Promise<UtilBaseType> {
+function checkExists(path: string): Promise<UtilBaseType> {
     return new Promise((res) => {
         fs.access(path, fs.constants.F_OK | fs.constants.W_OK, (err) => {
             if (err) {
@@ -53,4 +57,13 @@ export function checkExists(path: string): Promise<UtilBaseType> {
             }
         });
     });
+}
+
+export {
+    mkdir,
+    readFile,
+    writeFile,
+    checkExists,
+    readdir,
+    stat
 }

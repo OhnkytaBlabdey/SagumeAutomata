@@ -8,7 +8,8 @@
     "update-db": "npx ts-node src/DBManager/test/update.ts",
     "tsc": "tsc --watch --allowJs --removeComments",
     "start": "cross-env NODE_ENV=production nodemon -e ts --exec ts-node src/main.ts |cross-env ./node_modules/.bin/bunyan",
-    "parse": "npx ts-node src/Util/parseToJSON.ts"
+    "parse": "npx ts-node src/Util/parseToJSON.ts",
+    "convert-conf": "npx ts-node src/ConfigHandler/convertConfig.ts"
   },
   "repository": {
     "type": "git",
@@ -48,14 +49,15 @@
     "lodash": "^4.17.21",
     "node-schedule": "^2.1.0",
     "nodemon": "^2.0.7",
+    "pet-pet-gif": "1.0.9",
     "qs": "^6.10.1",
     "random-js": "^2.1.0",
+    "ts-node": "^10.9.1",
     "tunnel": "^0.0.6",
-    "ts-node": "^9.1.1",
-    "typescript": "^4.2.4",
+    "typescript": "^4.8.2",
     "user-agents": "^1.0.954",
     "ws": "^7.4.6",
-    "pet-pet-gif": "1.0.9"
+    "yaml": "^2.2.1"
   },
   "optionalDependencies": {
     "bufferutil": "^4.0.3",

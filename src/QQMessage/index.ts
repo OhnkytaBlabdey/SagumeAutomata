@@ -1,13 +1,11 @@
-/* eslint-disable camelcase */
 import log from "../Logger";
 import wsClient from "../WebsocketHandler";
-import config from "../../config/config.json";
-import { Config } from "./config.interface";
+import configHandler from "../ConfigHandler";
 import EventEmitter from "events";
 import { env } from "process";
 import { messageEvent, noticeEvent, responseEvent } from "./event.interface";
 import dbm from "../DBManager";
-import cmdDispatcher from "../QQCommand";
+import qqCommand from "../QQCommand";
 import { qqMessage } from "./interface";
 import DBHandler from "../DBHandler";
 import { string } from "random-js";
@@ -17,21 +15,10 @@ const errorMessage: qqMessage.IteObjType = {
 	1404: "api的请求404错误",
 };
 
-const defaultConfig: Config = {
-	cookie: "",
-	onebot_host: "",
-	onebot_port: 1,
-	onebot_pw: "",
-	qq: 114514,
-	qq_owner: 1919810,
-	ban_words: ["哼哼啊啊啊"],
-};
-
 const handleEvent = (event: responseEvent, e: EventEmitter) => {
 	let message;
 	if (event.retcode !== 0 && event.retcode !== 103) {
-		// eslint-disable-next-line no-prototype-builtins
-		if (errorMessage.hasOwnProperty(event.retcode)) {
+		if(Object.prototype.hasOwnProperty.call(errorMessage, event.retcode)){
 			message = errorMessage[event.retcode];
 		} else {
 			message = `未知的retcode${event.retcode}`;
@@ -47,15 +34,11 @@ class QQMessage {
 	private e: EventEmitter;
 	private db = dbm;
 	private cnt = 0;
-	protected qqid?: number;
-	protected conf: Config = defaultConfig;
 
 	constructor() {
 		if (env.MUTE && env.MUTE === "mute") {
 			this.e = new EventEmitter();
-			this.qqid = 0;
 		} else {
-			let conf: Config;
 			this.e = new EventEmitter();
 			this.e.on("qwq", async (e: string) => {
 				const event: responseEvent = JSON.parse(e);
@@ -70,8 +53,12 @@ class QQMessage {
 					(<messageEvent>event).message_type === "group"
 				) {
 					const ev = <messageEvent>event;
-					const flag = await cmdDispatcher.dispatchCommand(ev, ev.message);
-					if (!flag) {
+					let taskFlag = false;
+					const flag = await qqCommand.dispatchCommand(ev, ev.message);
+					if(!flag) {
+						taskFlag = await qqCommand.handleTasks(ev);
+					}
+					if (!taskFlag) {
 						await DBHandler.saveChatMessage(ev);
 					}
 				} else if (
@@ -81,7 +68,7 @@ class QQMessage {
 					const ev = <noticeEvent>event;
 					if (ev.sub_type === "poke") {
 						// 戳一戳
-						if (ev.target_id === (<Config>config).qq) {
+						if (ev.target_id === configHandler.getGlobalConfig().qq) {
 							log.debug("被戳了", e);
 							this.sendToGroup(
 								(<noticeEvent>event).group_id,
@@ -91,47 +78,24 @@ class QQMessage {
 					}
 				}
 			});
-			log.info(env.NODE_ENV);
-			if (env.NODE_ENV === "production") {
-				log.warn("使用Production配置");
-				if (
-					typeof (<Config>(<unknown>config)).onebot_port === "number" &&
-					typeof (<Config>(<unknown>config)).onebot_host === "string"
-				) {
-					conf = config;
-				} else {
-					log.warn("配置不正确，改为使用默认配置运行");
-					conf = defaultConfig;
-				}
-			} else if (env.NODE_ENV === "dev") {
-				log.warn("使用Dev配置");
-				conf = config;
-			} else {
-				log.warn("使用默认配置");
-				conf = defaultConfig;
-			}
-
-			this.wsc = new wsClient(
-				conf.onebot_host,
-				conf.onebot_port as number,
-				this.e,
-				"qwq",
-				conf.onebot_pw ? conf.onebot_pw : ""
-			);
-
-			this.qqid = conf.qq;
-			this.conf = conf;
 		}
 	}
 
 	public wscConnect() {
+		this.wsc = new wsClient(
+			configHandler.getGlobalConfig().bot_host,
+			configHandler.getGlobalConfig().bot_port,
+			this.e,
+			"qwq",
+			configHandler.getGlobalConfig().bot_access_token.length > 0 ? configHandler.getGlobalConfig().bot_access_token : ""
+		);
 		return this.wsc.connect();
 	}
 	// TODO 过长的消息截断划分，不能截断带转义的部分
 	public sendToGroup(groupId: number, msg: string): void {
 		// 过滤不合法模式
 		let invalid = false;
-		this.conf.ban_words.forEach((patt) => {
+		configHandler.getGlobalConfig().ban_words.forEach((patt) => {
 			if (RegExp(patt).test(msg)) {
 				invalid = true;
 				return;
@@ -151,10 +115,6 @@ class QQMessage {
 			})
 		);
 	}
-
-	public getId() {
-		return this.qqid;
-	}
 	// TODO 分成多段需要保证先后顺序
 	// TODO go-cqhttp支持合并发送
 	public sendToGroupSync(
@@ -172,7 +132,7 @@ class QQMessage {
 				) {
 					// 过滤不合法模式
 					let invalid = false;
-					this.conf.ban_words.forEach((patt) => {
+					configHandler.getGlobalConfig().ban_words.forEach((patt) => {
 						if (msg instanceof string && RegExp(patt).test(msg as string)) {
 							invalid = true;
 							return;
@@ -191,7 +151,7 @@ class QQMessage {
 					type: "node",
 					data: {
 						name: "歪比歪比",
-						uin: this.qqid as number,
+						uin: configHandler.getGlobalConfig().qq,
 						content: msg,
 					},
 				};

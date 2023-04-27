@@ -4,6 +4,7 @@ import log from "../../Logger";
 import DBHandler from "../../DBHandler";
 import qq from "../../QQMessage";
 import { BiliDynamicType } from "./type";
+import configHandler from "../../ConfigHandler";
 
 class BiliDynamicSubscriber extends BiliSubscriber {
     tableName = "bili_dynamic";
@@ -25,6 +26,10 @@ class BiliDynamicSubscriber extends BiliSubscriber {
             params: {
                 host_uid: uid,
             },
+        }, {
+            headers: {
+                "cookie": configHandler.getGlobalConfig().cookie
+            }
         });
         if (!(result && result.data)) {
             log.warn(`获取${uid}动态失败`);
@@ -132,75 +137,81 @@ class BiliDynamicSubscriber extends BiliSubscriber {
         }
     }
 
-    public run() {
-        setInterval(async () => {
-            const rec = await this.sampleRec<BiliDynamicType.dynamicRec>();
-            let info: BiliDynamicType.dynamicInfo;
-            if (rec == null) {
+    async runHandler() {
+        const rec = await this.sampleRec<BiliDynamicType.dynamicRec>();
+        let info: BiliDynamicType.dynamicInfo;
+        if (rec == null) {
+            return;
+        }
+        try {
+            info = (await this.getLatestInfo(
+                rec.uid
+            )) as BiliDynamicType.dynamicInfo;
+        } catch (error: any) {
+            if (error) {
+                log.warn(error.message ? error.message : error);
                 return;
             }
+            log.error("没有捕获到异常");
+            return;
+        }
+
+        if (!info) {
+            log.warn("获取最新动态失败");
+            return;
+        }
+
+        if (rec.latest_dynamic_id == info.dynamic_id) {
+            // log.debug(rec.uid, "最新动态没有变化");
+            return;
+        } else if (rec.ctime > info.timestamp) {
+            log.info(rec.uid, "删除了动态");
+            return;
+        } else {
             try {
-                info = (await this.getLatestInfo(
+                const data = await DBHandler.updateBiliSubscriberHitCount(
+                    this.tableName,
+                    this.flagCol,
+                    info.timestamp,
+                    info.dynamic_id,
                     rec.uid
-                )) as BiliDynamicType.dynamicInfo;
-            } catch (error: any) {
-                if (error) {
-                    log.warn(error.message ? error.message : error);
-                    return;
-                }
-                log.error("没有捕获到异常");
-                return;
-            }
-
-            if (!info) {
-                log.warn("获取最新动态失败");
-                return;
-            }
-
-            if (rec.latest_dynamic_id == info.dynamic_id) {
-                // log.debug(rec.uid, "最新动态没有变化");
-                return;
-            } else if (rec.ctime > info.timestamp) {
-                log.info(rec.uid, "删除了动态");
-                return;
-            } else {
-                try {
-                    const data = await DBHandler.updateBiliSubscriberHitCount(
-                        this.tableName,
-                        this.flagCol,
-                        info.timestamp,
-                        info.dynamic_id,
-                        rec.uid
-                    );
-                    log.debug(data);
-                    const recs =
-                        await DBHandler.getBiliRec<BiliDynamicType.dynamicRec>(
-                            this.tableName,
-                            rec.uid,
-                            info.dynamic_id
-                        );
-                    recs.forEach((dynamic) => {
-                        qq.sendToGroup(
-                            dynamic.group_id,
-                            `https://t.bilibili.com/${info.dynamic_id}\n[${
-                                dynamic.name
-                            }]${this.parseDynamicCardToString(info.card)}`
-                        );
-                    });
-                } catch (e: any) {
-                    log.warn(e.message ? e.message : e);
-                    return;
-                }
-                try {
-                    await DBHandler.updateSubscribeStatus(
+                );
+                log.debug(data);
+                const recs =
+                    await DBHandler.getBiliRec<BiliDynamicType.dynamicRec>(
                         this.tableName,
                         rec.uid,
                         info.dynamic_id
                     );
-                } catch (e: any) {
-                    log.warn(e.message ? e.message : e);
-                }
+                recs.forEach((dynamic) => {
+                    qq.sendToGroup(
+                        dynamic.group_id,
+                        `https://t.bilibili.com/${info.dynamic_id}\n[${
+                            dynamic.name
+                        }]${this.parseDynamicCardToString(info.card)}`
+                    );
+                });
+            } catch (e: any) {
+                log.warn(e);
+                return;
             }
+            try {
+                await DBHandler.updateSubscribeStatus(
+                    this.tableName,
+                    rec.uid,
+                    info.dynamic_id
+                );
+            } catch (e: any) {
+                log.warn(e.message ? e.message : e);
+            }
+        }
+    }
+
+    public run() {
+        setTimeout( () => {
+            this.runHandler().finally(() => {
+                 this.run();
+            });
         }, 8000);
     }
 }

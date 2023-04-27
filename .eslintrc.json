@@ -16,30 +16,15 @@
 		"@typescript-eslint"
 	],
 	"rules": {
-		"indent": [
-			"warn",
-			4
-		],
-		"linebreak-style": [
-			"warn",
-			"windows"
-		],
-		"quotes": [
-			"warn",
-			"double"
-		],
-		"semi": [
-			"warn",
-			"always"
-		],
-		"space-infix-ops": "warn",
-		"comma-spacing": "warn",
-		"no-spaced-func": "warn",
 		"no-const-assign": "error",
 		"space-before-function-paren": "off",
-		"camelcase": "warn",
 		"no-undef": "off",
-		"arrow-parens": "off"
+		"arrow-parens": "off",
+		"prefer-const": "off",
+		"no-multiple-empty-lines": "off",
+		"no-empty": "off",
+		"no-mixed-spaces-and-tabs": "off",
+		"no-empty-function": "off"
 	},
 	"globals": {
 		"dbHandler": "writable"

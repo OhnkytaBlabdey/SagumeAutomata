@@ -1,10 +1,11 @@
 import { initializer } from "./Initializer";
+import logger from "./Logger";
 
 initializer()
     .then(() => {
-        console.log("初始化完成");
+        logger.info("初始化完成");
     })
     .catch((e) => {
-        console.error("发生错误");
-        console.error(e);
+        logger.error("发生错误");
+        logger.error(e);
     });

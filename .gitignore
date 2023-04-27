@@ -1,14 +1,15 @@
 .idea/
 node_modules/
 config/
+Config/
+Config/**/*
 log/
 .prettierrc
 db/*.db
+db/*.db.bak
 db/*.db-journal
 build/
 !config/template/**/*
 data/**/*
 !data/ra3_wiki_data.json
 !data/noSeSe.jpg
-messageCmdTemplate.config.json
-randomPicCmdTemplate.config.json

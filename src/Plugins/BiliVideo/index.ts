@@ -19,7 +19,7 @@ class VideoSubscriber extends BiliSubscriber {
         uid: number
     ): Promise<BiliVideoType.videoInfo | undefined> {
         try {
-            const { data: result } = await req.get({
+            let { data: result } = await req.get({
                 url: "https://api.bilibili.com/x/space/arc/search",
                 params: {
                     mid: uid,
@@ -30,6 +30,10 @@ class VideoSubscriber extends BiliSubscriber {
                     "cookie": configHandler.getGlobalConfig().cookie
                 }
             });
+            if (!(result && result.data)) {
+                const t = this.parseLiveResponse(result);
+                result = t.length > 0 ? t[0] : result;
+            }
             if (result && result.data) {
                 const jsonData = result;
                 if (jsonData.data) {

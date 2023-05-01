@@ -90,6 +90,10 @@ export class CommandDispatcher {
         }
     }
 
+    public async loadIntervalTemplateMessageCommand(): Promise<void> {
+
+    }
+
     public async loadTemplateMessageCommand(): Promise<void> {
         const conf = configHandler.getTemplateConfig();
         const ite = iteConfig(conf);

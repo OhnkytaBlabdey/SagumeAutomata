@@ -1,4 +1,3 @@
-import randomUA from "user-agents";
 import log from "../../Logger";
 import DBHandler from "../../DBHandler";
 import qq from "../../QQMessage";
@@ -6,9 +5,6 @@ import scheduler from "node-schedule";
 import Subscriber from "../Subscriber";
 import req from "../../Requester";
 import { GithubType } from "./type";
-
-// eslint-disable-next-line @typescript-eslint/no-empty-function
-function* ite() {}
 
 class GithubSubscriber extends Subscriber {
     protected actionName = "";

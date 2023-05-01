@@ -29,11 +29,11 @@ async function getImgFromLocal(dir: string, rules: Array<string> = []): Promise<
 	}
 }
 
-function handleTemplate(s: string, picList: Array<string>, latestPath?: string) {
+function handleTemplate(s: string, picList?: Array<string>, latestPath?: string) {
 	const pattern = /\{\{image;[^]*}}/
 	return s.replace(pattern, (substr) => {
 		if(/random/.test(substr)) {
-			if(picList.length > 0) {
+			if(picList && picList.length > 0) {
 				let i = sampler.integer(0, picList.length - 1);
 				return `[CQ:image,file=${url.pathToFileURL(picList[i])}]`;
 			} else {
@@ -47,22 +47,41 @@ function handleTemplate(s: string, picList: Array<string>, latestPath?: string) 
 				return "";
 			}
 		}
+		if(/filename/.test(substr)) {
+			try {
+				const filename = substr.replace(/\{\{/, "").replace(/\}\}/, "").split(";").filter(i => /filename/.test(i))[0].split("=")[1];
+				return `[CQ:image,file=${url.pathToFileURL(path.resolve("data/", filename))}]`;
+			} catch (e) {
+				log.warn(e);
+				return "";
+			}
+		}
 		return "";
 	});
 }
 
-export function genMessageTemplateCmdHandler(cmdName: string, pattern: string, t: string, d?: string): CmdType.Cmd {
+export function genMessageTemplateCmdHandler(cmdName: string, pattern: string, t: string | Array<string>, d?: string): CmdType.Cmd {
 	const dir = d;
 	const template = t;
 	return {
 		cmdName,
 		exec: async (ev: messageEvent) => {
+			let templateS;
+			if (typeof template === "string") {
+				templateS = template;
+			} else if(Array.isArray(template) && template.length > 0) {
+				const i = sampler.integer(0, template.length - 1);
+				templateS = template[i];
+			} else {
+				templateS = "";
+			}
 			if(dir && dir.length > 0) {
 				const picList = await getImgFromLocal(path.resolve("data/", dir));
-				const templateS = handleTemplate(template, picList);
+				templateS = handleTemplate(templateS, picList);
 				qq.sendToGroup(ev.group_id, templateS);
 			} else if(!dir){
-				qq.sendToGroup(ev.group_id, template);
+				templateS = handleTemplate(templateS);
+				qq.sendToGroup(ev.group_id, templateS);
 			} else {
 				qq.sendToGroup(ev.group_id, "没有数据捏");
 			}
@@ -71,7 +90,7 @@ export function genMessageTemplateCmdHandler(cmdName: string, pattern: string, t
 	}
 }
 
-export function genLatestTemplateCmdHandler(cmdName: string, pattern: string, t: string, d: string): CmdType.Cmd {
+export function genLatestTemplateCmdHandler(cmdName: string, pattern: string, t: string | Array<string>, d: string): CmdType.Cmd {
 	const dir = d ? d : "";
 	const template = t;
 	return {
@@ -90,7 +109,15 @@ export function genLatestTemplateCmdHandler(cmdName: string, pattern: string, t:
 					.sort(function(a, b) { return b.time - a.time; })
 					.map(function(v) { return v.name; });
 				if(files.length > 0) {
-					const templateS = handleTemplate(template, [], files[0]);
+					let templateS;
+					if (typeof template === "string") {
+						templateS = template;
+					} else if(Array.isArray(template) && template.length > 0) {
+						templateS = template[sampler.integer(0, template.length - 1)];
+					} else {
+						templateS = "";
+					}
+					templateS = handleTemplate(templateS, [], files[0]);
 					qq.sendToGroup(ev.group_id, templateS);
 				}
 			}

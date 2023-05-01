@@ -69,13 +69,12 @@ export interface templateConfType {
 }
 
 export interface messageTemplateType extends templateConfType {
-	template: string;
+	template: string | Array<string>;
 	enableEasterEgg?: boolean;
-	easterEgg?: string;
 }
 
 export interface latestTemplateType extends templateConfType {
-	template: string;
+	template: string | Array<string>;
 	dir: string;
 }
 
@@ -84,4 +83,10 @@ export interface uploadTemplateType extends templateConfType {
 	authID: Array<number>;
 	dir: string;
 	id: string;
+}
+
+export interface Greeting {
+	morning: Array<string>;
+	afternoon: Array<string>;
+	evening: Array<string>;
 }

@@ -5,7 +5,7 @@ import {
 	propertyType,
 	zhMap,
 	ConfigTempType,
-	DynamicLoadConfigType, messageTemplateType, uploadTemplateType, templateConfType
+	DynamicLoadConfigType, messageTemplateType, uploadTemplateType, templateConfType, Greeting
 } from "./interface";
 import {Config as ConfigOld} from "../QQMessage/config.interface";
 import path from "path";
@@ -205,6 +205,12 @@ const defaultDynamicLoadConf: DynamicLoadConfigType = {
 	]
 }
 
+const defaultGreeting: Greeting = {
+	morning: ["早上好"],
+	afternoon: ["中午好"],
+	evening: ["晚上好"]
+}
+
 const typeMap: zhMap = {
 	"string": "字符串",
 	"number": "数字",
@@ -221,8 +227,10 @@ class ConfigHandler {
 	private readonly configPath: string;
 	private readonly pluginConfigPath: string;
 	private readonly templateMessageConfigPath: string;
+	private readonly greetingConfigPath: string;
 	private _dynamicLoadConf!: DynamicLoadConfigType;
 	private _templateConf!: Array<templateConfType>;
+	private _greetingConf!: Greeting;
 
 	getTemplateConfig() {
 		return this._templateConf;
@@ -248,11 +256,20 @@ class ConfigHandler {
 		this._dynamicLoadConf = v;
 	}
 
+	setGreetingConf(v: Greeting) {
+		this._greetingConf = v;
+	}
+
+	getGreetingConf() {
+		return this._greetingConf;
+	}
+
 	constructor() {
 		this.configDirPath = path.resolve(__dirname, "../../Config");
 		this.configPath = path.resolve(this.configDirPath, "./config.yaml");
 		this.pluginConfigPath = path.resolve(this.configDirPath, "./plugin.yaml");
 		this.templateMessageConfigPath = path.resolve(this.configDirPath, "./templateMessage.json");
+		this.greetingConfigPath = path.resolve(this.configDirPath, "./greeting.yaml");
 	}
 
 	async initGlobalConfig(): Promise<boolean> {
@@ -292,16 +309,17 @@ class ConfigHandler {
 		}
 	}
 
-	checkHasProperty(l: Array<string>, target: unknown) {
+	private checkHasProperty(l: Array<string>, target: unknown) {
 		for(let i of l) {
 			if(!Object.prototype.hasOwnProperty.call(target, i)) {
+				console.error(`缺少属性${i}`);
 				return false;
 			}
 		}
 		return true;
 	}
 
-	checkTemplateConf(conf: Array<unknown>) {
+	private checkTemplateConf(conf: Array<unknown>) {
 		const nconf = conf.filter(c => {
 			if(!this.checkHasProperty(["cmdName", "type", "desc"], c)) {
 				console.error("无效的模板配置项");
@@ -330,7 +348,21 @@ class ConfigHandler {
 		return nconf as Array<messageTemplateType | uploadTemplateType>;
 	}
 
-	checkSimpleAttr(k: string, v: unknown, schema: propertyType) {
+	private checkGreetingConf(conf: any) {
+		if(!this.checkHasProperty(["morning", "afternoon", "evening"], conf)) {
+			console.error("greeting配置文件格式错误");
+			return defaultGreeting;
+		}
+		for(let attr in conf) {
+			if(!(Object.prototype.hasOwnProperty.call(conf, attr) && Array.isArray(conf[attr]))) {
+				console.error("greeting配置文件格式错误");
+				return defaultGreeting;
+			}
+		}
+		return conf as Greeting;
+	}
+
+	private checkSimpleAttr(k: string, v: unknown, schema: propertyType) {
 		if(schema.type === "number") {
 			if(!(typeof v === "number")) {
 				console.error(`属性${k}类型或子元素类型错误，应为${typeMap[schema.type]}`);
@@ -380,7 +412,7 @@ class ConfigHandler {
 		return true;
 	}
 
-	checkProperty(defaultConf: ConfigTempType, config: ConfigTempType, p: string, pSchema: propertyType): boolean {
+	private checkProperty(defaultConf: ConfigTempType, config: ConfigTempType, p: string, pSchema: propertyType): boolean {
 		if (!Object.prototype.hasOwnProperty.call(config, p)) {
 			console.error(`缺失属性${p}，已设置为默认属性，请前往配置文件修改`);
 			config[p] = defaultConf[p];
@@ -419,7 +451,7 @@ class ConfigHandler {
 		return this.checkSimpleAttr(p, config[p], pSchema);
 	}
 
-	checkConfig(defaultConf: ConfigTempType, config: ConfigTempType, schema: configSchemaType): boolean {
+	private checkConfig(defaultConf: ConfigTempType, config: ConfigTempType, schema: configSchemaType): boolean {
 		for(let keySchema of schema.required) {
 			if(!this.checkProperty(defaultConf, config, keySchema, schema.properties[keySchema])) {
 				return false;
@@ -428,7 +460,7 @@ class ConfigHandler {
 		return true;
 	}
 
-	updateDynamicLoadConf(pluginConf: DynamicLoadConfigType) {
+	private updateDynamicLoadConf(pluginConf: DynamicLoadConfigType) {
 		const newDynamicLoadConf: DynamicLoadConfigType = {
 			plugins: [],
 			commands: []
@@ -481,14 +513,31 @@ class ConfigHandler {
 		this.setDynamicLoadConf(newPluginConf);
 
 		try {
+			if(!(await checkExists(this.templateMessageConfigPath)).status) {
+				await writeFile(this.templateMessageConfigPath, JSON.stringify([]));
+			}
 			const tConf = JSON.parse((await readFile(this.templateMessageConfigPath)).data) as Array<unknown>;
 			const templateConf = this.checkTemplateConf(tConf);
 			this.setTemplateConfig(templateConf);
 			console.log(`解析模板命令成功，共${this._templateConf.length}项`);
 		} catch (e) {
-			console.log("解析模板配置失败");
+			console.error("解析模板配置失败");
 			console.error(e);
 			this.setTemplateConfig([]);
+		}
+
+		try {
+			if(!(await checkExists(this.greetingConfigPath)).status) {
+				await writeFile(this.greetingConfigPath, yaml.stringify(defaultGreeting));
+			}
+			const tConf = JSON.parse((await readFile(this.greetingConfigPath)).data) as any;
+			const templateConf = this.checkGreetingConf(tConf);
+			this.setGreetingConf(templateConf);
+			console.log(`解析greeting配置文件成功`);
+		} catch (e) {
+			console.error("解析模板配置失败");
+			console.error(e);
+			this.setGreetingConf(defaultGreeting);
 		}
 		return true;
 	}

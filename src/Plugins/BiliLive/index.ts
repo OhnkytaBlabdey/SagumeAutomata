@@ -20,37 +20,6 @@ class BiliLiveSubscriber extends BiliSubscriber {
 		this.sampleRec = this.sampleRec.bind(this);
 	}
 
-	parseLiveResponse(response: string): any {
-		const parseRes = [];
-		if (response.length > 0 && response[0] === "{") {
-			let depth = 0, s = 0, end = 0, flag = false;
-			for(let i = 0; i < response.length; ++i) {
-				if(response[i] === "{") {
-					if(depth === 0) {
-						s = i;
-					}
-					depth += 1;
-				} else if(response[i] === "}") {
-					depth -= 1;
-					if(depth === 0) {
-						end = i;
-						flag = true;
-					}
-				}
-				if(flag) {
-					try {
-						parseRes.push(JSON.parse(response.substring(s, end + 1)));
-					} catch (e) {
-						log.warn(e);
-						log.warn("响应分段解析失败");
-					}
-					flag = false;
-				}
-			}
-		}
-		return parseRes.filter(i => i.code === 0);
-	}
-
 	async getLatestInfo(uid: number): Promise<BiliLiveType.liveInfo | undefined> {
 		let { data } = await req.get({
 			url: "https://api.bilibili.com/x/space/acc/info",

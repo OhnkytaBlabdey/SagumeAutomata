@@ -100,16 +100,39 @@ export function genMessageTemplateCmdHandler(cmdName: string, pattern: string, t
 	return {
 		cmdName,
 		exec: async (ev: messageEvent) => {
-			if(!Object.prototype.hasOwnProperty.call(groupMessageCD, ev.group_id)) {
-				groupMessageCD[ev.group_id] = {
-					lastExecTime: 0,
-					execTime: 0
-				};
-			}
-			groupMessageCD[ev.group_id].execTime = new Date().getTime();
+			if(cd > 0 ) {
+				if(!Object.prototype.hasOwnProperty.call(groupMessageCD, ev.group_id)) {
+					groupMessageCD[ev.group_id] = {
+						lastExecTime: 0,
+						execTime: 0
+					};
+				}
+				groupMessageCD[ev.group_id].execTime = new Date().getTime();
 
-			let templateS;
-			if(groupMessageCD[ev.group_id].execTime - groupMessageCD[ev.group_id].lastExecTime > coldDown) {
+				let templateS;
+				if(groupMessageCD[ev.group_id].execTime - groupMessageCD[ev.group_id].lastExecTime > coldDown) {
+					if (typeof template === "string") {
+						templateS = template;
+					} else if(Array.isArray(template) && template.length > 0) {
+						const i = sampler.integer(0, template.length - 1);
+						templateS = template[i];
+					} else {
+						templateS = "";
+					}
+					if(dir && dir.length > 0) {
+						const picList = await getImgFromLocal(path.resolve("data/", dir));
+						templateS = handleTemplate(templateS, templateOption, picList);
+						qq.sendToGroup(ev.group_id, templateS);
+					} else if(!dir){
+						templateS = handleTemplate(templateS, templateOption);
+						qq.sendToGroup(ev.group_id, templateS);
+					} else {
+						qq.sendToGroup(ev.group_id, "没有数据捏");
+					}
+					groupMessageCD[ev.group_id].lastExecTime = groupMessageCD[ev.group_id].execTime;
+				}
+			} else {
+				let templateS;
 				if (typeof template === "string") {
 					templateS = template;
 				} else if(Array.isArray(template) && template.length > 0) {
@@ -128,7 +151,6 @@ export function genMessageTemplateCmdHandler(cmdName: string, pattern: string, t
 				} else {
 					qq.sendToGroup(ev.group_id, "没有数据捏");
 				}
-				groupMessageCD[ev.group_id].lastExecTime = groupMessageCD[ev.group_id].execTime;
 			}
 		},
 		pattern: new RegExp(`^${pattern}$`)

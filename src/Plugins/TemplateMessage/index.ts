@@ -12,6 +12,15 @@ import log from "../../Logger";
 import qqCommand from "../../QQCommand";
 import {TemplateOption} from "../../ConfigHandler/interface";
 
+interface MessageCD {
+	lastExecTime: number;
+	execTime: number;
+}
+
+interface GroupMessageCD {
+	[key: number]: MessageCD;
+}
+
 async function getImgFromLocal(dir: string, rules: Array<string> = []): Promise<Array<string>> {
 	try {
 		const list = await readdir(path.resolve("data/", dir));
@@ -79,20 +88,28 @@ function handleTemplate(s: string, templateOption: TemplateOption, picList?: Arr
  * @param pattern
  * @param t
  * @param cd: 毫秒单位为
+ * @param tOption
  * @param d
  */
 export function genMessageTemplateCmdHandler(cmdName: string, pattern: string, t: string | Array<string>, cd: number, tOption: TemplateOption, d?: string): CmdType.Cmd {
 	const dir = d;
 	const template = t;
 	const coldDown = cd;
-	let lastExecTime = 0;
 	const templateOption = tOption;
+	const groupMessageCD: GroupMessageCD = {};
 	return {
 		cmdName,
 		exec: async (ev: messageEvent) => {
+			if(!Object.prototype.hasOwnProperty.call(groupMessageCD, ev.group_id)) {
+				groupMessageCD[ev.group_id] = {
+					lastExecTime: 0,
+					execTime: 0
+				};
+			}
+			groupMessageCD[ev.group_id].execTime = new Date().getTime();
+
 			let templateS;
-			let execTime = new Date().getTime();
-			if(execTime - lastExecTime > coldDown) {
+			if(groupMessageCD[ev.group_id].execTime - groupMessageCD[ev.group_id].lastExecTime > coldDown) {
 				if (typeof template === "string") {
 					templateS = template;
 				} else if(Array.isArray(template) && template.length > 0) {
@@ -111,7 +128,7 @@ export function genMessageTemplateCmdHandler(cmdName: string, pattern: string, t
 				} else {
 					qq.sendToGroup(ev.group_id, "没有数据捏");
 				}
-				lastExecTime = execTime;
+				groupMessageCD[ev.group_id].lastExecTime = groupMessageCD[ev.group_id].execTime;
 			}
 		},
 		pattern: new RegExp(`^${pattern}$`)

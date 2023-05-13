@@ -10,6 +10,7 @@ import {CmdType} from "../../QQCommand/type";
 import fs from "fs";
 import log from "../../Logger";
 import qqCommand from "../../QQCommand";
+import {TemplateOption} from "../../ConfigHandler/interface";
 
 async function getImgFromLocal(dir: string, rules: Array<string> = []): Promise<Array<string>> {
 	try {
@@ -29,9 +30,10 @@ async function getImgFromLocal(dir: string, rules: Array<string> = []): Promise<
 	}
 }
 
-function handleTemplate(s: string, picList?: Array<string>, latestPath?: string) {
-	const pattern = /\{\{image;[^]*}}/
-	return s.replace(pattern, (substr) => {
+function handleTemplate(s: string, templateOption: TemplateOption, picList?: Array<string>, latestPath?: string) {
+	const imgPattern = /\{\{image;.+}}/g;
+	const textPattern = /\{\{text;.+}}/g;
+	let res = s.replace(imgPattern, (substr) => {
 		if(/random/.test(substr)) {
 			if(picList && picList.length > 0) {
 				let i = sampler.integer(0, picList.length - 1);
@@ -58,6 +60,17 @@ function handleTemplate(s: string, picList?: Array<string>, latestPath?: string)
 		}
 		return "";
 	});
+	res = res.replace(textPattern, (substr) => {
+		if(/name/.test(substr)) {
+			const name = substr.replace(/\{\{/, "").replace(/\}\}/, "").split(";").filter(i => /name/.test(i))[0].split("=")[1];
+			if(Object.prototype.hasOwnProperty.call(templateOption, name) && templateOption[name].length) {
+				let i = sampler.integer(0, templateOption[name].length - 1);
+				return templateOption[name][i];
+			}
+		}
+		return "";
+	});
+	return res;
 }
 
 /**
@@ -68,11 +81,12 @@ function handleTemplate(s: string, picList?: Array<string>, latestPath?: string)
  * @param cd: 毫秒单位为
  * @param d
  */
-export function genMessageTemplateCmdHandler(cmdName: string, pattern: string, t: string | Array<string>, cd: number, d?: string): CmdType.Cmd {
+export function genMessageTemplateCmdHandler(cmdName: string, pattern: string, t: string | Array<string>, cd: number, tOption: TemplateOption, d?: string): CmdType.Cmd {
 	const dir = d;
 	const template = t;
 	const coldDown = cd;
-	let lastExecTime = new Date().getTime();
+	let lastExecTime = 0;
+	const templateOption = tOption;
 	return {
 		cmdName,
 		exec: async (ev: messageEvent) => {
@@ -89,10 +103,10 @@ export function genMessageTemplateCmdHandler(cmdName: string, pattern: string, t
 				}
 				if(dir && dir.length > 0) {
 					const picList = await getImgFromLocal(path.resolve("data/", dir));
-					templateS = handleTemplate(templateS, picList);
+					templateS = handleTemplate(templateS, templateOption, picList);
 					qq.sendToGroup(ev.group_id, templateS);
 				} else if(!dir){
-					templateS = handleTemplate(templateS);
+					templateS = handleTemplate(templateS, templateOption);
 					qq.sendToGroup(ev.group_id, templateS);
 				} else {
 					qq.sendToGroup(ev.group_id, "没有数据捏");
@@ -104,9 +118,10 @@ export function genMessageTemplateCmdHandler(cmdName: string, pattern: string, t
 	}
 }
 
-export function genLatestTemplateCmdHandler(cmdName: string, pattern: string, t: string | Array<string>, d: string): CmdType.Cmd {
+export function genLatestTemplateCmdHandler(cmdName: string, pattern: string, t: string | Array<string>, tOption: TemplateOption, d: string): CmdType.Cmd {
 	const dir = d ? d : "";
 	const template = t;
+	const templateOption = tOption;
 	return {
 		cmdName,
 		exec: async (ev: messageEvent) => {
@@ -131,7 +146,7 @@ export function genLatestTemplateCmdHandler(cmdName: string, pattern: string, t:
 					} else {
 						templateS = "";
 					}
-					templateS = handleTemplate(templateS, [], files[0]);
+					templateS = handleTemplate(templateS, templateOption, [], files[0]);
 					qq.sendToGroup(ev.group_id, templateS);
 				}
 			}

@@ -60,33 +60,47 @@ function handleTemplate(s: string, picList?: Array<string>, latestPath?: string)
 	});
 }
 
-export function genMessageTemplateCmdHandler(cmdName: string, pattern: string, t: string | Array<string>, d?: string): CmdType.Cmd {
+/**
+ *
+ * @param cmdName
+ * @param pattern
+ * @param t
+ * @param cd: 毫秒单位为
+ * @param d
+ */
+export function genMessageTemplateCmdHandler(cmdName: string, pattern: string, t: string | Array<string>, cd: number, d?: string): CmdType.Cmd {
 	const dir = d;
 	const template = t;
+	const coldDown = cd;
+	let lastExecTime = new Date().getTime();
 	return {
 		cmdName,
 		exec: async (ev: messageEvent) => {
 			let templateS;
-			if (typeof template === "string") {
-				templateS = template;
-			} else if(Array.isArray(template) && template.length > 0) {
-				const i = sampler.integer(0, template.length - 1);
-				templateS = template[i];
-			} else {
-				templateS = "";
-			}
-			if(dir && dir.length > 0) {
-				const picList = await getImgFromLocal(path.resolve("data/", dir));
-				templateS = handleTemplate(templateS, picList);
-				qq.sendToGroup(ev.group_id, templateS);
-			} else if(!dir){
-				templateS = handleTemplate(templateS);
-				qq.sendToGroup(ev.group_id, templateS);
-			} else {
-				qq.sendToGroup(ev.group_id, "没有数据捏");
+			let execTime = new Date().getTime();
+			if(execTime - lastExecTime > coldDown) {
+				if (typeof template === "string") {
+					templateS = template;
+				} else if(Array.isArray(template) && template.length > 0) {
+					const i = sampler.integer(0, template.length - 1);
+					templateS = template[i];
+				} else {
+					templateS = "";
+				}
+				if(dir && dir.length > 0) {
+					const picList = await getImgFromLocal(path.resolve("data/", dir));
+					templateS = handleTemplate(templateS, picList);
+					qq.sendToGroup(ev.group_id, templateS);
+				} else if(!dir){
+					templateS = handleTemplate(templateS);
+					qq.sendToGroup(ev.group_id, templateS);
+				} else {
+					qq.sendToGroup(ev.group_id, "没有数据捏");
+				}
+				lastExecTime = execTime;
 			}
 		},
-		pattern: new RegExp(`^${pattern}`)
+		pattern: new RegExp(`^${pattern}$`)
 	}
 }
 
@@ -122,7 +136,7 @@ export function genLatestTemplateCmdHandler(cmdName: string, pattern: string, t:
 				}
 			}
 		},
-		pattern: new RegExp(`^${pattern}`)
+		pattern: new RegExp(`^${pattern}$`)
 	}
 }
 
@@ -167,7 +181,7 @@ export function genUploadTemplateCmdHandler(c: string, p: string, d: string, pre
 	const id = i;
 	return {
 		cmdName,
-		pattern: new RegExp(`^${pattern}`),
+		pattern: new RegExp(`^${pattern}$`),
 		exec: async (ev: messageEvent) => {
 			if(authID.findIndex(id => id === ev.sender?.user_id) > -1) {
 				const cqImageList = ev.message.match(/\[CQ:image.*\]/);

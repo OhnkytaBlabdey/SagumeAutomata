@@ -66,6 +66,8 @@ export interface templateConfType {
 	dir?: string;
 	type: cmdType;
 	desc: string;
+	// second
+	cd: number;
 }
 
 export interface messageTemplateType extends templateConfType {

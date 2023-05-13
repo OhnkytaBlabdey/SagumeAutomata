@@ -325,6 +325,9 @@ class ConfigHandler {
 				console.error("无效的模板配置项");
 				return false;
 			}
+			if (!this.checkHasProperty(["cd"], c)) {
+				(<any>c).cd = 0;
+			}
 			if((<templateConfType>c).type === "message" || (<templateConfType>c).type === "latest") {
 				if(!this.checkHasProperty(["template"], c)) {
 					console.error("无效的模板配置项");
@@ -345,6 +348,7 @@ class ConfigHandler {
 				return true;
 			}
 		});
+		console.log(nconf);
 		return nconf as Array<messageTemplateType | uploadTemplateType>;
 	}
 
@@ -525,20 +529,19 @@ class ConfigHandler {
 			console.error(e);
 			this.setTemplateConfig([]);
 		}
-
-		try {
-			if(!(await checkExists(this.greetingConfigPath)).status) {
-				await writeFile(this.greetingConfigPath, yaml.stringify(defaultGreeting));
-			}
-			const tConf = JSON.parse((await readFile(this.greetingConfigPath)).data) as any;
-			const templateConf = this.checkGreetingConf(tConf);
-			this.setGreetingConf(templateConf);
-			console.log(`解析greeting配置文件成功`);
-		} catch (e) {
-			console.error("解析模板配置失败");
-			console.error(e);
-			this.setGreetingConf(defaultGreeting);
-		}
+		// try {
+		// 	if(!(await checkExists(this.greetingConfigPath)).status) {
+		// 		await writeFile(this.greetingConfigPath, yaml.stringify(defaultGreeting));
+		// 	}
+		// 	const tConf = JSON.parse((await readFile(this.greetingConfigPath)).data) as any;
+		// 	const templateConf = this.checkGreetingConf(tConf);
+		// 	this.setGreetingConf(templateConf);
+		// 	console.log(`解析greeting配置文件成功`);
+		// } catch (e) {
+		// 	console.error("解析模板配置失败");
+		// 	console.error(e);
+		// 	this.setGreetingConf(defaultGreeting);
+		// }
 		return true;
 	}
 

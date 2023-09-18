@@ -5,6 +5,7 @@ import dbHandler from "../../DBHandler";
 import qq from "../../QQMessage";
 import { BiliLiveType } from "./type";
 import configHandler from "../../ConfigHandler";
+import { time } from "console";
 
 class BiliLiveSubscriber extends BiliSubscriber {
 	tableName = "bili_live";
@@ -21,42 +22,48 @@ class BiliLiveSubscriber extends BiliSubscriber {
 	}
 
 	async getLatestInfo(uid: number): Promise<BiliLiveType.liveInfo | undefined> {
-		let { data } = await req.get(
+		let { data: res } = await req.get(
 			{
 				url: "https://api.bilibili.com/x/space/wbi/acc/info",
 				params: {
 					mid: uid,
+					// token:,
+					platform: "web",
+					web_location: 1550101,
+					w_rid: "92a1da8abec5460c9271ea3bdbc6df59",
+					wts: new Date().getTime(),
+				},
+			},
+			{
+				headers: {
+					cookie: configHandler.getGlobalConfig().cookie,
 				},
 			}
-			// {
-			// 	headers: {
-			// 		cookie: configHandler.getGlobalConfig().cookie,
-			// 	},
-			// }
 		);
 		// 针对阴间响应的解析
-		if (!(data && data.data)) {
-			const t = this.parseResponse(data);
-			data = t.length > 0 ? t[0] : data;
+		if (!(res && res.data)) {
+			const t = this.parseResponse(res);
+			res = t.length > 0 ? t[0] : res;
 		}
-		if (data && data.data) {
-			const jsonData = data.data;
-			if (jsonData) {
-				const data = jsonData.live_room;
-				if (!data) {
+		if (res && res.data) {
+			const data = res.data; // resp root.data
+			if (data) {
+				const liveRoom = data.live_room;
+				if (!liveRoom) {
 					log.warn(`获取${uid}直播间状态失败`);
+					log.info(data);
 					return;
 				}
 				return {
-					cover: data.cover,
-					liveStatus: data.liveStatus,
-					url: (data.url as string).split("?")[0],
-					online: data.online || data.watched_show.num,
-					title: data.title,
+					cover: liveRoom.cover,
+					liveStatus: liveRoom.liveStatus,
+					url: (liveRoom.url as string).split("?")[0],
+					online: liveRoom.online || liveRoom.watched_show.num,
+					title: liveRoom.title,
 					timestamp: -1,
 				};
 			} else {
-				log.warn("直播间返回格式错误", JSON.stringify(jsonData));
+				log.warn("直播间返回格式错误", JSON.stringify(data));
 			}
 		}
 	}

@@ -124,7 +124,7 @@ class QQMessage {
 		msgs: qqMessage.Msg[] | string[] | string
 	): void {
 		if (msgs instanceof string) {
-			this.sendToGroup(groupId, msgs as string);
+			this.sendToGroup(groupId, msgs as unknown as string);
 			return;
 		} else {
 			for (const msg of msgs as (string | qqMessage.Msg)[]) {
@@ -135,7 +135,10 @@ class QQMessage {
 					// 过滤不合法模式
 					let invalid = false;
 					configHandler.getGlobalConfig().ban_words.forEach((patt) => {
-						if (msg instanceof string && RegExp(patt).test(msg as string)) {
+						if (
+							msg instanceof string &&
+							RegExp(patt).test(msg as unknown as string)
+						) {
 							invalid = true;
 							return;
 						}

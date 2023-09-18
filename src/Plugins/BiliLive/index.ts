@@ -90,7 +90,9 @@ class BiliLiveSubscriber extends BiliSubscriber {
 			info.liveStatus
 		);
 		recs.forEach((live: BiliLiveType.liveRec) => {
-			qq.sendToGroup(live.group_id, this.__generateLiveStatusInfo(live, info));
+			qq.sendToGroupSync(live.group_id, [
+				this.__generateLiveStatusInfo(live, info),
+			]);
 		});
 	}
 

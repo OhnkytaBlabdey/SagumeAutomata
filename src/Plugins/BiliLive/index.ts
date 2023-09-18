@@ -6,6 +6,7 @@ import qq from "../../QQMessage";
 import { BiliLiveType } from "./type";
 import configHandler from "../../ConfigHandler";
 import { time } from "console";
+import { random } from "lodash";
 
 class BiliLiveSubscriber extends BiliSubscriber {
 	tableName = "bili_live";
@@ -28,17 +29,17 @@ class BiliLiveSubscriber extends BiliSubscriber {
 				params: {
 					mid: uid,
 					// token:,
-					platform: "web",
-					web_location: 1550101,
-					w_rid: "92a1da8abec5460c9271ea3bdbc6df59",
-					wts: new Date().getTime(),
-				},
-			},
-			{
-				headers: {
-					cookie: configHandler.getGlobalConfig().cookie,
+					// platform: "web",
+					// web_location: 1919810,
+					// w_rid: "1234567890abcdef1234567890abcdef",
+					// wts: new Date().getTime(),
 				},
 			}
+			// {
+			// 	headers: {
+			// 		cookie: configHandler.getGlobalConfig().cookie,
+			// 	},
+			// }
 		);
 		// 针对阴间响应的解析
 		if (!(res && res.data)) {
@@ -51,7 +52,24 @@ class BiliLiveSubscriber extends BiliSubscriber {
 				const liveRoom = data.live_room;
 				if (!liveRoom) {
 					log.warn(`获取${uid}直播间状态失败`);
-					log.info(data);
+					// 被反爬
+					// {
+					//   ga_data: {
+					//     decisions: [ 'verify_captcha_level2' ],
+					//     risk_level: 1,
+					//     grisk_id: '1234567890abcdef1234567890abcdef',
+					//     decision_ctx: {
+					//       buvid: '12345678-90ab-cdef-1234567890abcdef0infoc',
+					//       decision_type: '4',
+					//       ip: '1234.5678.90ab.cdef',
+					//       mid: '0',
+					//       origin_scene: 'anti_crawler',
+					//       scene: 'crawler_main_space_wbi_acc_info',
+					//       ua: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
+					//       v_voucher: 'voucher_12345678-90ab-cdef'
+					//     }
+					//   }
+					// }
 					return;
 				}
 				return {
@@ -164,11 +182,12 @@ class BiliLiveSubscriber extends BiliSubscriber {
 	}
 
 	public run() {
+		// TODO: 合法登录，否则会被反爬
 		setTimeout(async () => {
 			this.runHandler().finally(() => {
 				this.run();
 			});
-		}, 6000);
+		}, 60000);
 	}
 }
 

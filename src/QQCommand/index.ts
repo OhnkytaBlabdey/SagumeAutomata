@@ -90,10 +90,6 @@ export class CommandDispatcher {
         }
     }
 
-    public async loadIntervalTemplateMessageCommand(): Promise<void> {
-
-    }
-
     public async loadTemplateMessageCommand(): Promise<void> {
         const conf = configHandler.getTemplateConfig();
         const ite = iteConfig(conf);
@@ -108,11 +104,11 @@ export class CommandDispatcher {
                     log.info(`文件夹${c.dir}存在`);
                 }
                 if(c.type === "message") {
-                    const cmd = genMessageTemplateCmdHandler(c.cmdName, c.cmdName, (<messageTemplateType>c).template, c.dir ? c.dir : "");
+                    const cmd = genMessageTemplateCmdHandler(c.cmdName, c.cmdName, (<messageTemplateType>c).template, c.cd, (<messageTemplateType>c).templateOption, c.dir ? c.dir : "");
                     log.info(`加载命令: ${cmd.cmdName}`);
                     this.commands.push(cmd);
                 } else if(c.type === "latest") {
-                    const cmd = genLatestTemplateCmdHandler(c.cmdName, c.cmdName, (<latestTemplateType>c).template, c.dir as string);
+                    const cmd = genLatestTemplateCmdHandler(c.cmdName, c.cmdName, (<latestTemplateType>c).template, (<messageTemplateType>c).templateOption, c.dir as string);
                     log.info(`加载命令: ${cmd.cmdName}`);
                     this.commands.push(cmd);
                 } else if(c.type === "upload") {

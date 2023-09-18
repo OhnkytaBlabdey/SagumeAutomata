@@ -66,11 +66,18 @@ export interface templateConfType {
 	dir?: string;
 	type: cmdType;
 	desc: string;
+	// second
+	cd: number;
+}
+
+export interface TemplateOption {
+	[key: string]: Array<string>;
 }
 
 export interface messageTemplateType extends templateConfType {
 	template: string | Array<string>;
 	enableEasterEgg?: boolean;
+	templateOption: TemplateOption;
 }
 
 export interface latestTemplateType extends templateConfType {

@@ -230,7 +230,6 @@ class ConfigHandler {
 	private readonly greetingConfigPath: string;
 	private _dynamicLoadConf!: DynamicLoadConfigType;
 	private _templateConf!: Array<templateConfType>;
-	private _greetingConf!: Greeting;
 
 	getTemplateConfig() {
 		return this._templateConf;
@@ -254,14 +253,6 @@ class ConfigHandler {
 
 	setDynamicLoadConf(v: DynamicLoadConfigType) {
 		this._dynamicLoadConf = v;
-	}
-
-	setGreetingConf(v: Greeting) {
-		this._greetingConf = v;
-	}
-
-	getGreetingConf() {
-		return this._greetingConf;
 	}
 
 	constructor() {
@@ -312,7 +303,6 @@ class ConfigHandler {
 	private checkHasProperty(l: Array<string>, target: unknown) {
 		for(let i of l) {
 			if(!Object.prototype.hasOwnProperty.call(target, i)) {
-				console.error(`缺少属性${i}`);
 				return false;
 			}
 		}
@@ -322,12 +312,15 @@ class ConfigHandler {
 	private checkTemplateConf(conf: Array<unknown>) {
 		const nconf = conf.filter(c => {
 			if(!this.checkHasProperty(["cmdName", "type", "desc"], c)) {
-				console.error("无效的模板配置项");
+				console.error("缺少必要的属性，无效的模板配置项");
 				return false;
+			}
+			if (!this.checkHasProperty(["cd"], c)) {
+				(<any>c).cd = 0;
 			}
 			if((<templateConfType>c).type === "message" || (<templateConfType>c).type === "latest") {
 				if(!this.checkHasProperty(["template"], c)) {
-					console.error("无效的模板配置项");
+					console.error("缺少必要的属性，无效的模板配置项");
 					return false;
 				}
 				// if(Object.prototype.hasOwnProperty.call(c, "enableEasterEgg") && (<messageTemplateType>c).enableEasterEgg) {
@@ -336,6 +329,9 @@ class ConfigHandler {
 				// 		return false;
 				// 	}
 				// }
+				if (!this.checkHasProperty(["templateOption"], c)) {
+					(<any>c).templateOption = {};
+				}
 				return true;
 			} else if((<templateConfType>c).type === "upload") {
 				if(!this.checkHasProperty(["preMessage", "authID", "dir", "id"], c)) {
@@ -346,20 +342,6 @@ class ConfigHandler {
 			}
 		});
 		return nconf as Array<messageTemplateType | uploadTemplateType>;
-	}
-
-	private checkGreetingConf(conf: any) {
-		if(!this.checkHasProperty(["morning", "afternoon", "evening"], conf)) {
-			console.error("greeting配置文件格式错误");
-			return defaultGreeting;
-		}
-		for(let attr in conf) {
-			if(!(Object.prototype.hasOwnProperty.call(conf, attr) && Array.isArray(conf[attr]))) {
-				console.error("greeting配置文件格式错误");
-				return defaultGreeting;
-			}
-		}
-		return conf as Greeting;
 	}
 
 	private checkSimpleAttr(k: string, v: unknown, schema: propertyType) {
@@ -525,20 +507,19 @@ class ConfigHandler {
 			console.error(e);
 			this.setTemplateConfig([]);
 		}
-
-		try {
-			if(!(await checkExists(this.greetingConfigPath)).status) {
-				await writeFile(this.greetingConfigPath, yaml.stringify(defaultGreeting));
-			}
-			const tConf = JSON.parse((await readFile(this.greetingConfigPath)).data) as any;
-			const templateConf = this.checkGreetingConf(tConf);
-			this.setGreetingConf(templateConf);
-			console.log(`解析greeting配置文件成功`);
-		} catch (e) {
-			console.error("解析模板配置失败");
-			console.error(e);
-			this.setGreetingConf(defaultGreeting);
-		}
+		// try {
+		// 	if(!(await checkExists(this.greetingConfigPath)).status) {
+		// 		await writeFile(this.greetingConfigPath, yaml.stringify(defaultGreeting));
+		// 	}
+		// 	const tConf = JSON.parse((await readFile(this.greetingConfigPath)).data) as any;
+		// 	const templateConf = this.checkGreetingConf(tConf);
+		// 	this.setGreetingConf(templateConf);
+		// 	console.log(`解析greeting配置文件成功`);
+		// } catch (e) {
+		// 	console.error("解析模板配置失败");
+		// 	console.error(e);
+		// 	this.setGreetingConf(defaultGreeting);
+		// }
 		return true;
 	}
 

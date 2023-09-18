@@ -18,7 +18,7 @@ const errorMessage: qqMessage.IteObjType = {
 const handleEvent = (event: responseEvent, e: EventEmitter) => {
 	let message;
 	if (event.retcode !== 0 && event.retcode !== 103) {
-		if(Object.prototype.hasOwnProperty.call(errorMessage, event.retcode)){
+		if (Object.prototype.hasOwnProperty.call(errorMessage, event.retcode)) {
 			message = errorMessage[event.retcode];
 		} else {
 			message = `未知的retcode${event.retcode}`;
@@ -55,7 +55,7 @@ class QQMessage {
 					const ev = <messageEvent>event;
 					let taskFlag = false;
 					const flag = await qqCommand.dispatchCommand(ev, ev.message);
-					if(!flag) {
+					if (!flag) {
 						taskFlag = await qqCommand.handleTasks(ev);
 					}
 					if (!taskFlag) {
@@ -87,7 +87,9 @@ class QQMessage {
 			configHandler.getGlobalConfig().bot_port,
 			this.e,
 			"qwq",
-			configHandler.getGlobalConfig().bot_access_token.length > 0 ? configHandler.getGlobalConfig().bot_access_token : ""
+			configHandler.getGlobalConfig().bot_access_token.length > 0
+				? configHandler.getGlobalConfig().bot_access_token
+				: ""
 		);
 		return this.wsc.connect();
 	}

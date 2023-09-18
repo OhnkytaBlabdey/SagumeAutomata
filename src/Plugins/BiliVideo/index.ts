@@ -107,12 +107,11 @@ class VideoSubscriber extends BiliSubscriber {
 				);
 				log.info("视频更新", info.title);
 				recs.forEach((av) => {
-					qq.sendToGroup(
-						av.group_id,
+					qq.sendToGroupSync(av.group_id, [
 						`${av.name} 更了. ${info.title}\nb23.tv/av${av.latest_av}\n[CQ:image,file=${info.cover}]\n` +
 							`发布 ${info.pubdate} 时长【${info.length}】\n` +
-							`简介：${info.desc} ${info.desc.length > 200 ? " ..." : " "}`
-					);
+							`简介：${info.desc} ${info.desc.length > 200 ? " ..." : " "}`,
+					]);
 				});
 			} catch (e: any) {
 				log.warn(e.message ? e.message : e);

@@ -5,6 +5,8 @@ import dbHandler from "../../DBHandler";
 import qq from "../../QQMessage";
 import { BiliLiveType } from "./type";
 import configHandler from "../../ConfigHandler";
+import { time } from "console";
+import { random } from "lodash";
 
 class BiliLiveSubscriber extends BiliSubscriber {
 	tableName = "bili_live";
@@ -21,11 +23,16 @@ class BiliLiveSubscriber extends BiliSubscriber {
 	}
 
 	async getLatestInfo(uid: number): Promise<BiliLiveType.liveInfo | undefined> {
-		let { data } = await req.get(
+		let { data: res } = await req.get(
 			{
 				url: "https://api.bilibili.com/x/space/wbi/acc/info",
 				params: {
 					mid: uid,
+					// token:,
+					// platform: "web",
+					// web_location: 1919810,
+					// w_rid: "1234567890abcdef1234567890abcdef",
+					// wts: new Date().getTime(),
 				},
 			}
 			// {
@@ -35,28 +42,46 @@ class BiliLiveSubscriber extends BiliSubscriber {
 			// }
 		);
 		// 针对阴间响应的解析
-		if (!(data && data.data)) {
-			const t = this.parseResponse(data);
-			data = t.length > 0 ? t[0] : data;
+		if (!(res && res.data)) {
+			const t = this.parseResponse(res);
+			res = t.length > 0 ? t[0] : res;
 		}
-		if (data && data.data) {
-			const jsonData = data.data;
-			if (jsonData) {
-				const data = jsonData.live_room;
-				if (!data) {
+		if (res && res.data) {
+			const data = res.data; // resp root.data
+			if (data) {
+				const liveRoom = data.live_room;
+				if (!liveRoom) {
 					log.warn(`获取${uid}直播间状态失败`);
+					// 被反爬
+					// {
+					//   ga_data: {
+					//     decisions: [ 'verify_captcha_level2' ],
+					//     risk_level: 1,
+					//     grisk_id: '1234567890abcdef1234567890abcdef',
+					//     decision_ctx: {
+					//       buvid: '12345678-90ab-cdef-1234567890abcdef0infoc',
+					//       decision_type: '4',
+					//       ip: '1234.5678.90ab.cdef',
+					//       mid: '0',
+					//       origin_scene: 'anti_crawler',
+					//       scene: 'crawler_main_space_wbi_acc_info',
+					//       ua: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
+					//       v_voucher: 'voucher_12345678-90ab-cdef'
+					//     }
+					//   }
+					// }
 					return;
 				}
 				return {
-					cover: data.cover,
-					liveStatus: data.liveStatus,
-					url: (data.url as string).split("?")[0],
-					online: data.online || data.watched_show.num,
-					title: data.title,
+					cover: liveRoom.cover,
+					liveStatus: liveRoom.liveStatus,
+					url: (liveRoom.url as string).split("?")[0],
+					online: liveRoom.online || liveRoom.watched_show.num,
+					title: liveRoom.title,
 					timestamp: -1,
 				};
 			} else {
-				log.warn("直播间返回格式错误", JSON.stringify(jsonData));
+				log.warn("直播间返回格式错误", JSON.stringify(data));
 			}
 		}
 	}
@@ -83,7 +108,9 @@ class BiliLiveSubscriber extends BiliSubscriber {
 			info.liveStatus
 		);
 		recs.forEach((live: BiliLiveType.liveRec) => {
-			qq.sendToGroup(live.group_id, this.__generateLiveStatusInfo(live, info));
+			qq.sendToGroupSync(live.group_id, [
+				this.__generateLiveStatusInfo(live, info),
+			]);
 		});
 	}
 
@@ -155,11 +182,12 @@ class BiliLiveSubscriber extends BiliSubscriber {
 	}
 
 	public run() {
+		// TODO: 合法登录，否则会被反爬
 		setTimeout(async () => {
 			this.runHandler().finally(() => {
 				this.run();
 			});
-		}, 6000);
+		}, 60000);
 	}
 }
 

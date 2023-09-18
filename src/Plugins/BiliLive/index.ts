@@ -23,16 +23,16 @@ class BiliLiveSubscriber extends BiliSubscriber {
 	async getLatestInfo(uid: number): Promise<BiliLiveType.liveInfo | undefined> {
 		let { data } = await req.get(
 			{
-				url: "https://api.bilibili.com/x/space/acc/info",
+				url: "https://api.bilibili.com/x/space/wbi/acc/info",
 				params: {
 					mid: uid,
 				},
-			},
-			{
-				headers: {
-					cookie: configHandler.getGlobalConfig().cookie,
-				},
 			}
+			// {
+			// 	headers: {
+			// 		cookie: configHandler.getGlobalConfig().cookie,
+			// 	},
+			// }
 		);
 		// 针对阴间响应的解析
 		if (!(data && data.data)) {

@@ -131,7 +131,7 @@ class VideoSubscriber extends BiliSubscriber {
 			this.runHandler().finally(() => {
 				this.run();
 			});
-		}, 8000);
+		}, 60000);
 	}
 }
 
